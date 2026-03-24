@@ -94,16 +94,21 @@
   overflow: visible;
 }
 
-.notification-icon {
+.notification-icon, .direct-logout {
   position: relative;
   font-size: 1.2rem;
   cursor: pointer;
   color: rgba(255, 255, 255, 0.9);
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 50%;
 }
 
-.notification-icon:hover {
+.notification-icon:hover, .direct-logout:hover {
   color: white;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .notification-icon .badge {
