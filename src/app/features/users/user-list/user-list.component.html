@@ -1,40 +1,153 @@
-<div class="d-flex">
-  <app-sidebar></app-sidebar>
-
-  <div class="flex-grow-1" style="background:#f5f7fb; min-height:100vh;">
+<div class="layout users-page">
+  <div class="main w-100">
     <app-navbar></app-navbar>
 
-    <div class="container mt-4">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Liste des utilisateurs</h2>
-        <a routerLink="/admin/users/create" class="btn btn-primary">Ajouter un utilisateur</a>
+    <div class="container-fluid px-5">
+      <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+        <h2 class="page-title mb-0">Utilisateurs</h2>
+
+        <div class="d-flex gap-3">
+          <button class="btn-dxc-outline d-flex align-items-center gap-2">
+            <i class="bi bi-download"></i> Exporter
+          </button>
+
+          <a
+            routerLink="/admin/users/create"
+            class="btn-dxc-primary d-flex align-items-center gap-2 text-decoration-none"
+          >
+            <i class="bi bi-plus-lg"></i> Ajouter un utilisateur
+          </a>
+        </div>
       </div>
 
-      <div *ngIf="errorMessage" class="alert alert-danger">
-        {{ errorMessage }}
+      <div class="glass-card p-4">
+        <div class="search-wrapper mb-4">
+          <i class="bi bi-search"></i>
+          <input type="text" class="search-input" placeholder="Rechercher un utilisateur...">
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger">
+          {{ errorMessage }}
+        </div>
+
+        <div class="table-responsive">
+          <table class="dxc-table" *ngIf="users && users.length > 0">
+            <thead>
+              <tr>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>E-mail</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let user of users">
+                <td class="fw-semibold">{{ user.firstName || '-' }}</td>
+                <td>{{ user.lastName || '-' }}</td>
+                <td>{{ user.email }}</td>
+
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <button class="action-icon view" (click)="openUserDetails(user)">
+                      <i class="bi bi-eye-fill"></i>
+                    </button>
+
+                    <button class="action-icon edit" (click)="editUser(user.id)">
+                      <i class="bi bi-pencil-fill"></i>
+                    </button>
+
+                    <button class="action-icon delete" (click)="deleteUser(user.id)">
+                      <i class="bi bi-trash-fill"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div
+          *ngIf="(!users || users.length === 0) && !errorMessage"
+          class="alert empty-box text-center text-muted"
+        >
+          <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+          Aucun utilisateur trouvé.
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4 text-muted footer-table">
+          <div class="d-flex align-items-center gap-2">
+            <span>Afficher</span>
+            <select class="form-select form-select-sm lines-select">
+              <option>10 lignes</option>
+            </select>
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            <span>1-{{ users.length }} sur {{ users.length }} vus</span>
+            <div class="d-flex gap-1">
+              <button class="btn btn-sm btn-light border">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button class="btn btn-sm btn-light border bg-white text-dark fw-bold">1</button>
+              <button class="btn btn-sm btn-light border">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal / Card détails utilisateur -->
+<div class="user-details-overlay" *ngIf="selectedUser" (click)="closeUserDetails()">
+  <div class="user-details-card" (click)="$event.stopPropagation()">
+    <div class="details-header">
+      <h3>Détails de l'utilisateur</h3>
+      <button class="close-btn" (click)="closeUserDetails()">×</button>
+    </div>
+
+    <div class="details-body">
+      <div class="detail-row">
+        <span class="label">Prénom :</span>
+        <span>{{ selectedUser.firstName || '-' }}</span>
       </div>
 
-      <table class="table table-bordered table-striped bg-white" *ngIf="users.length > 0">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Rôles</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let user of users">
-            <td>{{ user.id }}</td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.roles.join(', ') }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="detail-row">
+        <span class="label">Nom :</span>
+        <span>{{ selectedUser.lastName || '-' }}</span>
+      </div>
 
-      <div *ngIf="users.length === 0 && !errorMessage" class="alert alert-info">
-        Aucun utilisateur trouvé.
+      <div class="detail-row">
+        <span class="label">Email :</span>
+        <span>{{ selectedUser.email }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="label">Genre :</span>
+        <span>{{ selectedUser.gender || '-' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="label">Rôle(s) :</span>
+        <span>{{ formatRoles(selectedUser.roles) }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="label">Statut :</span>
+        <span>{{ selectedUser.deleted ? 'Désactivé' : 'Actif' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="label">Date de création :</span>
+        <span>{{ selectedUser.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="label">Dernière mise à jour :</span>
+        <span>{{ selectedUser.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
       </div>
     </div>
   </div>

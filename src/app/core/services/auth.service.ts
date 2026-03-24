@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -11,7 +11,6 @@ export interface JwtResponse {
   token: string;
   type: string;
   id: number;
-  username: string;
   email: string;
   roles: string[];
 }
@@ -43,6 +42,10 @@ export class AuthService {
   getUser(): JwtResponse | null {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
   }
 
   logout(): void {

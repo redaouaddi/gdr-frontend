@@ -1,1 +1,267 @@
-/* You can add global styles to this file, and also import other style files */
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+
+:root {
+  /* Dxc Palette */
+  --dxc-primary: #8a2be2; /* Bright Purple */
+  --dxc-secondary: #ff00ff; /* Magenta */
+  --dxc-dark: #2c0b59; /* Deep Purple */
+  
+  --bg-color: #faf5ff; /* Very light pink/purple background */
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --text-main: #333333;
+  --text-muted: #888888;
+  --border-color: #ebebeb;
+  
+  /* Status Colors */
+  --status-active-bg: #e1f5e8;
+  --status-active-text: #2e7d32;
+  --status-active-toggle: #4caf50;
+  
+  --status-inactive-bg: #fff0e0;
+  --status-inactive-text: #e65100;
+  --status-inactive-toggle: #ff9800;
+  
+  --font-family: 'Inter', sans-serif;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--bg-color);
+  color: var(--text-main);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Premium Layout Utilities */
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(138, 43, 226, 0.05);
+}
+
+.dxc-gradient-bg {
+  background: linear-gradient(90deg, #370665 0%, #7623a3 50%, #c12ee8 100%);
+  color: white;
+}
+
+/* Custom Buttons */
+.btn-dxc-primary {
+  background: linear-gradient(90deg, #9b4dff 0%, #c466ff 100%);
+  color: white;
+  border: none;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 8px 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(155, 77, 255, 0.3);
+}
+
+.btn-dxc-primary:hover {
+  background: linear-gradient(90deg, #8a2be2 0%, #b23eff 100%);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(155, 77, 255, 0.4);
+}
+
+.btn-dxc-outline {
+  background: white;
+  color: var(--text-main);
+  border: 1px solid #ddd;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 8px 20px;
+  transition: all 0.3s ease;
+}
+
+.btn-dxc-outline:hover {
+  background: #f8f8f8;
+  color: var(--text-main);
+  border-color: #ccc;
+}
+
+/* Status switch toggles */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--status-inactive-toggle);
+  transition: .4s;
+  border-radius: 22px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--status-active-toggle);
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* Active / Inactive Texts */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-badge.active {
+  background-color: var(--status-active-bg);
+  color: var(--status-active-text);
+}
+
+.status-badge.active::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--status-active-toggle);
+}
+
+.status-badge.inactive {
+  background-color: var(--status-inactive-bg);
+  color: var(--status-inactive-text);
+}
+
+.status-badge.inactive::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--status-inactive-toggle);
+}
+
+/* Premium Table */
+.dxc-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.dxc-table th {
+  background: #fcfbfe;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
+}
+
+.dxc-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+.dxc-table tr:last-child td {
+  border-bottom: none;
+}
+
+.dxc-table tr:hover {
+  background-color: #fbfcff;
+}
+
+/* Action Icons */
+.action-icon {
+  color: #a871e4;
+  background: #f7effe;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.action-icon:hover {
+  background: #a871e4;
+  color: white;
+}
+
+.action-icon.delete {
+  color: #ff5e78;
+  background: #ffeeef;
+}
+
+.action-icon.delete:hover {
+  background: #ff5e78;
+  color: white;
+}
+
+/* Search Input */
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.search-wrapper i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 10px 10px 40px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #fcfcfd;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #a871e4;
+  background: white;
+}

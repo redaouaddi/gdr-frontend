@@ -1,22 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
-import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../../layout/navbar/navbar';
 import { UserService } from '../../../core/services/user.service';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-user-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SidebarComponent, NavbarComponent, RouterLink],
-  templateUrl: './user-create.html'
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, NavbarComponent],
+  templateUrl: './user-create.html',
+  styleUrls: ['./user-create.css']
 })
 export class UserCreateComponent implements OnInit {
 
   userForm!: FormGroup;
-
   errorMessage = '';
   successMessage = '';
 
@@ -27,40 +25,44 @@ export class UserCreateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-
     this.userForm = this.fb.group({
-      username: ['', Validators.required],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      gender: ['', Validators.required],
       role: ['ROLE_AGENT', Validators.required]
     });
-
   }
 
   onSubmit(): void {
-
     if (this.userForm.invalid) {
+      this.userForm.markAllAsTouched();
       return;
     }
 
     const formValue = this.userForm.value;
 
     this.userService.createUser({
-      username: formValue.username,
+      firstName: formValue.firstName,
+      lastName: formValue.lastName,
       email: formValue.email,
       password: formValue.password,
+      gender: formValue.gender,
       roles: [formValue.role]
     }).subscribe({
       next: () => {
         this.successMessage = 'Utilisateur créé avec succès';
+        this.errorMessage = '';
+
         setTimeout(() => {
           this.router.navigate(['/admin/users']);
         }, 1000);
       },
-      error: () => {
-        this.errorMessage = 'Erreur lors de la création de l’utilisateur';
-      }
+      error: (err) => {
+  console.error('ERREUR CREATE USER =', err);
+  this.errorMessage = err.error?.message || 'Erreur lors de la création de l’utilisateur';
+}
     });
-
   }
 }

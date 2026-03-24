@@ -1,18 +1,26 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface UserResponse {
   id: number;
-  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  gender: string;
   roles: string[];
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateUserRequest {
-  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
+  gender: string;
   roles: string[];
 }
 
@@ -30,5 +38,19 @@ export class UserService {
 
   createUser(data: CreateUserRequest): Observable<UserResponse> {
     return this.http.post<UserResponse>(this.apiUrl, data);
+  }
+
+  getUserById(id: number): Observable<UserResponse> {
+    return this.getAllUsers().pipe(
+      map(users => {
+        const user = users.find(u => u.id == id);
+        if (!user) throw new Error('Utilisateur non trouvé');
+        return user;
+      })
+    );
+  }
+
+  updateUser(id: number, data: any): Observable<UserResponse> {
+    return this.http.put<UserResponse>(`${this.apiUrl}/${id}/roles`, { roles: data.roles });
   }
 }

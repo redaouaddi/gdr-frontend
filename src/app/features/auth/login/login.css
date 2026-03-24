@@ -1,0 +1,167 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: #0d0221;
+}
+
+.login-page {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background:
+    radial-gradient(circle at top right, rgba(255, 0, 255, 0.25), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(80, 0, 255, 0.3), transparent 35%),
+    linear-gradient(135deg, #090218, #1c0350, #3e0d8c);
+  overflow: hidden;
+}
+
+.login-page::before {
+  content: "";
+  position: absolute;
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 60%);
+  bottom: -300px;
+  right: -250px;
+  transform: rotate(25deg);
+}
+
+.login-page::after {
+  content: "";
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.04), transparent);
+  top: -200px;
+  left: -150px;
+  transform: rotate(-30deg);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(2px);
+}
+
+.login-card {
+  position: relative;
+  z-index: 2;
+  width: 460px;
+  padding: 35px 30px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 35px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(14px);
+  text-align: center;
+}
+
+.logo-box {
+  margin-bottom: 25px;
+}
+
+.logo {
+  width: 160px;
+  display: block;
+  margin: 0 auto 15px;
+}
+
+.subtitle {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.login-form {
+  margin-top: 15px;
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.input-group .icon {
+  width: 45px;
+  text-align: center;
+  color: #d8cfff;
+  font-size: 16px;
+}
+
+.input-group .icon.right {
+  cursor: pointer;
+}
+
+.input-group input {
+  flex: 1;
+  padding: 14px 10px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: white;
+  font-size: 15px;
+}
+
+.input-group input::placeholder {
+  color: #cfc4ff;
+}
+
+.options {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 18px;
+  color: #e8deff;
+  font-size: 14px;
+}
+
+.options input {
+  margin-right: 8px;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #3f5efb, #a24bff, #ff5ec7);
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 20px rgba(162, 75, 255, 0.4);
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(162, 75, 255, 0.55);
+}
+
+.signup-text {
+  margin-top: 18px;
+  color: #e0d6ff;
+  font-size: 14px;
+}
+
+.signup-text a {
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.signup-text a:hover {
+  text-decoration: underline;
+}

@@ -1,11 +1,47 @@
-<nav class="navbar bg-white shadow-sm px-4">
-  <div class="container-fluid">
-    <span class="navbar-brand mb-0 h1">Gestion des Réclamations</span>
-
-    <div class="ms-auto">
-      <span class="fw-semibold" *ngIf="user">
-        {{ user.username }}
-      </span>
-    </div>
+<header class="dxc-top-navbar">
+  <div class="logo-area">
+    <span class="logo-text">DXC</span>
+    <span class="logo-sub">IMPOSSIBLE DELIVERED</span>
   </div>
-</nav>
+
+  <nav class="nav-links">
+    <a routerLink="/dashboard/admin" routerLinkActive="active" class="nav-item">
+      <i class="bi bi-grid"></i> Tableau de bord
+    </a>
+    <a routerLink="/admin/users" routerLinkActive="active" class="nav-item">
+      <i class="bi bi-person"></i> Utilisateurs
+    </a>
+    <a routerLink="/admin/roles" routerLinkActive="active" class="nav-item">
+      <i class="bi bi-shield-lock"></i> Rôles
+    </a>
+    <a routerLink="/admin/settings" routerLinkActive="active" class="nav-item">
+      <i class="bi bi-gear"></i> Paramètres
+    </a>
+  </nav>
+
+  <div class="user-profile">
+
+  <div class="notification-icon">
+    <i class="fa fa-bell"></i>
+    <span class="badge"></span>
+  </div>
+
+  <div class="avatar">
+    <i class="fa fa-user"></i>
+  </div>
+
+  <div class="user-menu" [class.open]="menuOpen" (click)="toggleMenu()">
+  <span class="greeting">
+    Bonjour {{ user?.username }}
+  </span>
+
+  <span class="arrow">▼</span>
+</div>
+
+<div class="dropdown-menu-test" *ngIf="menuOpen">
+  <button type="button" (click)="logout()">Déconnexion</button>
+</div>
+
+</div>
+ 
+</header>

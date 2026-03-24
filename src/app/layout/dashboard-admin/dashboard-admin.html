@@ -1,35 +1,33 @@
-<div class="layout">
+<div class="layout" style="background:#faf5ff; min-height:100vh;">
 
-  <app-sidebar></app-sidebar>
-
-  <div class="main">
+  <div class="main w-100">
 
     <app-navbar></app-navbar>
 
-    <div class="dashboard">
+    <div class="dashboard px-4">
 
-      <h2 class="title">Admin Dashboard</h2>
+      <h2 class="title mb-4">Admin Dashboard</h2>
 
       <!-- CARDS -->
 
       <div class="cards">
 
-        <div class="card stat">
+        <div class="glass-card stat p-4 mb-3">
           <h3>Utilisateurs</h3>
           <p class="number">12</p>
         </div>
 
-        <div class="card stat">
+        <div class="glass-card stat p-4 mb-3">
           <h3>Réclamations</h3>
           <p class="number">54</p>
         </div>
 
-        <div class="card stat">
+        <div class="glass-card stat p-4 mb-3">
           <h3>En cours</h3>
           <p class="number">21</p>
         </div>
 
-        <div class="card stat">
+        <div class="glass-card stat p-4 mb-3">
           <h3>SLA respecté</h3>
           <p class="number">92%</p>
         </div>
@@ -38,7 +36,7 @@
 
       <!-- GRAPH -->
 
-      <div class="card chart">
+      <div class="glass-card chart p-4 mb-3">
 
         <h3>Statut des réclamations</h3>
 
@@ -48,11 +46,11 @@
 
       <!-- TABLE -->
 
-      <div class="card table">
+      <div class="glass-card table p-4 mb-3">
 
         <h3>Activité récente</h3>
 
-        <table>
+        <table class="dxc-table mt-3">
 
           <tr>
             <th>ID</th>

@@ -5,7 +5,9 @@ import { DashboardAdminComponent } from './layout/dashboard-admin/dashboard-admi
 import { authGuard } from './core/guards/auth.guard';
 import { UserCreateComponent } from './features/users/user-create/user-create';
 import { roleGuard } from './core/guards/role.guard';
-
+import { UserEdit } from './features/users/user-edit/user-edit';
+import { Roles } from './features/admin/roles/roles';
+import { Settings } from './features/admin/settings/settings';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -30,6 +32,27 @@ export const routes: Routes = [
   component: UserCreateComponent,
   canActivate: [authGuard, roleGuard],
   data: { roles: ['ROLE_ADMIN'] }
+  },
+
+  {
+    path: 'admin/users/edit/:id',
+    component: UserEdit,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['ROLE_ADMIN'] }
+  },
+
+  {
+    path: 'admin/roles',
+    component: Roles,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['ROLE_ADMIN'] }
+  },
+
+  {
+    path: 'admin/settings',
+    component: Settings,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['ROLE_ADMIN'] }
   }
   
 ];
