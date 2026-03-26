@@ -103,11 +103,18 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(userId: number): void {
-    console.log('Action de suppression pour l’utilisateur avec ID:', userId);
-
     if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
-      this.users = this.users.filter(u => u.id !== userId);
-      this.cdr.detectChanges();
+      this.userService.deleteUser(userId).subscribe({
+        next: () => {
+          console.log('Utilisateur supprimé (soft delete)');
+          this.loadUsers(); // Recharger pour voir l'état mis à jour
+        },
+        error: (err: any) => {
+          console.error('Erreur lors de la suppression', err);
+          this.errorMessage = 'Erreur lors de la suppression de l’utilisteur';
+          this.cdr.detectChanges();
+        }
+      });
     }
   }
 

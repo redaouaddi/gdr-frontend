@@ -1,1 +1,164 @@
-<p>roles works!</p>
+<div class="layout roles-page">
+  <div class="main w-100">
+    <app-navbar></app-navbar>
+
+    <div class="container-fluid px-5 pb-5">
+      <div class="roles-header mt-4">
+        <div class="header-text">
+          <h1 class="title">Gestion des Rôles <span class="badge-count">{{ roles.length }}</span></h1>
+          <p class="subtitle text-muted">Gérez les accès et les permissions de la plateforme.</p>
+        </div>
+        <button class="btn-primary-dxc" (click)="toggleCreateForm()">
+          <i class="bi bi-plus-lg"></i> Nouveau Rôle
+        </button>
+      </div>
+
+      <div class="roles-content-wrapper mt-4">
+        <div class="row">
+          <!-- Role List -->
+          <div class="col-lg-4 col-md-5">
+            <div class="glass-card h-100">
+              <div class="card-header-dxc">
+                <h3 class="h5 mb-0">Liste des Rôles</h3>
+              </div>
+              <div class="role-list mt-3">
+                <div 
+                  *ngFor="let role of roles" 
+                  class="role-item-dxc" 
+                  [class.active]="selectedRole?.id === role.id"
+                  (click)="selectRole(role)"
+                >
+                  <div class="role-icon-dxc">
+                    <i class="bi bi-shield-check"></i>
+                  </div>
+                  <div class="role-info">
+                    <div class="d-flex align-items-center gap-2">
+                       <span class="role-name">{{ role.name }}</span>
+                       <span 
+                         class="badge-status" 
+                         [ngClass]="role.deleted ? 'deleted' : 'active'"
+                       >
+                         {{ role.deleted ? 'Supprimé' : 'Actif' }}
+                       </span>
+                    </div>
+                    <span class="role-sub text-muted small">{{ role.permissions.length }} permissions</span>
+                  </div>
+                  <div class="role-arrow">
+                    <i class="bi bi-chevron-right"></i>
+                  </div>
+                </div>
+                
+                <div *ngIf="roles.length === 0" class="empty-state text-center p-5">
+                   <p class="text-muted">Aucun rôle disponible.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Details or Form -->
+          <div class="col-lg-8 col-md-7">
+            <!-- Create Form -->
+            <div *ngIf="showCreateForm" class="glass-card animate-in">
+              <div class="card-header-dxc">
+                <h3 class="h5 mb-0">Créer un nouveau rôle</h3>
+              </div>
+              <form (ngSubmit)="createRole()" #roleForm="ngForm" class="mt-4">
+                <div class="mb-3">
+                  <label for="name" class="form-label fw-bold">Nom du rôle</label>
+                  <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    [(ngModel)]="newRole.name" 
+                    required 
+                    placeholder="Ex: AGENT_QUALITE"
+                    class="form-control dxc-input"
+                  >
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Permissions disponibles</label>
+                  <div class="permissions-grid-dxc">
+                    <div *ngFor="let perm of allPermissions" class="form-check permission-item">
+                      <input 
+                        type="checkbox" 
+                        class="form-check-input"
+                        [id]="perm" 
+                        [name]="perm"
+                        (change)="onPermissionChange(perm, $event)"
+                      >
+                      <label class="form-check-label small" [for]="perm">{{ perm }}</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                  <button type="button" class="btn btn-light border" (click)="toggleCreateForm()">Annuler</button>
+                  <button 
+                    type="submit" 
+                    class="btn btn-primary" 
+                    style="background-color: #7c3aed; border: none;"
+                    [disabled]="isSubmitting || !roleForm.form.valid || newRole.permissions.length === 0"
+                  >
+                    {{ isSubmitting ? 'Création...' : 'Confirmer la création' }}
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Role Details -->
+            <div *ngIf="selectedRole && !showCreateForm" class="glass-card animate-in">
+              <div class="card-header-dxc d-flex justify-content-between align-items-center">
+                <h3 class="h5 mb-0">Détails : {{ selectedRole.name }}</h3>
+                <div class="d-flex gap-2 align-items-center">
+                  <span 
+                    class="badge px-3 py-2 rounded-pill"
+                    [ngClass]="selectedRole.deleted ? 'bg-secondary text-white' : 'bg-success bg-opacity-10 text-success'"
+                  >
+                    {{ selectedRole.deleted ? 'Supprimé' : 'Actif' }}
+                  </span>
+                  <button 
+                    *ngIf="!selectedRole.deleted"
+                    class="btn btn-outline-danger btn-sm border-0" 
+                    (click)="deleteRole(selectedRole.id!)"
+                    title="Supprimer le rôle"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="mt-4">
+                <div class="row mb-4">
+                  <div class="col-sm-6">
+                    <label class="text-muted small text-uppercase fw-bold d-block mb-1">ID du rôle</label>
+                    <span class="h6">{{ selectedRole.id }}</span>
+                  </div>
+                  <div class="col-sm-6">
+                    <label class="text-muted small text-uppercase fw-bold d-block mb-1">Date de création</label>
+                    <span class="h6">{{ selectedRole.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="text-muted small text-uppercase fw-bold d-block mb-2">Permissions attribuées</label>
+                  <div class="d-flex flex-wrap gap-2 mt-2">
+                    <span *ngFor="let p of selectedRole.permissions" class="badge bg-light text-dark border p-2 fw-normal d-flex align-items-center gap-1">
+                       <i class="bi bi-check-circle-fill text-success"></i> {{ p }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Placeholder -->
+            <div *ngIf="!selectedRole && !showCreateForm" class="glass-card d-flex flex-column align-items-center justify-content-center text-center p-5 animate-in" style="min-height: 300px;">
+              <i class="bi bi-shield-lock-fill text-muted opacity-25" style="font-size: 5rem;"></i>
+              <p class="text-muted mt-3">Sélectionnez un rôle dans la liste pour voir ses détails ou utilisez le bouton "Nouveau Rôle" pour en ajouter un.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

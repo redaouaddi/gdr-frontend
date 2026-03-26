@@ -4,6 +4,8 @@ import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../../layout/navbar/navbar';
 import { UserService } from '../../../core/services/user.service';
+import { AccessService } from '../../../core/services/access.service';
+import { Access } from '../../../core/models/access.model';
 
 @Component({
   selector: 'app-user-create',
@@ -17,10 +19,12 @@ export class UserCreateComponent implements OnInit {
   userForm!: FormGroup;
   errorMessage = '';
   successMessage = '';
+  roles: Access[] = [];
 
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
+    private accessService: AccessService,
     private router: Router
   ) {}
 
@@ -31,7 +35,20 @@ export class UserCreateComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       gender: ['', Validators.required],
-      role: ['ROLE_AGENT', Validators.required]
+      role: ['', Validators.required]
+    });
+    this.loadRoles();
+  }
+
+  loadRoles(): void {
+    this.accessService.getAll().subscribe({
+      next: (data) => {
+        this.roles = data.filter(r => !r.deleted);
+        if (this.roles.length > 0 && !this.userForm.value.role) {
+          this.userForm.patchValue({ role: this.roles[0].name });
+        }
+      },
+      error: (err) => console.error('Error loading roles', err)
     });
   }
 

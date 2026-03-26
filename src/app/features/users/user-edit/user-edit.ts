@@ -4,6 +4,8 @@ import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angula
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../../layout/navbar/navbar';
 import { UserService } from '../../../core/services/user.service';
+import { AccessService } from '../../../core/services/access.service';
+import { Access } from '../../../core/models/access.model';
 
 @Component({
   selector: 'app-user-edit',
@@ -17,10 +19,12 @@ export class UserEdit implements OnInit {
   userId!: number;
   errorMessage = '';
   successMessage = '';
+  roles: Access[] = [];
 
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
+    private accessService: AccessService,
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
@@ -40,6 +44,17 @@ export class UserEdit implements OnInit {
     if (this.userId) {
       this.loadUser();
     }
+    this.loadRoles();
+  }
+
+  loadRoles(): void {
+    this.accessService.getAll().subscribe({
+      next: (data) => {
+        this.roles = data.filter(r => !r.deleted);
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error loading roles', err)
+    });
   }
 
   loadUser(): void {

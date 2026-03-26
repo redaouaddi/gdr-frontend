@@ -37,6 +37,7 @@
                 <th>Prénom</th>
                 <th>Nom</th>
                 <th>E-mail</th>
+                <th>Statut</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -45,7 +46,15 @@
               <tr *ngFor="let user of users">
                 <td class="fw-semibold">{{ user.firstName || '-' }}</td>
                 <td>{{ user.lastName || '-' }}</td>
-                <td>{{ user.email }}</td>
+                 <td>{{ user.email }}</td>
+                <td>
+                  <span 
+                    class="badge rounded-pill px-3 py-2" 
+                    [ngClass]="user.deleted ? 'bg-secondary' : 'bg-success bg-opacity-10 text-success'"
+                  >
+                    {{ user.deleted ? 'Supprimé' : 'Actif' }}
+                  </span>
+                </td>
 
                 <td>
                   <div class="d-flex align-items-center gap-2">

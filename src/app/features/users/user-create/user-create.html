@@ -66,11 +66,10 @@
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Rôle</label>
                 <select class="form-select custom-input" formControlName="role">
-                  <option value="ROLE_ADMIN">Admin</option>
-                  <option value="ROLE_AGENT">Agent</option>
-                  <option value="ROLE_MANAGER">Manager</option>
-                  <option value="ROLE_CLIENT">Client</option>
-                  <option value="ROLE_SERVICE_MANAGER">Service Manager</option>
+                  <option value="" disabled>Choisir un rôle</option>
+                  <option *ngFor="let role of roles" [value]="role.name">
+                    {{ role.name }}
+                  </option>
                 </select>
               </div>
             </div>

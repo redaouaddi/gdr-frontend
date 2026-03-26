@@ -10,9 +10,10 @@ import { UserEdit } from './features/users/user-edit/user-edit';
 import { Roles } from './features/admin/roles/roles';
 import { Settings } from './features/admin/settings/settings';
 import { ReclamationCreateComponent } from './features/reclamations/reclamation-create/reclamation-create.component';
+import { LandingPageComponent } from './features/public/landing-page/landing-page';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', component: LandingPageComponent },
   { path: 'login', component: LoginComponent },
 
   {

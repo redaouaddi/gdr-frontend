@@ -3,52 +3,95 @@
   <div class="main w-100">
     <app-navbar></app-navbar>
 
-    <div class="container-fluid px-5">
-      
-      <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-        <h2 class="mb-0 fw-semibold" style="color: #4a2769; font-size: 1.8rem;">Modification de l'utilisateur</h2>
+    <div class="container py-4">
+      <div class="user-form-card card border-0 shadow-sm mx-auto" style="max-width: 800px; border-radius: 1rem;">
+        <div class="card-body p-4 p-md-5">
+          <div class="form-header mb-4 border-bottom pb-3">
+            <h2 class="form-title mb-1 fw-bold" style="color: #4a2769;">Modifier l'utilisateur</h2>
+            <p class="form-subtitle mb-0 text-muted">
+              Mettez à jour les informations de l'utilisateur.
+            </p>
+          </div>
+
+          <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+            <div class="row g-4">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Prénom</label>
+                <input
+                  type="text"
+                  class="form-control custom-input"
+                  formControlName="firstName"
+                  placeholder="Prénom"
+                  style="padding: 12px; border-radius: 8px;"
+                >
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Nom</label>
+                <input
+                  type="text"
+                  class="form-control custom-input"
+                  formControlName="lastName"
+                  placeholder="Nom"
+                  style="padding: 12px; border-radius: 8px;"
+                >
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Email</label>
+                <input
+                  type="email"
+                  class="form-control custom-input"
+                  formControlName="email"
+                  placeholder="Email DXC"
+                  style="padding: 12px; border-radius: 8px;"
+                >
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Genre</label>
+                <select class="form-select custom-input" formControlName="gender" style="padding: 12px; border-radius: 8px;">
+                  <option value="" disabled>Choisir un genre</option>
+                  <option value="MASCULIN">MASCULIN</option>
+                  <option value="FEMININ">FEMININ</option>
+                </select>
+              </div>
+
+              <div class="col-md-12">
+                <label class="form-label fw-semibold">Rôle</label>
+                <select class="form-select custom-input" formControlName="role" style="padding: 12px; border-radius: 8px;">
+                  <option *ngFor="let role of roles" [value]="role.name">
+                    {{ role.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div *ngIf="errorMessage" class="alert alert-danger mt-4 mb-0 rounded-3">
+               <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
+            </div>
+
+            <div *ngIf="successMessage" class="alert alert-success mt-4 mb-0 rounded-3">
+               <i class="bi bi-check-circle-fill me-2"></i> {{ successMessage }}
+            </div>
+
+            <div class="form-actions d-flex gap-3 mt-5 pt-3 border-top">
+              <button type="submit" class="btn btn-primary px-5 py-2 fw-bold" style="background: #7c3aed; border: none; border-radius: 8px;" [disabled]="userForm.invalid">
+                Enregistrer les modifications
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-outline-secondary px-4 py-2"
+                style="border-radius: 8px;"
+                routerLink="/admin/users"
+              >
+                Annuler
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-
-      <div class="glass-card p-4 mx-auto" style="max-width: 600px;">
-        <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-          
-          <div class="mb-4">
-            <label class="form-label fw-semibold text-muted">Nom d'utilisateur</label>
-            <input type="text" class="form-control" formControlName="username" style="padding: 12px; border-radius: 8px;">
-          </div>
-
-          <div class="mb-4">
-            <label class="form-label fw-semibold text-muted">E-mail</label>
-            <input type="email" class="form-control" formControlName="email" style="padding: 12px; border-radius: 8px;">
-          </div>
-
-          <div class="mb-4">
-            <label class="form-label fw-semibold text-muted">Rôle</label>
-            <select class="form-select" formControlName="role" style="padding: 12px; border-radius: 8px;">
-              <option value="ROLE_ADMIN">Admin</option>
-              <option value="ROLE_AGENT">Agent</option>
-              <option value="ROLE_MANAGER">Manager</option>
-              <option value="ROLE_CLIENT">Client</option>
-              <option value="ROLE_SERVICE_MANAGER">Service Manager</option>
-            </select>
-          </div>
-
-          <div *ngIf="errorMessage" class="alert p-3 mb-4 rounded-3 text-danger" style="background: #ffe5e5;">
-            <i class="bi bi-exclamation-circle me-2"></i> {{ errorMessage }}
-          </div>
-
-          <div *ngIf="successMessage" class="alert p-3 mb-4 rounded-3 text-success" style="background: #e2f5ec;">
-            <i class="bi bi-check-circle me-2"></i> {{ successMessage }}
-          </div>
-
-          <div class="d-flex gap-3 mt-5">
-            <button type="submit" class="btn-dxc-primary w-50" [disabled]="userForm.invalid">Enregistrer</button>
-            <button type="button" class="btn-dxc-outline w-50" routerLink="/admin/users">Annuler</button>
-          </div>
-
-        </form>
-      </div>
-
     </div>
   </div>
 </div>
