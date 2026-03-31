@@ -9,17 +9,16 @@
       <h2 class="title mb-4">Admin Dashboard</h2>
 
       <!-- CARDS -->
-
       <div class="cards">
 
         <div class="glass-card stat p-4 mb-3">
           <h3>Utilisateurs</h3>
-          <p class="number">12</p>
+          <p class="number">{{ usersCount }}</p>
         </div>
 
         <div class="glass-card stat p-4 mb-3">
           <h3>Réclamations</h3>
-          <p class="number">54</p>
+          <p class="number">{{ reclamationsCount }}</p>
         </div>
 
         <div class="glass-card stat p-4 mb-3">
@@ -35,23 +34,17 @@
       </div>
 
       <!-- GRAPH -->
-
       <div class="glass-card chart p-4 mb-3">
-
         <h3>Statut des réclamations</h3>
-
         <canvas id="claimsChart"></canvas>
-
       </div>
 
       <!-- TABLE -->
-
       <div class="glass-card table p-4 mb-3">
 
         <h3>Activité récente</h3>
 
         <table class="dxc-table mt-3">
-
           <tr>
             <th>ID</th>
             <th>Utilisateur</th>
@@ -69,7 +62,6 @@
             <td>agent1</td>
             <td>Nouvelle réclamation</td>
           </tr>
-
         </table>
 
       </div>

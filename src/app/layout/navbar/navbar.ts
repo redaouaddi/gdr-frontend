@@ -27,4 +27,10 @@ export class NavbarComponent {
     this.router.navigate(['/login']);
   }
 
+ngOnInit(): void {
+  const userData = localStorage.getItem('user');
+  if (userData) {
+    this.user = JSON.parse(userData);
+  }
+}
 }

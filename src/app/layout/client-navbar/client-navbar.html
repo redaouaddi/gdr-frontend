@@ -21,9 +21,7 @@
       <span class="bell-dot"></span>
     </div>
 
-    <div class="direct-logout" (click)="logout()" title="Déconnexion">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-    </div>
+    
 
     <div class="user-profile" (click)="toggleMenu()">
       <div class="avatar-circle">
@@ -31,15 +29,11 @@
       </div>
       <div class="user-greeting">
         <span class="greet-label">Bonjour,</span>
-        <span class="greet-name">{{ user?.username || user?.email || '[Nom Client]' }} <span class="arrow" [class.open]="menuOpen">▾</span></span>
+        <span class="greet-name">{{ user?.username || user?.email || '[Nom Client]' }} </span>
       </div>
     </div>
-
-    <div class="dropdown-menu" *ngIf="menuOpen">
-      <button (click)="logout()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Déconnexion
-      </button>
+    <div class="logout-btn" (click)="logout()" title="Déconnexion">
+      <i class="bi bi-box-arrow-right"></i>
     </div>
   </div>
 </header>

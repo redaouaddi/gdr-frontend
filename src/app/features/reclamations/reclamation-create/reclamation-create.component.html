@@ -53,7 +53,16 @@
       </form>
     </div>
   </div>
+<div *ngIf="successMessage" class="custom-alert-success">
+  {{ successMessage }}
+  <div *ngIf="showSuccess">
+    Redirection dans {{ countdown }} seconde(s)...
+  </div>
+</div>
 
+<div *ngIf="errorMessage" class="custom-alert-danger">
+  {{ errorMessage }}
+</div>
   <!-- Success Overlay Modal -->
   <div class="success-overlay" *ngIf="showSuccess">
     <div class="success-modal">

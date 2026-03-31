@@ -22,4 +22,7 @@ export class ReclamationService {
   getReclamationStatus(numeroReclamation: string): Observable<ReclamationStatusResponse> {
     return this.http.get<ReclamationStatusResponse>(`${this.apiUrl}/${numeroReclamation}/statut`);
   }
+    getReclamationsCount(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/count`);
+  }
 }

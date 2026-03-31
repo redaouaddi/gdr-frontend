@@ -1,7 +1,9 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Chart from 'chart.js/auto';
 import { NavbarComponent } from '../navbar/navbar';
+import { UserService } from '../../core/services/user.service';
+import { ReclamationService } from '../../core/services/reclamation.service';
 
 @Component({
   selector: 'app-dashboard-admin',
@@ -10,10 +12,25 @@ import { NavbarComponent } from '../navbar/navbar';
   templateUrl: './dashboard-admin.html',
   styleUrls: ['./dashboard-admin.css']
 })
-export class DashboardAdminComponent implements AfterViewInit {
+export class DashboardAdminComponent implements OnInit, AfterViewInit {
+
+  usersCount: number = 0;
+  reclamationsCount: number = 0;
+
+  enCoursCount: number = 21;
+  slaRespecte: number = 92;
+
+  constructor(
+    private userService: UserService,
+    private reclamationService: ReclamationService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadUsersCount();
+    this.loadReclamationsCount();
+  }
 
   ngAfterViewInit(): void {
-
     const ctx: any = document.getElementById('claimsChart');
 
     new Chart(ctx, {
@@ -35,7 +52,29 @@ export class DashboardAdminComponent implements AfterViewInit {
         }
       }
     });
-
   }
 
+  loadUsersCount(): void {
+    this.userService.getAllUsers().subscribe({
+      next: (users) => {
+        console.log('Users response:', users);
+        this.usersCount = users.length;
+      },
+      error: (err) => {
+        console.error('Erreur chargement utilisateurs:', err);
+      }
+    });
+  }
+
+  loadReclamationsCount(): void {
+    this.reclamationService.getReclamationsCount().subscribe({
+      next: (count) => {
+        console.log('Réclamations count:', count);
+        this.reclamationsCount = count;
+      },
+      error: (err) => {
+        console.error('Erreur chargement réclamations:', err);
+      }
+    });
+  }
 }
