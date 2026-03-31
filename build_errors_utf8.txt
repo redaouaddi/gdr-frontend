@@ -1,0 +1,15 @@
+﻿node.exe : [1m[31mError: Unknown 
+argument: color[39m[22m
+Au caractère Ligne:1 : 1
++ & "C:\Program 
+Files\nodejs/node.exe" "C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : 
+NotSpecif    ied: 
+([1m[31mError:...color[39m    
+[22m:String) [], RemoteException
+    + FullyQualifiedErrorId : 
+NativeCom    mandError
+ 

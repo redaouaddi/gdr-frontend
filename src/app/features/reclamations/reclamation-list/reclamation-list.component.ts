@@ -4,11 +4,12 @@ import { Router } from '@angular/router';
 import { ReclamationService } from '../../../core/services/reclamation.service';
 import { Reclamation } from '../../../core/models/reclamation.model';
 import { ClientNavbarComponent } from '../../../layout/client-navbar/client-navbar';
+import { SidebarComponent } from '../../../layout/sidebar/sidebar';
 
 @Component({
   selector: 'app-reclamation-list',
   standalone: true,
-  imports: [CommonModule, ClientNavbarComponent],
+  imports: [CommonModule, ClientNavbarComponent, SidebarComponent],
   templateUrl: './reclamation-list.component.html',
   styleUrls: ['./reclamation-list.component.css']
 })

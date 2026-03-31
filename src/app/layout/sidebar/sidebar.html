@@ -1,1 +1,61 @@
-<app-sidebar></app-sidebar>
+<aside class="dxc-sidebar">
+  <div class="sidebar-header">
+    <div class="logo-area">
+      <span class="logo-text">DXC</span>
+      <span class="logo-sub">IMPOSSIBLE DELIVERED</span>
+    </div>
+  </div>
+
+  <div class="sidebar-body">
+    <!-- ADMIN MENU -->
+    <ng-container *ngIf="isAdmin">
+      <h6 class="menu-heading">Admin Panel</h6>
+      <a routerLink="/dashboard/admin" routerLinkActive="active" class="menu-link">
+        <i class="bi bi-grid"></i> Tableau de bord
+      </a>
+
+      <!-- Accordion for Users -->
+      <div class="menu-accordion" [class.open]="usersMenuOpen">
+        <button class="menu-link menu-toggle" (click)="toggleUsersMenu()" [attr.aria-expanded]="usersMenuOpen">
+          <div class="menu-toggle-content">
+            <i class="bi bi-person"></i> Utilisateurs
+          </div>
+          <i class="bi bi-chevron-down chevron"></i>
+        </button>
+        <div class="submenu" *ngIf="usersMenuOpen">
+          <a routerLink="/admin/users" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="submenu-link">Liste des utilisateurs</a>
+          <a routerLink="/admin/users/create" routerLinkActive="active" class="submenu-link">Créer un utilisateur</a>
+        </div>
+      </div>
+
+      <a routerLink="/admin/roles" routerLinkActive="active" class="menu-link">
+        <i class="bi bi-shield-lock"></i> Rôles
+      </a>
+      
+      <a routerLink="/admin/settings" routerLinkActive="active" class="menu-link">
+        <i class="bi bi-gear"></i> Paramètres
+      </a>
+    </ng-container>
+
+    <!-- CLIENT MENU -->
+    <ng-container *ngIf="isClient && !isAdmin">
+      <h6 class="menu-heading">Client Panel</h6>
+      <a routerLink="/dashboard/client" routerLinkActive="active" class="menu-link">
+        <i class="bi bi-grid"></i> Tableau de bord
+      </a>
+
+      <!-- Accordion for Reclamations -->
+      <div class="menu-accordion" [class.open]="reclamationsMenuOpen">
+        <button class="menu-link menu-toggle" (click)="toggleReclamationsMenu()" [attr.aria-expanded]="reclamationsMenuOpen">
+          <div class="menu-toggle-content">
+            <i class="bi bi-file-earmark-text"></i> Réclamations
+          </div>
+          <i class="bi bi-chevron-down chevron"></i>
+        </button>
+        <div class="submenu" *ngIf="reclamationsMenuOpen">
+          <a routerLink="/mes-reclamations/nouvelle" routerLinkActive="active" class="submenu-link">Créer une réclamation</a>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</aside>

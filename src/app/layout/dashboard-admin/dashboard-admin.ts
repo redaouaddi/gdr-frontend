@@ -2,13 +2,14 @@ import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Chart from 'chart.js/auto';
 import { NavbarComponent } from '../navbar/navbar';
+import { SidebarComponent } from '../sidebar/sidebar';
 import { UserService } from '../../core/services/user.service';
 import { ReclamationService } from '../../core/services/reclamation.service';
 
 @Component({
   selector: 'app-dashboard-admin',
   standalone: true,
-  imports: [CommonModule, NavbarComponent],
+  imports: [CommonModule, NavbarComponent, SidebarComponent],
   templateUrl: './dashboard-admin.html',
   styleUrls: ['./dashboard-admin.css']
 })

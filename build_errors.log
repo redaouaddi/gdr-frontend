@@ -1,0 +1,6 @@
+﻿[1m[33m[33mÔû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: RouterLink is not used within the template of ClientNavbarComponent[0m [1m[35m[plugin angular-compiler][0m
+[33mÔû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: RouterLinkActive is not used within the template of ClientNavbarComponent[0m [1m[35m[plugin angular-compiler][0m
+[33mÔû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: RouterLink is not used within the template of NavbarComponent[0m [1m[35m[plugin angular-compiler][0m
+[33mÔû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: RouterLinkActive is not used within the template of NavbarComponent[0m [1m[35m[plugin angular-compiler][0m
+[33mÔû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mbundle initial exceeded maximum budget. Budget 500.00 kB was not met by 449.52 kB with a total of 949.52 kB.[0m
+[33mÔû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mcss-inline-fonts:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap exceeded maximum budget. Budget 4.00 kB was not met by 11.79 kB with a total of 15.79 kB.[0m

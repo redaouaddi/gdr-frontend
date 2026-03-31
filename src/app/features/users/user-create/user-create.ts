@@ -4,13 +4,14 @@ import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../../layout/navbar/navbar';
 import { UserService } from '../../../core/services/user.service';
+import { SidebarComponent } from '../../../layout/sidebar/sidebar';
 import { AccessService } from '../../../core/services/access.service';
 import { Access } from '../../../core/models/access.model';
 
 @Component({
   selector: 'app-user-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, NavbarComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, NavbarComponent, SidebarComponent],
   templateUrl: './user-create.html',
   styleUrls: ['./user-create.css']
 })

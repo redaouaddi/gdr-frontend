@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { ReclamationService } from '../../../core/services/reclamation.service';
 import { CreateReclamationRequest } from '../../../core/models/reclamation.model';
 import { ClientNavbarComponent } from '../../../layout/client-navbar/client-navbar';
+import { SidebarComponent } from '../../../layout/sidebar/sidebar';
 
 @Component({
   selector: 'app-reclamation-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, ClientNavbarComponent],
+  imports: [CommonModule, FormsModule, ClientNavbarComponent, SidebarComponent],
   templateUrl: './reclamation-create.component.html',
   styleUrls: ['./reclamation-create.component.css']
 })
@@ -17,9 +18,12 @@ export class ReclamationCreateComponent {
   reclamation: CreateReclamationRequest = {
     titre: '',
     description: '',
-    categorie: 'TECHNIQUE',
-    priorite: 'MOYENNE'
+    categorie: 'PROJET',
+    priorite: 'MOYENNE',
+    typeMaintenance: undefined
   };
+
+  selectedFile: File | null = null;
 
   isSubmitting = false;
   showSuccess = false;
@@ -33,18 +37,40 @@ export class ReclamationCreateComponent {
     private router: Router
   ) {}
 
+  onFileSelected(event: any): void {
+    if (event.target.files && event.target.files.length > 0) {
+      this.selectedFile = event.target.files[0];
+    }
+  }
+
   onSubmit(): void {
     this.successMessage = '';
     this.errorMessage = '';
 
-    if (!this.reclamation.titre || !this.reclamation.description) {
+    if (!this.reclamation.titre || !this.reclamation.description || !this.reclamation.categorie || !this.reclamation.priorite) {
       this.errorMessage = 'Veuillez remplir tous les champs obligatoires.';
       return;
     }
 
+    if (this.reclamation.categorie === 'MAINTENANCE' && !this.reclamation.typeMaintenance) {
+      this.errorMessage = 'Veuillez choisir le type de maintenance.';
+      return;
+    }
+
+    if (this.reclamation.typeMaintenance === 'INCIDENT') {
+      if (!this.reclamation.sousCategorieIncident) {
+        this.errorMessage = 'Veuillez choisir le domaine technique de l\'incident.';
+        return;
+      }
+      if (this.reclamation.sousCategorieIncident === 'AUTRE' && !this.reclamation.detailsAutreIncident) {
+        this.errorMessage = 'Veuillez préciser le détail de l\'incident (Autre).';
+        return;
+      }
+    }
+
     this.isSubmitting = true;
 
-    this.reclamationService.createReclamation(this.reclamation).subscribe({
+    this.reclamationService.createReclamation(this.reclamation, this.selectedFile || undefined).subscribe({
       next: () => {
         this.isSubmitting = false;
         this.showSuccess = true;

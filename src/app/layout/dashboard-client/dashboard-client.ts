@@ -5,11 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { ReclamationService } from '../../core/services/reclamation.service';
 import { Reclamation } from '../../core/models/reclamation.model';
 import { ClientNavbarComponent } from '../client-navbar/client-navbar';
-
+import { SidebarComponent } from '../sidebar/sidebar';
 @Component({
   selector: 'app-dashboard-client',
   standalone: true,
-  imports: [CommonModule, FormsModule, ClientNavbarComponent],
+  imports: [CommonModule, FormsModule, ClientNavbarComponent, SidebarComponent],
   templateUrl: './dashboard-client.html',
   styleUrls: ['./dashboard-client.css']
 })

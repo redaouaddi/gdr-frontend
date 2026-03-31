@@ -1,7 +1,9 @@
-<div class="layout users-page">
-  <div class="main w-100">
+<div class="app-layout">
+  <div class="sidebar-container">
+    <app-sidebar></app-sidebar>
+  </div>
+  <div class="main-content">
     <app-navbar></app-navbar>
-
     <div class="container-fluid px-5">
       <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
         <h2 class="page-title mb-0">Utilisateurs</h2>
@@ -109,7 +111,6 @@
     </div>
   </div>
 </div>
-
 <!-- Modal / Card détails utilisateur -->
 <div class="user-details-overlay" *ngIf="selectedUser" (click)="closeUserDetails()">
   <div class="user-details-card" (click)="$event.stopPropagation()">

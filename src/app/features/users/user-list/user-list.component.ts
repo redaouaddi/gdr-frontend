@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { UserService, UserResponse } from '../../../core/services/user.service';
 import { NavbarComponent } from '../../../layout/navbar/navbar';
 import { RouterLink, Router } from '@angular/router';
-
+import { SidebarComponent } from '../../../layout/sidebar/sidebar';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, RouterLink],
+  imports: [CommonModule, NavbarComponent, RouterLink, SidebarComponent],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css']
 })

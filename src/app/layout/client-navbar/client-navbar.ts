@@ -5,7 +5,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 @Component({
   selector: 'app-client-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule],
   templateUrl: './client-navbar.html',
   styleUrls: ['./client-navbar.css']
 })

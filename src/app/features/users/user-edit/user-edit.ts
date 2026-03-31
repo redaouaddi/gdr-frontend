@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../../layout/navbar/navbar';
+import { SidebarComponent } from '../../../layout/sidebar/sidebar';
 import { UserService } from '../../../core/services/user.service';
 import { AccessService } from '../../../core/services/access.service';
 import { Access } from '../../../core/models/access.model';
@@ -10,7 +11,7 @@ import { Access } from '../../../core/models/access.model';
 @Component({
   selector: 'app-user-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NavbarComponent, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, NavbarComponent, RouterLink, SidebarComponent],
   templateUrl: './user-edit.html'
 })
 export class UserEdit implements OnInit {

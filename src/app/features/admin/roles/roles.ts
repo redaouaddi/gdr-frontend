@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { Access, EPermission } from '../../../core/models/access.model';
 import { AccessService } from '../../../core/services/access.service';
 import { NavbarComponent } from '../../../layout/navbar/navbar';
+import { SidebarComponent } from '../../../layout/sidebar/sidebar';
 
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, SidebarComponent],
   templateUrl: './roles.html',
   styleUrls: ['./roles.css'],
 })

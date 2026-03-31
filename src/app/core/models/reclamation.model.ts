@@ -14,6 +14,9 @@ export interface CreateReclamationRequest {
   titre: string;
   description: string;
   categorie: string;
+  typeMaintenance?: string;
+  sousCategorieIncident?: string;
+  detailsAutreIncident?: string;
   priorite: string;
 }
 

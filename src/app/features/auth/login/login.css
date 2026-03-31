@@ -27,7 +27,7 @@ body {
   position: absolute;
   width: 900px;
   height: 900px;
-  background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 60%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent 60%);
   bottom: -300px;
   right: -250px;
   transform: rotate(25deg);
@@ -38,7 +38,7 @@ body {
   position: absolute;
   width: 700px;
   height: 700px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.04), transparent);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent);
   top: -200px;
   left: -150px;
   transform: rotate(-30deg);

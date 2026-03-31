@@ -11,8 +11,30 @@ export class ReclamationService {
 
   constructor(private http: HttpClient) { }
 
-  createReclamation(request: CreateReclamationRequest): Observable<Reclamation> {
-    return this.http.post<Reclamation>(this.apiUrl, request);
+  createReclamation(request: CreateReclamationRequest, file?: File): Observable<Reclamation> {
+    const formData = new FormData();
+    formData.append('titre', request.titre);
+    formData.append('description', request.description);
+    formData.append('categorie', request.categorie);
+    formData.append('priorite', request.priorite);
+
+    if (request.typeMaintenance) {
+      formData.append('typeMaintenance', request.typeMaintenance);
+      if (request.typeMaintenance === 'INCIDENT') {
+        if (request.sousCategorieIncident) {
+          formData.append('sousCategorieIncident', request.sousCategorieIncident);
+        }
+        if (request.sousCategorieIncident === 'AUTRE' && request.detailsAutreIncident) {
+          formData.append('detailsAutreIncident', request.detailsAutreIncident);
+        }
+      }
+    }
+
+    if (file) {
+      formData.append('file', file);
+    }
+
+    return this.http.post<Reclamation>(this.apiUrl, formData);
   }
 
   getMyReclamations(): Observable<Reclamation[]> {
