@@ -10,6 +10,7 @@
     <!-- ADMIN MENU -->
     <ng-container *ngIf="isAdmin">
       <h6 class="menu-heading">Admin Panel</h6>
+
       <a routerLink="/dashboard/admin" routerLinkActive="active" class="menu-link">
         <i class="bi bi-grid"></i> Tableau de bord
       </a>
@@ -22,16 +23,26 @@
           </div>
           <i class="bi bi-chevron-down chevron"></i>
         </button>
+
         <div class="submenu" *ngIf="usersMenuOpen">
-          <a routerLink="/admin/users" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="submenu-link">Liste des utilisateurs</a>
-          <a routerLink="/admin/users/create" routerLinkActive="active" class="submenu-link">Créer un utilisateur</a>
+          <a
+            routerLink="/admin/users"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="submenu-link"
+          >
+            Liste des utilisateurs
+          </a>
+          <a routerLink="/admin/users/create" routerLinkActive="active" class="submenu-link">
+            Créer un utilisateur
+          </a>
         </div>
       </div>
 
       <a routerLink="/admin/roles" routerLinkActive="active" class="menu-link">
         <i class="bi bi-shield-lock"></i> Rôles
       </a>
-      
+
       <a routerLink="/admin/settings" routerLinkActive="active" class="menu-link">
         <i class="bi bi-gear"></i> Paramètres
       </a>
@@ -40,6 +51,7 @@
     <!-- CLIENT MENU -->
     <ng-container *ngIf="isClient && !isAdmin">
       <h6 class="menu-heading">Client Panel</h6>
+
       <a routerLink="/dashboard/client" routerLinkActive="active" class="menu-link">
         <i class="bi bi-grid"></i> Tableau de bord
       </a>
@@ -52,10 +64,73 @@
           </div>
           <i class="bi bi-chevron-down chevron"></i>
         </button>
+
         <div class="submenu" *ngIf="reclamationsMenuOpen">
-          <a routerLink="/mes-reclamations/nouvelle" routerLinkActive="active" class="submenu-link">Créer une réclamation</a>
+          <a routerLink="/mes-reclamations/nouvelle" routerLinkActive="active" class="submenu-link">
+            Créer une réclamation
+          </a>
         </div>
       </div>
     </ng-container>
+
+    <!-- FACE ID PASSKEY -->
+    <div style="margin-top: 20px;">
+      <h6 class="menu-heading">Sécurité</h6>
+
+      <button class="menu-link" (click)="activateFaceId()" [disabled]="isRegisteringPasskey">
+        <i class="bi bi-shield-check"></i>
+        {{ isRegisteringPasskey ? 'Activation...' : 'Activer Face ID' }}
+      </button>
+
+      <small *ngIf="passkeyMessage" style="color: #22c55e; display: block; margin-top: 5px;">
+        {{ passkeyMessage }}
+      </small>
+
+      <small *ngIf="passkeyError" style="color: #ef4444; display: block; margin-top: 5px;">
+        {{ passkeyError }}
+      </small>
+    </div>
+
+    <!-- RECONNAISSANCE FACIALE -->
+    <div class="face-register-section">
+      <h6 class="menu-heading">Reconnaissance faciale</h6>
+
+      <button class="menu-link faceid-button" (click)="openFaceModal()">
+        <i class="bi bi-camera"></i>
+        Activer reconnaissance faciale
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL RECONNAISSANCE FACIALE -->
+  <div class="face-modal-backdrop" *ngIf="showFaceModal">
+    <div class="face-modal">
+      <h5>Enregistrement du visage</h5>
+
+      <video #videoElement autoplay playsinline class="face-video"></video>
+      <canvas #canvasElement class="face-canvas"></canvas>
+
+      <div class="face-actions">
+        <button class="face-action-btn" (click)="startCamera()">Ouvrir caméra</button>
+        <button class="face-action-btn" (click)="captureFace()">Capturer</button>
+        <button class="face-action-btn" (click)="saveFaceToBackend()" [disabled]="!capturedImage">
+          Enregistrer visage
+        </button>
+        <button class="face-action-btn cancel" (click)="closeFaceModal()">Fermer</button>
+      </div>
+
+      <div *ngIf="capturedImage" class="preview-block">
+        <p>Aperçu :</p>
+        <img [src]="capturedImage" alt="Captured face" class="face-preview" />
+      </div>
+
+      <small *ngIf="faceCaptureMessage" class="faceid-success">
+        {{ faceCaptureMessage }}
+      </small>
+
+      <small *ngIf="faceCaptureError" class="faceid-error">
+        {{ faceCaptureError }}
+      </small>
+    </div>
   </div>
 </aside>
