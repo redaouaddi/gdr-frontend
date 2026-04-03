@@ -8,6 +8,8 @@ export interface Reclamation {
   statut: string;
   dateCreation: string;
   dateMiseAJour: string;
+  motifRefus?: string;
+  equipeAssignee?: string;
 }
 
 export interface CreateReclamationRequest {

@@ -65,14 +65,22 @@
                 </select>
               </div>
 
-              <div class="col-md-6">
-                <label class="form-label fw-semibold">Rôle</label>
-                <select class="form-select custom-input" formControlName="role">
-                  <option value="" disabled>Choisir un rôle</option>
-                  <option *ngFor="let role of roles" [value]="role.name">
-                    {{ role.name }}
-                  </option>
-                </select>
+              <div class="col-md-12">
+                <label class="form-label fw-semibold">Rôles</label>
+                <div class="roles-checkbox-group d-flex flex-wrap gap-3 p-3 border rounded-3 bg-white">
+                  <div *ngFor="let role of roles" class="form-check">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      [id]="'role-' + role.id"
+                      [checked]="isRoleSelected(role.name)"
+                      (change)="onRoleToggle(role.name)"
+                    >
+                    <label class="form-check-label" [for]="'role-' + role.id">
+                      {{ role.name }}
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
 

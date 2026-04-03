@@ -44,7 +44,35 @@ export class ReclamationService {
   getReclamationStatus(numeroReclamation: string): Observable<ReclamationStatusResponse> {
     return this.http.get<ReclamationStatusResponse>(`${this.apiUrl}/${numeroReclamation}/statut`);
   }
-    getReclamationsCount(): Observable<number> {
+  getReclamationsCount(): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/count`);
+  }
+
+  assignerEquipe(numeroReclamation: string, equipeId: number): Observable<Reclamation> {
+    return this.http.put<Reclamation>(`${this.apiUrl}/${numeroReclamation}/assigner-equipe?idEquipe=${equipeId}`, {});
+  }
+
+  rejeterReclamation(numeroReclamation: string, motif: string): Observable<Reclamation> {
+    return this.http.put<Reclamation>(`${this.apiUrl}/${numeroReclamation}/rejeter?motif=${encodeURIComponent(motif)}`, {});
+  }
+
+  getReclamationsParEquipe(equipeId: number): Observable<Reclamation[]> {
+    return this.http.get<Reclamation[]>(`${this.apiUrl}/equipe/${equipeId}`);
+  }
+
+  getAllReclamations(): Observable<Reclamation[]> {
+    return this.http.get<Reclamation[]>(this.apiUrl);
+  }
+
+  getNouvellesReclamations(): Observable<Reclamation[]> {
+    return this.http.get<Reclamation[]>(`${this.apiUrl}/nouvelles`);
+  }
+
+  accepterReclamation(numeroReclamation: string): Observable<Reclamation> {
+    return this.http.put<Reclamation>(`${this.apiUrl}/${numeroReclamation}/accepter`, {});
+  }
+
+  marquerResolue(numeroReclamation: string): Observable<Reclamation> {
+    return this.http.put<Reclamation>(`${this.apiUrl}/${numeroReclamation}/resoudre`, {});
   }
 }

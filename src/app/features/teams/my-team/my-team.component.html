@@ -1,0 +1,269 @@
+<div class="app-layout">
+  <div class="sidebar-container">
+    <app-sidebar></app-sidebar>
+  </div>
+  <div class="main-content" style="background:#f5f7fb; min-height:100vh;">
+    <app-navbar></app-navbar>
+
+    <div class="container py-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="fw-bold mb-1" style="color: #4a2769;">Mon Équipe</h2>
+          <p class="text-muted mb-0">Gestion de votre équipe et recrutement d'agents.</p>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading; else teamContent" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <div class="mt-2">
+          <button class="btn btn-sm btn-link text-muted" (click)="isLoading = false">Chargement trop long ? Cliquez ici</button>
+        </div>
+      </div>
+
+      <!-- Main Content Template -->
+      <ng-template #teamContent>
+        <!-- No Team Assigned -->
+        <div *ngIf="!myTeam" class="card border-0 shadow-sm mt-4 text-center p-5 rounded-3">
+          <i class="bi bi-people text-muted mb-3" style="font-size: 3rem;"></i>
+          <h4 class="fw-semibold">Aucune équipe assignée</h4>
+          <p class="text-muted">Vous n'avez pas encore d'équipe sous votre gestion. Veuillez contacter un administrateur.</p>
+        </div>
+
+        <div *ngIf="myTeam" class="row g-4">
+          <!-- Team Details -->
+          <div class="col-12 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+              <div class="card-body p-4">
+                <h5 class="fw-bold mb-4 border-bottom pb-2">Informations</h5>
+                
+                <div class="mb-3">
+                  <span class="text-muted d-block small fw-semibold text-uppercase">Nom du service</span>
+                  <span class="fs-5 fw-bold text-dark">{{ myTeam.nom }}</span>
+                </div>
+                
+                <div class="mb-3">
+                  <span class="text-muted d-block small fw-semibold text-uppercase">Chef d'équipe</span>
+                  <span class="fw-medium">{{ myTeam.chefEquipeNom }}</span>
+                </div>
+                
+                <div class="mb-0">
+                  <span class="text-muted d-block small fw-semibold text-uppercase">Nombre d'agents</span>
+                  <span class="badge bg-primary rounded-pill px-3 py-2 fs-6">
+                    {{ myTeam.agents ? myTeam.agents.length : 0 }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Team Members -->
+          <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+              <div class="card-body p-4">
+                <h5 class="fw-bold mb-4 border-bottom pb-2">Membres de l'équipe</h5>
+                
+                <div *ngIf="!myTeam.agents || myTeam.agents.length === 0" class="text-center py-4 text-muted">
+                  Aucun agent dans cette équipe pour le moment.
+                </div>
+
+                <div class="table-responsive" *ngIf="myTeam.agents && myTeam.agents.length > 0">
+                  <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                      <tr>
+                      <th>Nom</th>
+                      <th>Email</th>
+                      <th>Statut</th>
+                      <th class="text-end">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let agent of myTeam.agents">
+                      <td class="fw-medium">{{ agent.prenom }} {{ agent.nom }}</td>
+                      <td>{{ agent.email }}</td>
+                      <td>
+                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">
+                          Actif
+                        </span>
+                      </td>
+                      <td class="text-end">
+                        <button class="btn btn-sm btn-outline-danger border-0 rounded-circle" 
+                                (click)="retirer(agent.id)" 
+                                title="Retirer de l'équipe">
+                          <i class="bi bi-person-dash fs-5"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recruitment Section -->
+          <div class="col-12 mt-4">
+            <div class="card border-0 shadow-sm rounded-4">
+              <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+                  <h5 class="fw-bold mb-0">Recruter des agents libres</h5>
+                </div>
+
+                <div *ngIf="successMessage" class="alert alert-success rounded-3 mb-4 py-2">
+                  <i class="bi bi-check-circle-fill me-2"></i> {{ successMessage }}
+                </div>
+                <div *ngIf="errorMessage" class="alert alert-danger rounded-3 mb-4 py-2">
+                  <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
+                </div>
+
+                <div *ngIf="freeAgents.length === 0" class="text-center py-4 text-muted">
+                  Aucun agent libre disponible actuellement.
+                </div>
+
+                <div class="row g-3" *ngIf="freeAgents.length > 0">
+                  <div class="col-12 col-md-6 col-xl-4" *ngFor="let agent of freeAgents">
+                    <div class="card bg-light border-0 rounded-3">
+                      <div class="card-body p-3 d-flex justify-content-between align-items-center">
+                        <div>
+                          <h6 class="mb-1 fw-bold">{{ agent.firstName }} {{ agent.lastName }}</h6>
+                          <small class="text-muted">{{ agent.email }}</small>
+                        </div>
+                        <button 
+                          class="btn btn-primary btn-sm rounded-circle shadow-sm" 
+                          style="width: 36px; height: 36px; background: #7c3aed; border: none; flex-shrink: 0;"
+                          (click)="recruter(agent.id)"
+                          title="Ajouter à mon équipe"
+                        >
+                          <i class="bi bi-plus-lg"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reclamations Section -->
+          <div class="col-12 mt-4">
+            <div class="card border-0 shadow-sm rounded-4">
+              <div class="card-body p-4">
+                <h5 class="fw-bold mb-4 border-bottom pb-2">Gestion des Réclamations</h5>
+                
+                <div *ngIf="reclamations.length === 0" class="text-center py-4 text-muted">
+                  Aucune réclamation assignée à cette équipe.
+                </div>
+
+                <div class="table-responsive" *ngIf="reclamations.length > 0">
+                  <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th>N°</th>
+                        <th>Titre</th>
+                        <th>Priorité</th>
+                        <th>Statut</th>
+                        <th class="text-end">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let rec of reclamations">
+                        <td class="fw-medium text-primary">#{{ rec.numeroReclamation }}</td>
+                        <td>
+                          <span class="d-block fw-semibold text-dark">{{ rec.titre }}</span>
+                          <small class="text-muted">{{ rec.categorie }}</small>
+                        </td>
+                        <td>
+                          <span class="badge" [ngClass]="{
+                            'bg-danger': rec.priorite === 'HAUTE',
+                            'bg-warning text-dark': rec.priorite === 'MOYENNE',
+                            'bg-info text-dark': rec.priorite === 'BASSE'
+                          }">{{ rec.priorite }}</span>
+                        </td>
+                        <td>
+                          <span class="badge rounded-pill px-3 py-2" [ngClass]="{
+                            'bg-secondary text-white': rec.statut === 'EN_ATTENTE',
+                            'bg-primary': rec.statut === 'EN_COURS',
+                            'bg-success': rec.statut === 'TRAITEE',
+                            'bg-danger': rec.statut === 'REJETEE'
+                          }">
+                            <i class="bi" [ngClass]="{
+                              'bi-hourglass': rec.statut === 'EN_ATTENTE',
+                              'bi-play-fill': rec.statut === 'EN_COURS',
+                              'bi-check-all': rec.statut === 'TRAITEE',
+                              'bi-x-circle': rec.statut === 'REJETEE'
+                            }"></i>
+                            {{ rec.statut }}
+                          </span>
+                        </td>
+                        <td class="text-end">
+                          <div class="d-flex justify-content-end gap-2">
+                            <!-- Action: Accepter -->
+                            <button *ngIf="rec.statut === 'EN_ATTENTE'"
+                                    class="btn btn-sm btn-success rounded-pill px-3 shadow-sm" 
+                                    (click)="accepter(rec.numeroReclamation)">
+                              <i class="bi bi-check-lg me-1"></i> Accepter
+                            </button>
+                            
+                            <!-- Action: Rejeter -->
+                            <button *ngIf="rec.statut === 'EN_ATTENTE' || rec.statut === 'EN_COURS'"
+                                    class="btn btn-sm btn-outline-danger rounded-pill px-3" 
+                                    (click)="openRejectModal(rec)">
+                              <i class="bi bi-x-lg me-1"></i> Rejeter
+                            </button>
+  
+                            <!-- Action: Marquer Résolu -->
+                            <button *ngIf="rec.statut === 'EN_COURS'"
+                                    class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm" 
+                                    (click)="resoudre(rec.numeroReclamation)">
+                              <i class="bi bi-flag-fill me-1"></i> Résolu
+                            </button>
+  
+                            <span *ngIf="rec.statut === 'TRAITEE' || rec.statut === 'REJETEE'" class="text-muted small">
+                              Aucune action
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for Rejection -->
+<div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5);" *ngIf="selectedReclamation">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold text-danger">Rejeter la réclamation</h5>
+        <button type="button" class="btn-close" (click)="closeRejectModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body px-4 py-4">
+        <p class="text-muted mb-3">Veuillez fournir un motif obligatoire pour rejeter la réclamation 
+          <span class="fw-bold text-dark">#{{selectedReclamation.numeroReclamation}}</span>.
+        </p>
+        
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Motif du rejet</label>
+          <textarea class="form-control bg-light" rows="3" [(ngModel)]="motifRefus" placeholder="Expliquez pourquoi cette réclamation ne relève pas de votre équipe..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" (click)="closeRejectModal()">Annuler</button>
+        <button type="button" class="btn btn-danger rounded-pill px-4" 
+                [disabled]="!motifRefus || motifRefus.trim() === ''"
+                (click)="rejectReclamation()">
+          Confirmer le rejet
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

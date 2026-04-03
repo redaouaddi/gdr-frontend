@@ -13,10 +13,8 @@
             <i class="bi bi-download"></i> Exporter
           </button>
 
-          <a
-            routerLink="/admin/users/create"
-            class="btn-dxc-primary d-flex align-items-center gap-2 text-decoration-none"
-          >
+          <a routerLink="/admin/users/create"
+            class="btn-dxc-primary d-flex align-items-center gap-2 text-decoration-none">
             <i class="bi bi-plus-lg"></i> Ajouter un utilisateur
           </a>
         </div>
@@ -48,12 +46,10 @@
               <tr *ngFor="let user of users">
                 <td class="fw-semibold">{{ user.firstName || '-' }}</td>
                 <td>{{ user.lastName || '-' }}</td>
-                 <td>{{ user.email }}</td>
+                <td>{{ user.email }}</td>
                 <td>
-                  <span 
-                    class="badge rounded-pill px-3 py-2" 
-                    [ngClass]="user.deleted ? 'bg-secondary' : 'bg-success bg-opacity-10 text-success'"
-                  >
+                  <span class="badge rounded-pill px-3 py-2"
+                    [ngClass]="user.deleted ? 'bg-secondary' : 'bg-success bg-opacity-10 text-success'">
                     {{ user.deleted ? 'Supprimé' : 'Actif' }}
                   </span>
                 </td>
@@ -78,10 +74,7 @@
           </table>
         </div>
 
-        <div
-          *ngIf="(!users || users.length === 0) && !errorMessage"
-          class="alert empty-box text-center text-muted"
-        >
+        <div *ngIf="(!users || users.length === 0) && !errorMessage" class="alert empty-box text-center text-muted">
           <i class="bi bi-inbox fs-1 d-block mb-2"></i>
           Aucun utilisateur trouvé.
         </div>
@@ -142,7 +135,7 @@
 
       <div class="detail-row">
         <span class="label">Rôle(s) :</span>
-        <span>{{ formatRoles(selectedUser.roles) }}</span>
+        <span>{{ (selectedUser.roles && selectedUser.roles.length > 0) ? selectedUser.roles.join(', ') : '-' }}</span>
       </div>
 
       <div class="detail-row">

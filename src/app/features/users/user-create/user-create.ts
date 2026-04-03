@@ -21,6 +21,7 @@ export class UserCreateComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
   roles: Access[] = [];
+  selectedRoles: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -35,8 +36,7 @@ export class UserCreateComponent implements OnInit {
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      gender: ['', Validators.required],
-      role: ['', Validators.required]
+      gender: ['', Validators.required]
     });
     this.loadRoles();
   }
@@ -45,12 +45,25 @@ export class UserCreateComponent implements OnInit {
     this.accessService.getAll().subscribe({
       next: (data) => {
         this.roles = data.filter(r => !r.deleted);
-        if (this.roles.length > 0 && !this.userForm.value.role) {
-          this.userForm.patchValue({ role: this.roles[0].name });
+        // Default to first role if available
+        if (this.roles.length > 0) {
+          this.selectedRoles = [this.roles[0].name];
         }
       },
       error: (err) => console.error('Error loading roles', err)
     });
+  }
+
+  onRoleToggle(roleName: string): void {
+    if (this.selectedRoles.includes(roleName)) {
+      this.selectedRoles = this.selectedRoles.filter(r => r !== roleName);
+    } else {
+      this.selectedRoles.push(roleName);
+    }
+  }
+
+  isRoleSelected(roleName: string): boolean {
+    return this.selectedRoles.includes(roleName);
   }
 
   onSubmit(): void {
@@ -67,7 +80,7 @@ export class UserCreateComponent implements OnInit {
       email: formValue.email,
       password: formValue.password,
       gender: formValue.gender,
-      roles: [formValue.role]
+      roles: this.selectedRoles
     }).subscribe({
       next: () => {
         this.successMessage = 'Utilisateur créé avec succès';
@@ -78,9 +91,9 @@ export class UserCreateComponent implements OnInit {
         }, 1000);
       },
       error: (err) => {
-  console.error('ERREUR CREATE USER =', err);
-  this.errorMessage = err.error?.message || 'Erreur lors de la création de l’utilisateur';
-}
+        console.error('ERREUR CREATE USER =', err);
+        this.errorMessage = err.error?.message || 'Erreur lors de la création de l’utilisateur';
+      }
     });
   }
 }

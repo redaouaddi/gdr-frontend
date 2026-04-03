@@ -1,0 +1,52 @@
+.team-card {
+  border-color: #e2e8f0;
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.team-card:hover {
+  transform: translateY(-5px);
+  border-color: #7c3aed;
+  box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.1);
+}
+
+.team-card.active {
+  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+  border-color: transparent;
+  box-shadow: 0 10px 20px -5px rgba(124, 58, 237, 0.4);
+}
+
+.team-card .team-icon {
+  background: #f8fafc;
+  display: inline-flex;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.team-card.active .team-icon {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Custom scrollbar for the grid */
+.row.g-3::-webkit-scrollbar {
+  width: 6px;
+}
+
+.row.g-3::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.row.g-3::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.row.g-3::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

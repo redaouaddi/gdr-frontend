@@ -66,20 +66,18 @@ onSubmit(): void {
 
       this.isLoading = false;
 
-      if (response.roles?.includes('ROLE_ADMIN')) {
-        console.log('REDIRECTION ADMIN');
+      const roles = response.roles || [];
+      if (roles.includes('ROLE_ADMIN')) {
         this.router.navigateByUrl('/dashboard/admin');
-      } else if (
-        response.roles?.includes('ROLE_CLIENT') ||
-        response.roles?.includes('ROLE_USER')
-      ) {
-        console.log('REDIRECTION CLIENT');
+      } else if (roles.includes('ROLE_SERVICE_MANAGER')) {
+        this.router.navigateByUrl('/dashboard/service-manager');
+      } else if (roles.includes('ROLE_CHEF_EQUIPE') || roles.includes('ROLE_AGENT')) {
+        this.router.navigateByUrl('/service-manager/my-team');
+      } else if (roles.includes('ROLE_CLIENT') || roles.includes('ROLE_USER')) {
         this.router.navigateByUrl('/dashboard/client');
       } else {
-        console.log('REDIRECTION PAR DÉFAUT');
         this.router.navigateByUrl('/dashboard/client');
       }
-      
     },
     error: (error) => {
         console.error('Erreur login :', error);
@@ -221,17 +219,16 @@ onSubmit(): void {
 
     this.closeFaceLoginModal();
 
-    if (response.roles?.includes('ROLE_ADMIN')) {
-      console.log('REDIRECTION FACE ADMIN');
+    const roles = response.roles || [];
+    if (roles.includes('ROLE_ADMIN')) {
       await this.router.navigateByUrl('/dashboard/admin');
-    } else if (
-      response.roles?.includes('ROLE_CLIENT') ||
-      response.roles?.includes('ROLE_USER')
-    ) {
-      console.log('REDIRECTION FACE CLIENT');
+    } else if (roles.includes('ROLE_SERVICE_MANAGER')) {
+      await this.router.navigateByUrl('/dashboard/service-manager');
+    } else if (roles.includes('ROLE_CHEF_EQUIPE') || roles.includes('ROLE_AGENT')) {
+      await this.router.navigateByUrl('/service-manager/my-team');
+    } else if (roles.includes('ROLE_CLIENT') || roles.includes('ROLE_USER')) {
       await this.router.navigateByUrl('/dashboard/client');
     } else {
-      console.log('REDIRECTION FACE PAR DEFAUT');
       await this.router.navigateByUrl('/dashboard/client');
     }
 

@@ -21,6 +21,7 @@ export class UserEdit implements OnInit {
   errorMessage = '';
   successMessage = '';
   roles: Access[] = [];
+  selectedRoles: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -38,8 +39,7 @@ export class UserEdit implements OnInit {
       firstName: [{ value: '', disabled: false }, Validators.required],
       lastName: [{ value: '', disabled: false }, Validators.required],
       email: [{ value: '', disabled: false }, [Validators.required, Validators.email]],
-      gender: ['', Validators.required],
-      role: ['ROLE_AGENT', Validators.required]
+      gender: ['', Validators.required]
     });
 
     if (this.userId) {
@@ -65,11 +65,11 @@ export class UserEdit implements OnInit {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          gender: user.gender,
-          role: user.roles && user.roles.length > 0 ? user.roles[0] : 'ROLE_AGENT'
+          gender: user.gender
         });
+        this.selectedRoles = user.roles || [];
 
-        console.log('Form patched with:', this.userForm.getRawValue());
+        console.log('Form patched, selected roles:', this.selectedRoles);
         this.cdr.detectChanges();
       },
       error: () => {
@@ -77,6 +77,18 @@ export class UserEdit implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  onRoleToggle(roleName: string): void {
+    if (this.selectedRoles.includes(roleName)) {
+      this.selectedRoles = this.selectedRoles.filter(r => r !== roleName);
+    } else {
+      this.selectedRoles.push(roleName);
+    }
+  }
+
+  isRoleSelected(roleName: string): boolean {
+    return this.selectedRoles.includes(roleName);
   }
 
   onSubmit(): void {
@@ -91,7 +103,7 @@ export class UserEdit implements OnInit {
       lastName: formValue.lastName,
       email: formValue.email,
       gender: formValue.gender,
-      roles: [formValue.role]
+      roles: this.selectedRoles
     }).subscribe({
       next: () => {
         this.successMessage = 'Utilisateur mis à jour avec succès';

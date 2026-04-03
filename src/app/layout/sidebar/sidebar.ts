@@ -15,9 +15,13 @@ import { HttpClient } from '@angular/common/http';
 export class SidebarComponent implements OnInit {
   isAdmin = false;
   isClient = false;
+  isServiceManager = false;
+  isChefEquipe = false;
 
   usersMenuOpen = false;
   reclamationsMenuOpen = false;
+  teamsMenuOpen = false;
+  serviceMenuOpen = false;
 
   isRegisteringPasskey = false;
   passkeyMessage = '';
@@ -42,6 +46,8 @@ export class SidebarComponent implements OnInit {
     const user = this.authService.getUser();
     if (user && user.roles) {
       this.isAdmin = user.roles.includes('ROLE_ADMIN');
+      this.isServiceManager = user.roles.includes('ROLE_SERVICE_MANAGER');
+      this.isChefEquipe = user.roles.includes('ROLE_CHEF_EQUIPE') || user.roles.includes('ROLE_AGENT');
       this.isClient = user.roles.includes('ROLE_CLIENT') || user.roles.includes('ROLE_USER');
     }
   }
@@ -52,6 +58,14 @@ export class SidebarComponent implements OnInit {
 
   toggleReclamationsMenu() {
     this.reclamationsMenuOpen = !this.reclamationsMenuOpen;
+  }
+
+  toggleTeamsMenu() {
+    this.teamsMenuOpen = !this.teamsMenuOpen;
+  }
+
+  toggleServiceMenu() {
+    this.serviceMenuOpen = !this.serviceMenuOpen;
   }
 
   async activateFaceId() {
@@ -161,32 +175,32 @@ export class SidebarComponent implements OnInit {
   }
 
   async saveFaceToBackend() {
-  this.faceCaptureMessage = '';
-  this.faceCaptureError = '';
+    this.faceCaptureMessage = '';
+    this.faceCaptureError = '';
 
-  const user = this.authService.getUser();
-  const email = user?.email;
+    const user = this.authService.getUser();
+    const email = user?.email;
 
-  if (!email) {
-    this.faceCaptureError = 'Utilisateur non identifié.';
-    return;
+    if (!email) {
+      this.faceCaptureError = 'Utilisateur non identifié.';
+      return;
+    }
+
+    if (!this.capturedImage) {
+      this.faceCaptureError = 'Aucune image capturée.';
+      return;
+    }
+
+    try {
+      await this.http.post('http://localhost:8080/api/face/register', {
+        email: email,
+        image: this.capturedImage
+      }).toPromise();
+
+      this.faceCaptureMessage = 'Visage enregistré avec succès.';
+    } catch (error) {
+      console.error(error);
+      this.faceCaptureError = 'Erreur lors de l’enregistrement du visage.';
+    }
   }
-
-  if (!this.capturedImage) {
-    this.faceCaptureError = 'Aucune image capturée.';
-    return;
-  }
-
-  try {
-    await this.http.post('http://localhost:8080/api/face/register', {
-      email: email,
-      image: this.capturedImage
-    }).toPromise();
-
-    this.faceCaptureMessage = 'Visage enregistré avec succès.';
-  } catch (error) {
-    console.error(error);
-    this.faceCaptureError = 'Erreur lors de l’enregistrement du visage.';
-  }
-}
 }

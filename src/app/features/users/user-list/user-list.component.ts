@@ -30,87 +30,29 @@ export class UserListComponent implements OnInit {
 
   loadUsers(): void {
     console.log('Appel API getAllUsers...');
-
     this.userService.getAllUsers().subscribe({
       next: (data) => {
-        console.log('DATA RECUE =', data);
-
-        this.users = data.map(u => ({
-          ...u,
-          roles: u.roles && u.roles.length ? u.roles : ['ROLE_AGENT']
-        }));
-
+        this.users = data;
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('ERREUR API =', err);
-
-        this.users = [
-          {
-            id: 1,
-            firstName: 'Reda',
-            lastName: 'Ouaddi',
-            email: 'reda@dxc.com',
-            gender: 'MASCULIN',
-            roles: ['ROLE_AGENT'],
-            deleted: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            id: 2,
-            firstName: 'Othmane',
-            lastName: 'Ait Taleb',
-            email: 'othmane@dxc.com',
-            gender: 'MASCULIN',
-            roles: ['ROLE_SERVICE_MANAGER'],
-            deleted: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            id: 3,
-            firstName: 'Utilisateur',
-            lastName: 'Trois',
-            email: 'user3@dxc.com',
-            gender: 'FEMININ',
-            roles: ['ROLE_CLIENT'],
-            deleted: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            id: 4,
-            firstName: 'Utilisateur',
-            lastName: 'Quatre',
-            email: 'user4@dxc.com',
-            gender: 'MASCULIN',
-            roles: ['ROLE_ADMIN'],
-            deleted: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }
-        ];
-
+        // Mock fallback deleted for clarity in rollback
+        this.users = [];
         this.cdr.detectChanges();
       }
     });
   }
 
   editUser(userId: number): void {
-    console.log('Navigating to user edit view: ', userId);
     this.router.navigate(['/admin/users/edit', userId]);
   }
 
   deleteUser(userId: number): void {
     if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
       this.userService.deleteUser(userId).subscribe({
-        next: () => {
-          console.log('Utilisateur supprimé (soft delete)');
-          this.loadUsers(); // Recharger pour voir l'état mis à jour
-        },
+        next: () => this.loadUsers(),
         error: (err: any) => {
-          console.error('Erreur lors de la suppression', err);
           this.errorMessage = 'Erreur lors de la suppression de l’utilisteur';
           this.cdr.detectChanges();
         }
@@ -125,8 +67,4 @@ export class UserListComponent implements OnInit {
   closeUserDetails(): void {
     this.selectedUser = null;
   }
-
-  formatRoles(roles: string[]): string {
-    return roles && roles.length ? roles.join(', ') : 'Aucun rôle';
-  }
-}
+}

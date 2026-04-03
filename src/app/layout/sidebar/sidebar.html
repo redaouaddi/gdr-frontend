@@ -25,19 +25,29 @@
         </button>
 
         <div class="submenu" *ngIf="usersMenuOpen">
-          <a
-            routerLink="/admin/users"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            class="submenu-link"
-          >
-            Liste des utilisateurs
-          </a>
-          <a routerLink="/admin/users/create" routerLinkActive="active" class="submenu-link">
-            Créer un utilisateur
-          </a>
+          <a routerLink="/admin/users" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+            class="submenu-link">Liste des utilisateurs</a>
+          <a routerLink="/admin/users/create" routerLinkActive="active" class="submenu-link">Créer un utilisateur</a>
         </div>
       </div>
+
+      <!-- Accordion for Teams -->
+      <div class="menu-accordion" [class.open]="teamsMenuOpen">
+        <button class="menu-link menu-toggle" (click)="toggleTeamsMenu()" [attr.aria-expanded]="teamsMenuOpen">
+          <div class="menu-toggle-content">
+            <i class="bi bi-people"></i> Équipes
+          </div>
+          <i class="bi bi-chevron-down chevron"></i>
+        </button>
+        <div class="submenu" *ngIf="teamsMenuOpen">
+          <a routerLink="/admin/teams" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="submenu-link">Liste des équipes</a>
+          <a routerLink="/admin/teams/create" routerLinkActive="active" class="submenu-link">Créer une équipe</a>
+        </div>
+      </div>
+
+      <a routerLink="/admin/reclamations" routerLinkActive="active" class="menu-link">
+        <i class="bi bi-card-list"></i> Toutes les Réclamations
+      </a>
 
       <a routerLink="/admin/roles" routerLinkActive="active" class="menu-link">
         <i class="bi bi-shield-lock"></i> Rôles
@@ -45,6 +55,32 @@
 
       <a routerLink="/admin/settings" routerLinkActive="active" class="menu-link">
         <i class="bi bi-gear"></i> Paramètres
+      </a>
+    </ng-container>
+
+    <!-- SERVICE MANAGER MENU -->
+    <ng-container *ngIf="isServiceManager">
+      <h6 class="menu-heading">Manager Panel</h6>
+      
+      <div class="menu-accordion" [class.open]="serviceMenuOpen">
+        <button class="menu-link menu-toggle" (click)="toggleServiceMenu()" [attr.aria-expanded]="serviceMenuOpen">
+          <div class="menu-toggle-content">
+            <i class="bi bi-grid"></i> Tableau de bord
+          </div>
+          <i class="bi bi-chevron-down chevron"></i>
+        </button>
+        <div class="submenu" *ngIf="serviceMenuOpen">
+          <a routerLink="/dashboard/service-manager" [queryParams]="{view: 'stats'}" routerLinkActive="active" class="submenu-link">Statistiques</a>
+          <a routerLink="/dashboard/service-manager" [queryParams]="{view: 'list'}" routerLinkActive="active" class="submenu-link">Liste des réclamations</a>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- CHEF EQUIPE MENU -->
+    <ng-container *ngIf="isChefEquipe">
+      <h6 class="menu-heading">Chef d'équipe</h6>
+      <a routerLink="/service-manager/my-team" routerLinkActive="active" class="menu-link">
+        <i class="bi bi-people"></i> Mon Équipe
       </a>
     </ng-container>
 
@@ -58,7 +94,8 @@
 
       <!-- Accordion for Reclamations -->
       <div class="menu-accordion" [class.open]="reclamationsMenuOpen">
-        <button class="menu-link menu-toggle" (click)="toggleReclamationsMenu()" [attr.aria-expanded]="reclamationsMenuOpen">
+        <button class="menu-link menu-toggle" (click)="toggleReclamationsMenu()"
+          [attr.aria-expanded]="reclamationsMenuOpen">
           <div class="menu-toggle-content">
             <i class="bi bi-file-earmark-text"></i> Réclamations
           </div>
@@ -66,9 +103,8 @@
         </button>
 
         <div class="submenu" *ngIf="reclamationsMenuOpen">
-          <a routerLink="/mes-reclamations/nouvelle" routerLinkActive="active" class="submenu-link">
-            Créer une réclamation
-          </a>
+          <a routerLink="/mes-reclamations/nouvelle" routerLinkActive="active" class="submenu-link">Créer une
+            réclamation</a>
         </div>
       </div>
     </ng-container>
