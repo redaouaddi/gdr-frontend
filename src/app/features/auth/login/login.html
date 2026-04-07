@@ -63,4 +63,51 @@
 
     </form>
   </div>
+
+  <!-- MODAL FACE LOGIN -->
+  <div class="face-modal-backdrop" *ngIf="showFaceLoginModal">
+    <div class="face-modal">
+
+      <h5>{{ 'login.face_title' | translate }}</h5>
+
+      <video #faceLoginVideo autoplay playsinline class="face-video"></video>
+      <canvas #faceLoginCanvas class="face-canvas"></canvas>
+
+      <div class="face-actions">
+        <button type="button" class="face-action-btn" (click)="startFaceLoginCamera()">
+          {{ 'login.open_camera' | translate }}
+        </button>
+
+        <button type="button" class="face-action-btn" (click)="captureFaceLogin()">
+          {{ 'login.capture' | translate }}
+        </button>
+
+        <button
+          type="button"
+          class="face-action-btn"
+          (click)="loginWithFace()"
+          [disabled]="!faceLoginImage">
+          {{ 'login.validate' | translate }}
+        </button>
+
+        <button type="button" class="face-action-btn cancel" (click)="closeFaceLoginModal()">
+          {{ 'login.close' | translate }}
+        </button>
+      </div>
+
+      <div *ngIf="faceLoginImage" class="preview-block">
+        <p>{{ 'login.preview' | translate }}</p>
+        <img [src]="faceLoginImage" class="face-preview" />
+      </div>
+
+      <small *ngIf="faceLoginMessage" class="face-success">
+        {{ faceLoginMessage }}
+      </small>
+
+      <small *ngIf="faceLoginError" class="face-error">
+        {{ faceLoginError }}
+      </small>
+
+    </div>
+  </div>
 </div>

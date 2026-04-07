@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { AuthService, LoginRequest } from '../../core/services/auth.service';
+import { firstValueFrom } from 'rxjs';
+import { AuthService } from '../../../core/services/auth.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -13,83 +15,221 @@ import { AuthService, LoginRequest } from '../../core/services/auth.service';
   styleUrls: ['./login.css']
 })
 export class LoginComponent implements OnInit {
+  loginForm: FormGroup;
 
-  loginForm!: FormGroup;
-  isLoading = false;
   loginError = '';
-
+  isLoading = false;
   currentLang = 'fr';
+
+  showFaceLoginModal = false;
+  faceLoginImage: string | null = null;
+  faceLoginMessage = '';
+  faceLoginError = '';
+  faceLoginStream: MediaStream | null = null;
+
+  @ViewChild('faceLoginVideo') faceLoginVideo!: ElementRef<HTMLVideoElement>;
+  @ViewChild('faceLoginCanvas') faceLoginCanvas!: ElementRef<HTMLCanvasElement>;
 
   constructor(
     private fb: FormBuilder,
-    private translate: TranslateService,
+    private http: HttpClient,
+    private router: Router,
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private translate: TranslateService
+  ) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]]
+    });
+  }
 
   ngOnInit(): void {
-
-    this.loginForm = this.fb.group({
-      email: ['', Validators.required],
-      password: ['', Validators.required]
-    });
-
     const savedLang = localStorage.getItem('lang') || 'fr';
     this.currentLang = savedLang;
     this.translate.use(savedLang);
   }
 
-  switchLang(lang: string) {
+  switchLang(lang: string): void {
     this.currentLang = lang;
     this.translate.use(lang);
     localStorage.setItem('lang', lang);
   }
 
-  onSubmit() {
-    if (this.loginForm.invalid) {
-      this.loginError = 'Veuillez remplir tous les champs correctement';
+  onSubmit(): void {
+    this.loginError = '';
+
+    if (this.loginForm.invalid || this.isLoading) {
+      this.loginForm.markAllAsTouched();
       return;
     }
 
+    const email = this.loginForm.value.email?.trim();
+    const password = this.loginForm.value.password;
+
     this.isLoading = true;
-    this.loginError = '';
 
-    const loginData: LoginRequest = {
-      email: this.loginForm.value.email!,
-      password: this.loginForm.value.password!
-    };
-
-    this.authService.login(loginData).subscribe({
-      next: (response) => {
+    this.authService.login({
+      email,
+      password
+    }).subscribe({
+      next: (response: any) => {
         this.authService.saveToken(response.token);
         this.authService.saveUser(response);
-        
-        // Redirection selon le rôle
-        if (response.roles.includes('ROLE_ADMIN')) {
-          this.router.navigate(['/dashboard/admin']);
-        } else if (response.roles.includes('ROLE_CLIENT')) {
-          this.router.navigate(['/dashboard/client']);
-        } else if (response.roles.includes('ROLE_SERVICE_MANAGER')) {
-          this.router.navigate(['/dashboard/service-manager']);
+
+        this.isLoading = false;
+
+        const roles = response.roles || [];
+        if (roles.includes('ROLE_ADMIN')) {
+          this.router.navigateByUrl('/dashboard/admin');
+        } else if (roles.includes('ROLE_SERVICE_MANAGER')) {
+          this.router.navigateByUrl('/dashboard/service-manager');
+        } else if (roles.includes('ROLE_CHEF_EQUIPE') || roles.includes('ROLE_AGENT')) {
+          this.router.navigateByUrl('/service-manager/my-team');
+        } else if (roles.includes('ROLE_CLIENT') || roles.includes('ROLE_USER')) {
+          this.router.navigateByUrl('/dashboard/client');
         } else {
-          this.router.navigate(['/dashboard/client']);
+          this.router.navigateByUrl('/dashboard/client');
         }
       },
-      error: (error) => {
-        this.isLoading = false;
-        this.loginError = error.error?.message || 'Erreur de connexion. Veuillez vérifier vos identifiants.';
-      },
-      complete: () => {
+      error: (error: any) => {
+        console.error('Erreur login :', error);
+
+        if (error.status === 401) {
+          this.loginError = this.translate.instant('login.errors.invalid_credentials');
+        } else {
+          this.loginError = this.translate.instant('login.errors.generic');
+        }
+
         this.isLoading = false;
       }
     });
   }
 
-  openFaceLoginModal() {
-    // TODO: Implémenter la connexion par reconnaissance faciale
-    console.log('Face login modal - à implémenter');
-    // Pour l'instant, on peut afficher un message ou rediriger vers une page de configuration
-    this.loginError = 'La connexion par reconnaissance faciale sera bientôt disponible.';
+  openFaceLoginModal(): void {
+    this.faceLoginMessage = '';
+    this.faceLoginError = '';
+    this.faceLoginImage = null;
+    this.showFaceLoginModal = true;
   }
 
+  closeFaceLoginModal(): void {
+    this.showFaceLoginModal = false;
+    this.stopFaceLoginCamera();
+    this.faceLoginImage = null;
+  }
+
+  async startFaceLoginCamera(): Promise<void> {
+    this.faceLoginError = '';
+    this.faceLoginMessage = '';
+
+    try {
+      this.faceLoginStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false
+      });
+
+      if (this.faceLoginVideo?.nativeElement) {
+        this.faceLoginVideo.nativeElement.srcObject = this.faceLoginStream;
+      }
+    } catch (error: any) {
+      console.error(error);
+      this.faceLoginError = this.translate.instant('login.face_errors.camera_access');
+    }
+  }
+
+  captureFaceLogin(): void {
+    this.faceLoginError = '';
+    this.faceLoginMessage = '';
+
+    const video = this.faceLoginVideo?.nativeElement;
+    const canvas = this.faceLoginCanvas?.nativeElement;
+
+    if (!video || !canvas) {
+      this.faceLoginError = this.translate.instant('login.face_errors.video_canvas_missing');
+      return;
+    }
+
+    if (!this.faceLoginStream) {
+      this.faceLoginError = this.translate.instant('login.face_errors.open_camera_first');
+      return;
+    }
+
+    const width = video.videoWidth;
+    const height = video.videoHeight;
+
+    if (!width || !height) {
+      this.faceLoginError = this.translate.instant('login.face_errors.video_not_ready');
+      return;
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const context = canvas.getContext('2d');
+    if (!context) {
+      this.faceLoginError = this.translate.instant('login.face_errors.capture_failed');
+      return;
+    }
+
+    context.drawImage(video, 0, 0, width, height);
+    this.faceLoginImage = canvas.toDataURL('image/png');
+    this.faceLoginMessage = this.translate.instant('login.face_messages.photo_captured');
+  }
+
+  stopFaceLoginCamera(): void {
+    if (this.faceLoginStream) {
+      this.faceLoginStream.getTracks().forEach(track => track.stop());
+      this.faceLoginStream = null;
+    }
+  }
+
+  async loginWithFace(): Promise<void> {
+    this.faceLoginError = '';
+    this.faceLoginMessage = '';
+
+    const email = this.loginForm.get('email')?.value?.trim();
+
+    if (!email) {
+      this.faceLoginError = this.translate.instant('login.face_errors.email_required');
+      return;
+    }
+
+    if (!this.faceLoginImage) {
+      this.faceLoginError = this.translate.instant('login.face_errors.image_required');
+      return;
+    }
+
+    try {
+      const response: any = await firstValueFrom(
+        this.http.post('http://localhost:8080/api/face/login', {
+          email,
+          image: this.faceLoginImage
+        })
+      );
+
+      this.authService.saveToken(response.token);
+      this.authService.saveUser(response);
+
+      this.faceLoginMessage = this.translate.instant('login.face_messages.login_success');
+      this.closeFaceLoginModal();
+
+      const roles = response.roles || [];
+      if (roles.includes('ROLE_ADMIN')) {
+        await this.router.navigateByUrl('/dashboard/admin');
+      } else if (roles.includes('ROLE_SERVICE_MANAGER')) {
+        await this.router.navigateByUrl('/dashboard/service-manager');
+      } else if (roles.includes('ROLE_CHEF_EQUIPE') || roles.includes('ROLE_AGENT')) {
+        await this.router.navigateByUrl('/service-manager/my-team');
+      } else if (roles.includes('ROLE_CLIENT') || roles.includes('ROLE_USER')) {
+        await this.router.navigateByUrl('/dashboard/client');
+      } else {
+        await this.router.navigateByUrl('/dashboard/client');
+      }
+    } catch (error: any) {
+      console.error('ERREUR LOGIN FACE :', error);
+      this.faceLoginError =
+        error?.error?.message ||
+        this.translate.instant('login.face_errors.login_failed');
+    }
+  }
 }
