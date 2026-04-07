@@ -4,10 +4,12 @@ import { UserService, UserResponse } from '../../../core/services/user.service';
 import { NavbarComponent } from '../../../layout/navbar/navbar';
 import { RouterLink, Router } from '@angular/router';
 import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, RouterLink, SidebarComponent],
+  imports: [CommonModule, NavbarComponent, RouterLink, SidebarComponent, TranslateModule],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css']
 })
@@ -20,16 +22,15 @@ export class UserListComponent implements OnInit {
   constructor(
     private userService: UserService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
-    console.log('ngOnInit user-list');
     this.loadUsers();
   }
 
   loadUsers(): void {
-    console.log('Appel API getAllUsers...');
     this.userService.getAllUsers().subscribe({
       next: (data) => {
         this.users = data;
@@ -37,8 +38,8 @@ export class UserListComponent implements OnInit {
       },
       error: (err) => {
         console.error('ERREUR API =', err);
-        // Mock fallback deleted for clarity in rollback
         this.users = [];
+        this.errorMessage = this.translate.instant('user_list.errors.load_failed');
         this.cdr.detectChanges();
       }
     });
@@ -49,11 +50,11 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(userId: number): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+    if (confirm(this.translate.instant('user_list.confirm_delete'))) {
       this.userService.deleteUser(userId).subscribe({
         next: () => this.loadUsers(),
-        error: (err: any) => {
-          this.errorMessage = 'Erreur lors de la suppression de l’utilisteur';
+        error: () => {
+          this.errorMessage = this.translate.instant('user_list.errors.delete_failed');
           this.cdr.detectChanges();
         }
       });
@@ -67,4 +68,15 @@ export class UserListComponent implements OnInit {
   closeUserDetails(): void {
     this.selectedUser = null;
   }
-}
+
+  translateUserStatus(deleted?: boolean): string {
+    return deleted
+      ? this.translate.instant('user_list.status.deleted')
+      : this.translate.instant('user_list.status.active');
+  }
+
+  translateGender(gender?: string): string {
+    if (!gender) return '-';
+    return this.translate.instant('user_list.gender.' + gender);
+  }
+}

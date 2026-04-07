@@ -9,49 +9,48 @@
       <div class="team-form-card card border-0 shadow-sm mx-auto" style="max-width: 600px; border-radius: 1rem;">
         <div class="card-body p-4 p-md-5">
           <div class="form-header mb-4">
-            <h2 class="form-title mb-1 fw-bold" style="color: #4a2769;">Modifier l'Équipe</h2>
+            <h2 class="form-title mb-1 fw-bold" style="color: #4a2769;">{{ 'team_edit.title' | translate }}</h2>
             <p class="form-subtitle mb-0 text-muted">
-              Mettez à jour le nom du service ou affectez un nouveau chef d'équipe (Service Manager).
+              {{ 'team_edit.subtitle' | translate }}
             </p>
           </div>
 
-          <!-- Loading State -->
           <div *ngIf="isFetching" class="text-center py-5">
             <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Chargement...</span>
+              <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
             </div>
           </div>
 
           <form *ngIf="!isFetching && !errorMessage" [formGroup]="teamForm" (ngSubmit)="onSubmit()">
             <div class="row g-4">
               <div class="col-12">
-                <label class="form-label fw-semibold">Nom de l'équipe (Service)</label>
+                <label class="form-label fw-semibold">{{ 'team_edit.team_name' | translate }}</label>
                 <input
                   type="text"
                   class="form-control custom-input"
                   formControlName="nom"
-                  placeholder="Ex: Support IT Niveau 2"
+                  [placeholder]="'team_edit.team_name_placeholder' | translate"
                   style="padding: 12px; border-radius: 8px;"
                 >
                 <div *ngIf="teamForm.get('nom')?.invalid && teamForm.get('nom')?.touched" class="text-danger mt-1" style="font-size: 0.85rem;">
-                  Le nom de l'équipe est requis.
+                  {{ 'team_edit.team_name_required' | translate }}
                 </div>
               </div>
 
               <div class="col-12">
-                <label class="form-label fw-semibold">E-mail du Chef d'équipe</label>
+                <label class="form-label fw-semibold">{{ 'team_edit.team_leader_email' | translate }}</label>
                 <select
                   class="form-select custom-input"
                   formControlName="chefEmail"
                   style="padding: 12px; border-radius: 8px;"
                 >
-                  <option value="" disabled selected>Sélectionnez un chef d'équipe...</option>
+                  <option value="" disabled selected>{{ 'team_edit.select_team_leader' | translate }}</option>
                   <option *ngFor="let user of users" [value]="user.email">
                     {{ user.firstName }} {{ user.lastName }} ({{ user.email }})
                   </option>
                 </select>
                 <div *ngIf="teamForm.get('chefEmail')?.invalid && teamForm.get('chefEmail')?.touched" class="text-danger mt-1" style="font-size: 0.85rem;">
-                  Un e-mail valide est requis.
+                  {{ 'team_edit.valid_email_required' | translate }}
                 </div>
               </div>
             </div>
@@ -61,9 +60,14 @@
             </div>
 
             <div class="form-actions d-flex gap-3 mt-5 pt-3 border-top">
-              <button type="submit" class="btn btn-primary px-5 py-2 fw-bold" style="background: #7c3aed; border: none; border-radius: 8px;" [disabled]="teamForm.invalid || isLoading">
+              <button
+                type="submit"
+                class="btn btn-primary px-5 py-2 fw-bold"
+                style="background: #7c3aed; border: none; border-radius: 8px;"
+                [disabled]="teamForm.invalid || isLoading"
+              >
                 <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                Enregistrer
+                {{ 'team_edit.save' | translate }}
               </button>
 
               <button
@@ -72,16 +76,17 @@
                 style="border-radius: 8px;"
                 routerLink="/admin/teams"
               >
-                Annuler
+                {{ 'common.cancel' | translate }}
               </button>
             </div>
           </form>
-          
-          <!-- Static Error Form Level -->
+
           <div *ngIf="errorMessage && !successMessage" class="alert alert-danger mt-4 mb-0 rounded-3">
              <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
              <div class="mt-3" *ngIf="isFetching === false">
-               <button class="btn btn-sm btn-outline-danger" routerLink="/admin/teams">Retour à la liste</button>
+               <button class="btn btn-sm btn-outline-danger" routerLink="/admin/teams">
+                 {{ 'team_edit.back_to_list' | translate }}
+               </button>
              </div>
           </div>
         </div>

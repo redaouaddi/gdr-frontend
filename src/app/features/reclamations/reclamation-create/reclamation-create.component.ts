@@ -6,11 +6,12 @@ import { ClientNavbarComponent } from '../../../layout/client-navbar/client-navb
 import { SidebarComponent } from '../../../layout/sidebar/sidebar';
 import { ReclamationService } from '../../../core/services/reclamation.service';
 import { CreateReclamationRequest } from '../../../core/models/reclamation.model';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reclamation-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, ClientNavbarComponent, SidebarComponent],
+  imports: [CommonModule, FormsModule, ClientNavbarComponent, SidebarComponent, TranslateModule],
   templateUrl: './reclamation-create.component.html',
   styleUrls: ['./reclamation-create.component.css']
 })
@@ -34,7 +35,8 @@ export class ReclamationCreateComponent {
 
   constructor(
     private reclamationService: ReclamationService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   onFileSelected(event: Event): void {
@@ -49,17 +51,17 @@ export class ReclamationCreateComponent {
     this.successMessage = '';
 
     if (!this.reclamation.titre.trim()) {
-      this.errorMessage = 'Le titre est obligatoire.';
+      this.errorMessage = this.translate.instant('reclamation_create.errors.title_required');
       return;
     }
 
     if (!this.reclamation.description.trim()) {
-      this.errorMessage = 'La description est obligatoire.';
+      this.errorMessage = this.translate.instant('reclamation_create.errors.description_required');
       return;
     }
 
     if (this.reclamation.categorie === 'MAINTENANCE' && !this.reclamation.typeMaintenance) {
-      this.errorMessage = 'Veuillez sélectionner le type de maintenance.';
+      this.errorMessage = this.translate.instant('reclamation_create.errors.maintenance_type_required');
       return;
     }
 
@@ -68,7 +70,7 @@ export class ReclamationCreateComponent {
       this.reclamation.typeMaintenance === 'INCIDENT' &&
       !this.reclamation.sousCategorieIncident
     ) {
-      this.errorMessage = 'Veuillez sélectionner le domaine de l’incident.';
+      this.errorMessage = this.translate.instant('reclamation_create.errors.incident_domain_required');
       return;
     }
 
@@ -78,7 +80,7 @@ export class ReclamationCreateComponent {
       this.reclamation.sousCategorieIncident === 'AUTRE' &&
       !this.reclamation.detailsAutreIncident?.trim()
     ) {
-      this.errorMessage = 'Veuillez préciser le détail de l’incident.';
+      this.errorMessage = this.translate.instant('reclamation_create.errors.incident_detail_required');
       return;
     }
 
@@ -87,7 +89,7 @@ export class ReclamationCreateComponent {
     this.reclamationService.createReclamation(this.reclamation, this.selectedFile || undefined).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.successMessage = 'Réclamation créée avec succès.';
+        this.successMessage = this.translate.instant('reclamation_create.success_message');
         this.showSuccess = true;
         this.startCountdown();
       },
@@ -95,13 +97,30 @@ export class ReclamationCreateComponent {
         console.error(error);
         this.isSubmitting = false;
         this.errorMessage =
-          error?.error?.message || 'Une erreur est survenue lors de la création de la réclamation.';
+          error?.error?.message ||
+          this.translate.instant('reclamation_create.errors.create_failed');
       }
     });
   }
 
   cancel(): void {
     this.router.navigate(['/mes-reclamations']);
+  }
+
+  translateCategory(category: string): string {
+    return this.translate.instant('reclamation_create.categories.' + category);
+  }
+
+  translatePriority(priority: string): string {
+    return this.translate.instant('reclamation_create.priorities.' + priority);
+  }
+
+  translateMaintenanceType(type: string): string {
+    return this.translate.instant('reclamation_create.maintenance_types.' + type);
+  }
+
+  translateIncidentCategory(category: string): string {
+    return this.translate.instant('reclamation_create.incident_categories.' + category);
   }
 
   private startCountdown(): void {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EquipeService } from '../../../core/services/equipe.service';
 import { Equipe } from '../../../core/models/equipe.model';
@@ -8,12 +8,12 @@ import { Reclamation } from '../../../core/models/reclamation.model';
 import { NavbarComponent } from '../../../layout/navbar/navbar';
 import { SidebarComponent } from '../../../layout/sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
-import { ChangeDetectorRef } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-my-team',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, SidebarComponent, FormsModule],
+  imports: [CommonModule, NavbarComponent, SidebarComponent, FormsModule, TranslateModule],
   templateUrl: './my-team.component.html'
 })
 export class MyTeamComponent implements OnInit {
@@ -24,14 +24,14 @@ export class MyTeamComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
 
-  // For rejection modal
   selectedReclamation: Reclamation | null = null;
   motifRefus = '';
 
   constructor(
     private equipeService: EquipeService,
     private reclamationService: ReclamationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -41,11 +41,10 @@ export class MyTeamComponent implements OnInit {
   loadTeam(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     this.equipeService.getMaGestion().subscribe({
       next: (team) => {
         this.isLoading = false;
-        console.log('Equipe chargée:', team);
         this.myTeam = team;
         if (this.myTeam && this.myTeam.id) {
           this.loadFreeAgents();
@@ -56,7 +55,7 @@ export class MyTeamComponent implements OnInit {
         this.isLoading = false;
         console.error('Erreur chargement équipe:', err);
         if (err.status !== 404) {
-          this.errorMessage = 'Impossible de charger les données de votre équipe.';
+          this.errorMessage = this.translate.instant('my_team.errors.load_team');
         }
       }
     });
@@ -79,22 +78,20 @@ export class MyTeamComponent implements OnInit {
 
     this.equipeService.recruterAgent(agentId).subscribe({
       next: (updatedTeam) => {
-        // Instant update: remove from free agents
         this.freeAgents = this.freeAgents.filter(a => a.id !== agentId);
-        
         this.myTeam = updatedTeam;
-        this.successMessage = 'Agent recruté avec succès !';
+        this.successMessage = this.translate.instant('my_team.messages.agent_recruited');
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Erreur recrutement', err);
-        this.errorMessage = err.error?.message || "Échec du recrutement de l'agent.";
+        this.errorMessage = err.error?.message || this.translate.instant('my_team.errors.recruit_agent');
       }
     });
   }
 
   retirer(agentId: number): void {
-    if (!confirm('Etes-vous sûr de vouloir retirer cet agent de votre équipe ?')) return;
+    if (!confirm(this.translate.instant('my_team.confirm_remove_agent'))) return;
 
     this.successMessage = '';
     this.errorMessage = '';
@@ -103,14 +100,13 @@ export class MyTeamComponent implements OnInit {
 
     this.equipeService.retirerAgent(agentId).subscribe({
       next: (updatedTeam) => {
-        // Instant update: add to free agents
         if (agentToRemove) {
           const newFreeAgent = {
             id: agentToRemove.id,
             firstName: agentToRemove.prenom,
             lastName: agentToRemove.nom,
             email: agentToRemove.email,
-            gender: '', 
+            gender: '',
             roles: [],
             deleted: false,
             createdAt: '',
@@ -118,23 +114,21 @@ export class MyTeamComponent implements OnInit {
           };
           this.freeAgents = [...this.freeAgents, newFreeAgent];
         }
-        
+
         this.myTeam = updatedTeam;
-        this.successMessage = 'Agent retiré de l\'équipe avec succès.';
+        this.successMessage = this.translate.instant('my_team.messages.agent_removed');
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Erreur retrait agent', err);
-        this.errorMessage = err.error?.message || "Impossible de retirer l'agent.";
+        this.errorMessage = err.error?.message || this.translate.instant('my_team.errors.remove_agent');
       }
     });
   }
 
   loadReclamations(teamId: number): void {
-    console.log('Chargement des réclamations pour équipe:', teamId);
     this.reclamationService.getReclamationsParEquipe(teamId).subscribe({
       next: (data) => {
-        console.log('Réclamations chargées:', data.length);
         this.reclamations = data;
       },
       error: (err) => console.error('Erreur chargement réclamations:', err)
@@ -154,12 +148,14 @@ export class MyTeamComponent implements OnInit {
   accepter(numeroReclamation: string): void {
     this.reclamationService.accepterReclamation(numeroReclamation).subscribe({
       next: () => {
-        this.successMessage = `Réclamation ${numeroReclamation} acceptée.`;
+        this.successMessage = this.translate.instant('my_team.messages.claim_accepted', {
+          numero: numeroReclamation
+        });
         if (this.myTeam && this.myTeam.id) this.loadReclamations(this.myTeam.id);
       },
       error: (err) => {
         console.error('Erreur acceptation', err);
-        this.errorMessage = "Impossible d'accepter la réclamation.";
+        this.errorMessage = this.translate.instant('my_team.errors.accept_claim');
       }
     });
   }
@@ -167,12 +163,14 @@ export class MyTeamComponent implements OnInit {
   resoudre(numeroReclamation: string): void {
     this.reclamationService.marquerResolue(numeroReclamation).subscribe({
       next: () => {
-        this.successMessage = `Réclamation ${numeroReclamation} marquée comme résolue.`;
+        this.successMessage = this.translate.instant('my_team.messages.claim_resolved', {
+          numero: numeroReclamation
+        });
         if (this.myTeam && this.myTeam.id) this.loadReclamations(this.myTeam.id);
       },
       error: (err) => {
         console.error('Erreur résolution', err);
-        this.errorMessage = "Impossible de clore la réclamation.";
+        this.errorMessage = this.translate.instant('my_team.errors.resolve_claim');
       }
     });
   }
@@ -180,9 +178,14 @@ export class MyTeamComponent implements OnInit {
   rejectReclamation(): void {
     if (!this.selectedReclamation || !this.motifRefus.trim()) return;
 
-    this.reclamationService.rejeterReclamation(this.selectedReclamation.numeroReclamation, this.motifRefus).subscribe({
+    this.reclamationService.rejeterReclamation(
+      this.selectedReclamation.numeroReclamation,
+      this.motifRefus
+    ).subscribe({
       next: () => {
-        this.successMessage = `Réclamation ${this.selectedReclamation?.numeroReclamation} rejetée.`;
+        this.successMessage = this.translate.instant('my_team.messages.claim_rejected', {
+          numero: this.selectedReclamation?.numeroReclamation
+        });
         this.closeRejectModal();
         if (this.myTeam?.id) {
           this.loadReclamations(this.myTeam.id);
@@ -190,8 +193,23 @@ export class MyTeamComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur rejet réclamation', err);
-        this.errorMessage = 'Erreur lors du rejet de la réclamation.';
+        this.errorMessage = this.translate.instant('my_team.errors.reject_claim');
       }
     });
+  }
+
+  translateStatus(statut: string | undefined): string {
+    if (!statut) return '';
+    return this.translate.instant('status.' + statut);
+  }
+
+  translatePriority(priorite: string | undefined): string {
+    if (!priorite) return '';
+    return this.translate.instant('priority.' + priorite);
+  }
+
+  translateCategory(categorie: string | undefined): string {
+    if (!categorie) return '';
+    return this.translate.instant('categories.' + categorie);
   }
 }

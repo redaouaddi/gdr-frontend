@@ -8,65 +8,65 @@
       <div class="user-form-card card border-0 shadow-sm">
         <div class="card-body p-4 p-md-5">
           <div class="form-header mb-4">
-            <h2 class="form-title mb-1">Ajouter un utilisateur</h2>
+            <h2 class="form-title mb-1">{{ 'user_create.title' | translate }}</h2>
             <p class="form-subtitle mb-0">
-              Créez un nouveau compte utilisateur et renseignez ses informations.
+              {{ 'user_create.subtitle' | translate }}
             </p>
           </div>
 
           <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
             <div class="row g-4">
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Prénom</label>
+                <label class="form-label fw-semibold">{{ 'user_create.first_name' | translate }}</label>
                 <input
                   type="text"
                   class="form-control custom-input"
                   formControlName="firstName"
-                  placeholder="Entrez le prénom"
+                  [placeholder]="'user_create.first_name_placeholder' | translate"
                 >
               </div>
 
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Nom</label>
+                <label class="form-label fw-semibold">{{ 'user_create.last_name' | translate }}</label>
                 <input
                   type="text"
                   class="form-control custom-input"
                   formControlName="lastName"
-                  placeholder="Entrez le nom"
+                  [placeholder]="'user_create.last_name_placeholder' | translate"
                 >
               </div>
 
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Email</label>
+                <label class="form-label fw-semibold">{{ 'user_create.email' | translate }}</label>
                 <input
                   type="email"
                   class="form-control custom-input"
                   formControlName="email"
-                  placeholder="Entrez l’adresse email DXC"
+                  [placeholder]="'user_create.email_placeholder' | translate"
                 >
               </div>
 
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Mot de passe</label>
+                <label class="form-label fw-semibold">{{ 'user_create.password' | translate }}</label>
                 <input
                   type="password"
                   class="form-control custom-input"
                   formControlName="password"
-                  placeholder="Entrez le mot de passe"
+                  [placeholder]="'user_create.password_placeholder' | translate"
                 >
               </div>
 
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Genre</label>
+                <label class="form-label fw-semibold">{{ 'user_create.gender' | translate }}</label>
                 <select class="form-select custom-input" formControlName="gender">
-                  <option value="" disabled>Choisir un genre</option>
-                  <option value="MASCULIN">MASCULIN</option>
-                  <option value="FEMININ">FEMININ</option>
+                  <option value="" disabled>{{ 'user_create.select_gender' | translate }}</option>
+                  <option value="MASCULIN">{{ 'user_create.gender_options.MASCULIN' | translate }}</option>
+                  <option value="FEMININ">{{ 'user_create.gender_options.FEMININ' | translate }}</option>
                 </select>
               </div>
 
               <div class="col-md-12">
-                <label class="form-label fw-semibold">Rôles</label>
+                <label class="form-label fw-semibold">{{ 'user_create.roles' | translate }}</label>
                 <div class="roles-checkbox-group d-flex flex-wrap gap-3 p-3 border rounded-3 bg-white">
                   <div *ngFor="let role of roles" class="form-check">
                     <input
@@ -94,7 +94,7 @@
 
             <div class="form-actions d-flex gap-3 mt-4">
               <button type="submit" class="btn btn-create px-4">
-                Créer
+                {{ 'user_create.create' | translate }}
               </button>
 
               <button
@@ -102,7 +102,7 @@
                 class="btn btn-cancel px-4"
                 routerLink="/admin/users"
               >
-                Annuler
+                {{ 'common.cancel' | translate }}
               </button>
             </div>
           </form>

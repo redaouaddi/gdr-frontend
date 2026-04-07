@@ -1,242 +1,48 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
-import { AuthService } from '../../../core/services/auth.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
-export class LoginComponent {
-  loginForm: FormGroup;
+export class LoginComponent implements OnInit {
 
-  loginError = '';
+  loginForm!: FormGroup;
   isLoading = false;
+  loginError = '';
 
-  showFaceLoginModal = false;
-  faceLoginImage: string | null = null;
-  faceLoginMessage = '';
-  faceLoginError = '';
-  faceLoginStream: MediaStream | null = null;
-
-  @ViewChild('faceLoginVideo') faceLoginVideo!: ElementRef<HTMLVideoElement>;
-  @ViewChild('faceLoginCanvas') faceLoginCanvas!: ElementRef<HTMLCanvasElement>;
+  currentLang = 'fr';
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
-    private router: Router,
-    private authService: AuthService
-  ) {
+    private translate: TranslateService
+  ) {}
+
+  ngOnInit(): void {
+
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
+      email: ['', Validators.required],
+      password: ['', Validators.required]
     });
+
+    const savedLang = localStorage.getItem('lang') || 'fr';
+    this.currentLang = savedLang;
+    this.translate.use(savedLang);
   }
 
-onSubmit(): void {
-  this.loginError = '';
-
-  if (this.loginForm.invalid || this.isLoading) {
-    this.loginForm.markAllAsTouched();
-    return;
+  switchLang(lang: string) {
+    this.currentLang = lang;
+    this.translate.use(lang);
+    localStorage.setItem('lang', lang);
   }
 
-  const email = this.loginForm.value.email?.trim();
-  const password = this.loginForm.value.password;
+  onSubmit() {}
 
-  this.isLoading = true;
+  openFaceLoginModal() {}
 
-  this.authService.login({
-    email: email,
-    password: password
-  }).subscribe({
-    next: (response: any) => {
-      console.log('Réponse login :', response);
-      console.log('Roles :', response.roles);
-
-      this.authService.saveToken(response.token);
-      this.authService.saveUser(response);
-
-      this.isLoading = false;
-
-      const roles = response.roles || [];
-      if (roles.includes('ROLE_ADMIN')) {
-        this.router.navigateByUrl('/dashboard/admin');
-      } else if (roles.includes('ROLE_SERVICE_MANAGER')) {
-        this.router.navigateByUrl('/dashboard/service-manager');
-      } else if (roles.includes('ROLE_CHEF_EQUIPE') || roles.includes('ROLE_AGENT')) {
-        this.router.navigateByUrl('/service-manager/my-team');
-      } else if (roles.includes('ROLE_CLIENT') || roles.includes('ROLE_USER')) {
-        this.router.navigateByUrl('/dashboard/client');
-      } else {
-        this.router.navigateByUrl('/dashboard/client');
-      }
-    },
-    error: (error) => {
-        console.error('Erreur login :', error);
-
-        if (error.status === 401) {
-          this.loginError = '❌ Email ou mot de passe incorrect';
-        } else {
-          this.loginError = '⚠️ Une erreur est survenue. Réessayez.';
-        }
-
-        this.isLoading = false;
-      }
-      
-  });
-  
-}
-
-  openFaceLoginModal(): void {
-    this.faceLoginMessage = '';
-    this.faceLoginError = '';
-    this.faceLoginImage = null;
-    this.showFaceLoginModal = true;
-  }
-
-  closeFaceLoginModal(): void {
-    this.showFaceLoginModal = false;
-    this.stopFaceLoginCamera();
-    this.faceLoginImage = null;
-  }
-
-  async startFaceLoginCamera(): Promise<void> {
-    this.faceLoginError = '';
-    this.faceLoginMessage = '';
-
-    try {
-      this.faceLoginStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: false
-      });
-
-      if (this.faceLoginVideo?.nativeElement) {
-        this.faceLoginVideo.nativeElement.srcObject = this.faceLoginStream;
-      }
-    } catch (error:any) {
-      console.error(error);
-      this.faceLoginError = 'Impossible d’accéder à la caméra.';
-        console.error('ERREUR LOGIN FACE :', error);
-
-        if (error.status === 401) {
-          this.faceLoginError = '❌ Visage non reconnu';
-        } else if (error.status === 400) {
-          this.faceLoginError = '⚠️ Aucune image valide';
-        } else {
-          this.faceLoginError = '⚠️ Erreur système. Réessayez.';
-        }
-    }
-  }
-
-  captureFaceLogin(): void {
-    this.faceLoginError = '';
-    this.faceLoginMessage = '';
-
-    const video = this.faceLoginVideo?.nativeElement;
-    const canvas = this.faceLoginCanvas?.nativeElement;
-
-    if (!video || !canvas) {
-      this.faceLoginError = 'Éléments vidéo/canvas introuvables.';
-      return;
-    }
-
-    if (!this.faceLoginStream) {
-      this.faceLoginError = 'Veuillez ouvrir la caméra d’abord.';
-      return;
-    }
-
-    const width = video.videoWidth;
-    const height = video.videoHeight;
-
-    if (!width || !height) {
-      this.faceLoginError = 'Vidéo non prête. Réessayez dans 1 seconde.';
-      return;
-    }
-
-    canvas.width = width;
-    canvas.height = height;
-
-    const context = canvas.getContext('2d');
-    if (!context) {
-      this.faceLoginError = 'Impossible de capturer l’image.';
-      return;
-    }
-
-    context.drawImage(video, 0, 0, width, height);
-    this.faceLoginImage = canvas.toDataURL('image/png');
-    this.faceLoginMessage = 'Photo capturée avec succès.';
-  }
-
-  stopFaceLoginCamera(): void {
-    if (this.faceLoginStream) {
-      this.faceLoginStream.getTracks().forEach(track => track.stop());
-      this.faceLoginStream = null;
-    }
-  }
-
-  async loginWithFace(): Promise<void> {
-  this.faceLoginError = '';
-  this.faceLoginMessage = '';
-
-  const email = this.loginForm.get('email')?.value?.trim();
-
-  console.log('LOGIN FACE CLICK');
-  console.log('EMAIL :', email);
-  console.log('IMAGE ?', !!this.faceLoginImage);
-
-  if (!email) {
-    this.faceLoginError = 'Veuillez saisir votre email.';
-    return;
-  }
-
-  if (!this.faceLoginImage) {
-    this.faceLoginError = 'Veuillez capturer une image.';
-    return;
-  }
-
-  try {
-    const response: any = await firstValueFrom(
-      this.http.post('http://localhost:8080/api/face/login', {
-        email: email,
-        image: this.faceLoginImage
-      })
-    );
-
-    console.log('REPONSE LOGIN FACE :', response);
-
-    this.authService.saveToken(response.token);
-    this.authService.saveUser(response);
-
-    this.faceLoginMessage = 'Connexion par visage réussie.';
-
-    this.closeFaceLoginModal();
-
-    const roles = response.roles || [];
-    if (roles.includes('ROLE_ADMIN')) {
-      await this.router.navigateByUrl('/dashboard/admin');
-    } else if (roles.includes('ROLE_SERVICE_MANAGER')) {
-      await this.router.navigateByUrl('/dashboard/service-manager');
-    } else if (roles.includes('ROLE_CHEF_EQUIPE') || roles.includes('ROLE_AGENT')) {
-      await this.router.navigateByUrl('/service-manager/my-team');
-    } else if (roles.includes('ROLE_CLIENT') || roles.includes('ROLE_USER')) {
-      await this.router.navigateByUrl('/dashboard/client');
-    } else {
-      await this.router.navigateByUrl('/dashboard/client');
-    }
-
-  } catch (error: any) {
-    console.error('ERREUR LOGIN FACE :', error);
-    this.faceLoginError =
-      error?.error?.message ||
-      'Visage non reconnu ou erreur lors de la connexion.';
-  }
-}
 }

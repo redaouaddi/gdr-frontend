@@ -5,30 +5,26 @@
 
   <div class="user-profile">
 
-  <div class="notification-icon" title="Notifications">
-    <i class="fa fa-bell"></i>
-    <span class="badge"></span>
-  </div>
-
-  <div class="avatar">
-    <i class="fa fa-user"></i>
-  </div>
-
-  <div class="user-menu">
-    <div class="user-info">
-      <span class="greeting">
-        Bonjour {{ user?.username || user?.email || 'Utilisateur' }}
-      </span>
+    <div class="notification-icon" [title]="'navbar.notifications' | translate">
+      <i class="fa fa-bell"></i>
+      <span class="badge"></span>
     </div>
 
-    <div class="logout-btn" (click)="logout()" title="Déconnexion">
-      <i class="bi bi-box-arrow-right"></i>
+    <div class="avatar">
+      <i class="fa fa-user"></i>
     </div>
+
+    <div class="user-menu">
+      <div class="user-info">
+        <span class="greeting">
+          {{ 'navbar.hello' | translate }} {{ user?.username || user?.email || ('navbar.user' | translate) }}
+        </span>
+      </div>
+
+      <div class="logout-btn" (click)="logout()" [title]="'navbar.logout' | translate">
+        <i class="bi bi-box-arrow-right"></i>
+      </div>
+    </div>
+
   </div>
-
-</div>
-
-
-
- 
 </header>

@@ -5,11 +5,12 @@ import { NavbarComponent } from '../navbar/navbar';
 import { SidebarComponent } from '../sidebar/sidebar';
 import { UserService } from '../../core/services/user.service';
 import { ReclamationService } from '../../core/services/reclamation.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard-admin',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, SidebarComponent],
+  imports: [CommonModule, NavbarComponent, SidebarComponent, TranslateModule],
   templateUrl: './dashboard-admin.html',
   styleUrls: ['./dashboard-admin.css']
 })
@@ -23,7 +24,8 @@ export class DashboardAdminComponent implements OnInit, AfterViewInit {
 
   constructor(
     private userService: UserService,
-    private reclamationService: ReclamationService
+    private reclamationService: ReclamationService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -37,9 +39,14 @@ export class DashboardAdminComponent implements OnInit, AfterViewInit {
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Open', 'In Progress', 'Resolved', 'Closed'],
+        labels: [
+          this.translate.instant('admin_dashboard.chart.open'),
+          this.translate.instant('admin_dashboard.chart.in_progress'),
+          this.translate.instant('admin_dashboard.chart.resolved'),
+          this.translate.instant('admin_dashboard.chart.closed')
+        ],
         datasets: [{
-          label: 'Réclamations',
+          label: this.translate.instant('admin_dashboard.cards.claims'),
           data: [12, 19, 8, 15],
           borderWidth: 1
         }]
@@ -58,7 +65,6 @@ export class DashboardAdminComponent implements OnInit, AfterViewInit {
   loadUsersCount(): void {
     this.userService.getAllUsers().subscribe({
       next: (users) => {
-        console.log('Users response:', users);
         this.usersCount = users.length;
       },
       error: (err) => {
@@ -70,7 +76,6 @@ export class DashboardAdminComponent implements OnInit, AfterViewInit {
   loadReclamationsCount(): void {
     this.reclamationService.getReclamationsCount().subscribe({
       next: (count) => {
-        console.log('Réclamations count:', count);
         this.reclamationsCount = count;
       },
       error: (err) => {

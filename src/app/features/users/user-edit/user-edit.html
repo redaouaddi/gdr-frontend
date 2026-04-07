@@ -9,58 +9,58 @@
       <div class="user-form-card card border-0 shadow-sm mx-auto" style="max-width: 800px; border-radius: 1rem;">
         <div class="card-body p-4 p-md-5">
           <div class="form-header mb-4 border-bottom pb-3">
-            <h2 class="form-title mb-1 fw-bold" style="color: #4a2769;">Modifier l'utilisateur</h2>
+            <h2 class="form-title mb-1 fw-bold" style="color: #4a2769;">{{ 'user_edit.title' | translate }}</h2>
             <p class="form-subtitle mb-0 text-muted">
-              Mettez à jour les informations de l'utilisateur.
+              {{ 'user_edit.subtitle' | translate }}
             </p>
           </div>
 
           <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
             <div class="row g-4">
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Prénom</label>
+                <label class="form-label fw-semibold">{{ 'user_edit.first_name' | translate }}</label>
                 <input
                   type="text"
                   class="form-control custom-input"
                   formControlName="firstName"
-                  placeholder="Prénom"
+                  [placeholder]="'user_edit.first_name_placeholder' | translate"
                   style="padding: 12px; border-radius: 8px;"
                 >
               </div>
 
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Nom</label>
+                <label class="form-label fw-semibold">{{ 'user_edit.last_name' | translate }}</label>
                 <input
                   type="text"
                   class="form-control custom-input"
                   formControlName="lastName"
-                  placeholder="Nom"
+                  [placeholder]="'user_edit.last_name_placeholder' | translate"
                   style="padding: 12px; border-radius: 8px;"
                 >
               </div>
 
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Email</label>
+                <label class="form-label fw-semibold">{{ 'user_edit.email' | translate }}</label>
                 <input
                   type="email"
                   class="form-control custom-input"
                   formControlName="email"
-                  placeholder="Email DXC"
+                  [placeholder]="'user_edit.email_placeholder' | translate"
                   style="padding: 12px; border-radius: 8px;"
                 >
               </div>
 
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Genre</label>
+                <label class="form-label fw-semibold">{{ 'user_edit.gender' | translate }}</label>
                 <select class="form-select custom-input" formControlName="gender" style="padding: 12px; border-radius: 8px;">
-                  <option value="" disabled>Choisir un genre</option>
-                  <option value="MASCULIN">MASCULIN</option>
-                  <option value="FEMININ">FEMININ</option>
+                  <option value="" disabled>{{ 'user_edit.select_gender' | translate }}</option>
+                  <option value="MASCULIN">{{ 'user_edit.gender_options.MASCULIN' | translate }}</option>
+                  <option value="FEMININ">{{ 'user_edit.gender_options.FEMININ' | translate }}</option>
                 </select>
               </div>
 
               <div class="col-md-12">
-                <label class="form-label fw-semibold">Rôles</label>
+                <label class="form-label fw-semibold">{{ 'user_edit.roles' | translate }}</label>
                 <div class="roles-checkbox-group d-flex flex-wrap gap-3 p-3 border rounded-3 bg-light">
                   <div *ngFor="let role of roles" class="form-check">
                     <input
@@ -88,7 +88,7 @@
 
             <div class="form-actions d-flex gap-3 mt-5 pt-3 border-top">
               <button type="submit" class="btn btn-primary px-5 py-2 fw-bold" style="background: #7c3aed; border: none; border-radius: 8px;" [disabled]="userForm.invalid">
-                Enregistrer les modifications
+                {{ 'user_edit.save_changes' | translate }}
               </button>
 
               <button
@@ -97,7 +97,7 @@
                 style="border-radius: 8px;"
                 routerLink="/admin/users"
               >
-                Annuler
+                {{ 'common.cancel' | translate }}
               </button>
             </div>
           </form>

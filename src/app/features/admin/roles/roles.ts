@@ -5,11 +5,12 @@ import { Access, EPermission } from '../../../core/models/access.model';
 import { AccessService } from '../../../core/services/access.service';
 import { NavbarComponent } from '../../../layout/navbar/navbar';
 import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent, SidebarComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, SidebarComponent, TranslateModule],
   templateUrl: './roles.html',
   styleUrls: ['./roles.css'],
 })
@@ -26,20 +27,18 @@ export class Roles implements OnInit {
   };
 
   constructor(
-    private accessService: AccessService, 
-    private cdr: ChangeDetectorRef
+    private accessService: AccessService,
+    private cdr: ChangeDetectorRef,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
-    console.log('ngOnInit Roles');
     this.loadRoles();
   }
 
   loadRoles(): void {
-    console.log('Appel API getAll (AccessService)...');
     this.accessService.getAll().subscribe({
       next: (data) => {
-        console.log('ROLES RECUS =', data);
         this.roles = data;
         this.cdr.detectChanges();
       },
@@ -88,7 +87,6 @@ export class Roles implements OnInit {
     this.isSubmitting = true;
     this.accessService.create(this.newRole).subscribe({
       next: (createdRole) => {
-        console.log('ROLE CREE =', createdRole);
         this.roles.push(createdRole);
         this.showCreateForm = false;
         this.isSubmitting = false;
@@ -104,10 +102,9 @@ export class Roles implements OnInit {
   }
 
   deleteRole(roleId: number): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce rôle ?')) {
+    if (confirm(this.translate.instant('roles.confirm_delete'))) {
       this.accessService.delete(roleId).subscribe({
         next: () => {
-          console.log('Rôle supprimé (soft delete)');
           this.loadRoles();
           this.selectedRole = null;
           this.cdr.detectChanges();
@@ -118,5 +115,15 @@ export class Roles implements OnInit {
         }
       });
     }
+  }
+
+  translatePermission(permission: string): string {
+    return this.translate.instant('permissions.' + permission);
+  }
+
+  translateRoleStatus(deleted?: boolean): string {
+    return deleted
+      ? this.translate.instant('roles.deleted')
+      : this.translate.instant('roles.active');
   }
 }

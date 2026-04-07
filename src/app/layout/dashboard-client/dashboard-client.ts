@@ -6,10 +6,12 @@ import { ReclamationService } from '../../core/services/reclamation.service';
 import { Reclamation } from '../../core/models/reclamation.model';
 import { ClientNavbarComponent } from '../client-navbar/client-navbar';
 import { SidebarComponent } from '../sidebar/sidebar';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-dashboard-client',
   standalone: true,
-  imports: [CommonModule, FormsModule, ClientNavbarComponent, SidebarComponent],
+  imports: [CommonModule, FormsModule, ClientNavbarComponent, SidebarComponent, TranslateModule],
   templateUrl: './dashboard-client.html',
   styleUrls: ['./dashboard-client.css']
 })
@@ -19,20 +21,26 @@ export class DashboardClientComponent implements OnInit {
   chatMessage = '';
   reclamations: Reclamation[] = [];
 
-  chatMessages: { text: string; from: 'bot' | 'user'; time: string }[] = [
-    { text: 'Bonjour !\nComment puis-je vous aider ?', from: 'bot', time: this.getCurrentTime() }
-  ];
+  chatMessages: { text: string; from: 'bot' | 'user'; time: string }[] = [];
 
   constructor(
     private reclamationService: ReclamationService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
+    this.chatMessages = [
+      {
+        text: this.translate.instant('client_dashboard.chat.welcome'),
+        from: 'bot',
+        time: this.getCurrentTime()
+      }
+    ];
+
     this.reclamationService.getMyReclamations().subscribe({
       next: (data) => {
-        console.log('DASHBOARD - RECLAMATIONS REÇUES:', data);
         this.reclamations = data || [];
         this.cdr.detectChanges();
       },
@@ -46,14 +54,22 @@ export class DashboardClientComponent implements OnInit {
   getStatusClass(statut: string): string {
     if (!statut) return 'status-pending';
     const s = statut.toLowerCase();
-    if (s.includes('résol') || s.includes('resol')) return 'status-resolved';
-    if (s.includes('rejet') || s.includes('rejet')) return 'status-rejected';
+    if (s.includes('résol') || s.includes('resol') || s.includes('traitee')) return 'status-resolved';
+    if (s.includes('rejet')) return 'status-rejected';
     if (s.includes('en cours') || s.includes('en_cours')) return 'status-progress';
     if (s.includes('attente') || s.includes('en_attente')) return 'status-pending';
     return 'status-pending';
   }
 
+  translateStatus(statut: string | undefined): string {
+    if (!statut) return '';
+    return this.translate.instant('status.' + statut);
+  }
 
+  translateCategory(categorie: string | undefined): string {
+    if (!categorie) return '';
+    return this.translate.instant('categories.' + categorie);
+  }
 
   toggleChat(): void {
     this.chatOpen = !this.chatOpen;
@@ -61,20 +77,27 @@ export class DashboardClientComponent implements OnInit {
 
   sendChat(): void {
     if (!this.chatMessage.trim()) return;
-    this.chatMessages.push({ text: this.chatMessage, from: 'user', time: this.getCurrentTime() });
-    const msg = this.chatMessage;
+
+    this.chatMessages.push({
+      text: this.chatMessage,
+      from: 'user',
+      time: this.getCurrentTime()
+    });
+
     this.chatMessage = '';
-    // Simulate bot response
+
     setTimeout(() => {
-      this.chatMessages.push({ text: 'Merci pour votre message. Un agent vous répondra bientôt.', from: 'bot', time: this.getCurrentTime() });
+      this.chatMessages.push({
+        text: this.translate.instant('client_dashboard.chat.auto_reply'),
+        from: 'bot',
+        time: this.getCurrentTime()
+      });
     }, 1000);
   }
 
   onCreateReclamation(): void {
     this.router.navigate(['/mes-reclamations/nouvelle']);
   }
-
-
 
   private getCurrentTime(): string {
     const now = new Date();

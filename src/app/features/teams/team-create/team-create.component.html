@@ -9,42 +9,42 @@
       <div class="team-form-card card border-0 shadow-sm mx-auto" style="max-width: 600px; border-radius: 1rem;">
         <div class="card-body p-4 p-md-5">
           <div class="form-header mb-4">
-            <h2 class="form-title mb-1 fw-bold" style="color: #4a2769;">Créer une Équipe</h2>
+            <h2 class="form-title mb-1 fw-bold" style="color: #4a2769;">{{ 'team_create.title' | translate }}</h2>
             <p class="form-subtitle mb-0 text-muted">
-              Créez une nouvelle équipe en spécifiant l'adresse e-mail du chef d'équipe (Service Manager).
+              {{ 'team_create.subtitle' | translate }}
             </p>
           </div>
 
           <form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
             <div class="row g-4">
               <div class="col-12">
-                <label class="form-label fw-semibold">Nom de l'équipe (Service)</label>
+                <label class="form-label fw-semibold">{{ 'team_create.team_name' | translate }}</label>
                 <input
                   type="text"
                   class="form-control custom-input"
                   formControlName="nom"
-                  placeholder="Ex: Support IT Niveau 2"
+                  [placeholder]="'team_create.team_name_placeholder' | translate"
                   style="padding: 12px; border-radius: 8px;"
                 >
                 <div *ngIf="teamForm.get('nom')?.invalid && teamForm.get('nom')?.touched" class="text-danger mt-1" style="font-size: 0.85rem;">
-                  Le nom de l'équipe est requis.
+                  {{ 'team_create.team_name_required' | translate }}
                 </div>
               </div>
 
               <div class="col-12">
-                <label class="form-label fw-semibold">E-mail du Chef d'équipe</label>
+                <label class="form-label fw-semibold">{{ 'team_create.team_leader_email' | translate }}</label>
                 <select
                   class="form-select custom-input"
                   formControlName="chefEmail"
                   style="padding: 12px; border-radius: 8px;"
                 >
-                  <option value="" disabled selected>Sélectionnez un chef d'équipe...</option>
+                  <option value="" disabled selected>{{ 'team_create.select_team_leader' | translate }}</option>
                   <option *ngFor="let user of users" [value]="user.email">
                     {{ user.firstName }} {{ user.lastName }} ({{ user.email }})
                   </option>
                 </select>
                 <div *ngIf="teamForm.get('chefEmail')?.invalid && teamForm.get('chefEmail')?.touched" class="text-danger mt-1" style="font-size: 0.85rem;">
-                  Un e-mail valide est requis.
+                  {{ 'team_create.valid_email_required' | translate }}
                 </div>
               </div>
             </div>
@@ -58,9 +58,14 @@
             </div>
 
             <div class="form-actions d-flex gap-3 mt-5 pt-3 border-top">
-              <button type="submit" class="btn btn-primary px-5 py-2 fw-bold" style="background: #7c3aed; border: none; border-radius: 8px;" [disabled]="teamForm.invalid || isLoading">
+              <button
+                type="submit"
+                class="btn btn-primary px-5 py-2 fw-bold"
+                style="background: #7c3aed; border: none; border-radius: 8px;"
+                [disabled]="teamForm.invalid || isLoading"
+              >
                 <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                Créer l'équipe
+                {{ 'team_create.create_button' | translate }}
               </button>
 
               <button
@@ -69,7 +74,7 @@
                 style="border-radius: 8px;"
                 routerLink="/dashboard/admin"
               >
-                Annuler
+                {{ 'common.cancel' | translate }}
               </button>
             </div>
           </form>

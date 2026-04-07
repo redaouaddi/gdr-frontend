@@ -7,11 +7,12 @@ import { UserService } from '../../../core/services/user.service';
 import { SidebarComponent } from '../../../layout/sidebar/sidebar';
 import { AccessService } from '../../../core/services/access.service';
 import { Access } from '../../../core/models/access.model';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, NavbarComponent, SidebarComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, NavbarComponent, SidebarComponent, TranslateModule],
   templateUrl: './user-create.html',
   styleUrls: ['./user-create.css']
 })
@@ -27,7 +28,8 @@ export class UserCreateComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     private accessService: AccessService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -45,7 +47,6 @@ export class UserCreateComponent implements OnInit {
     this.accessService.getAll().subscribe({
       next: (data) => {
         this.roles = data.filter(r => !r.deleted);
-        // Default to first role if available
         if (this.roles.length > 0) {
           this.selectedRoles = [this.roles[0].name];
         }
@@ -66,6 +67,10 @@ export class UserCreateComponent implements OnInit {
     return this.selectedRoles.includes(roleName);
   }
 
+  translateGender(gender: string): string {
+    return this.translate.instant('user_create.gender_options.' + gender);
+  }
+
   onSubmit(): void {
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
@@ -83,7 +88,7 @@ export class UserCreateComponent implements OnInit {
       roles: this.selectedRoles
     }).subscribe({
       next: () => {
-        this.successMessage = 'Utilisateur créé avec succès';
+        this.successMessage = this.translate.instant('user_create.messages.success');
         this.errorMessage = '';
 
         setTimeout(() => {
@@ -92,7 +97,8 @@ export class UserCreateComponent implements OnInit {
       },
       error: (err) => {
         console.error('ERREUR CREATE USER =', err);
-        this.errorMessage = err.error?.message || 'Erreur lors de la création de l’utilisateur';
+        this.errorMessage =
+          err.error?.message || this.translate.instant('user_create.errors.create_failed');
       }
     });
   }

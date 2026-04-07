@@ -9,113 +9,109 @@
   <div class="sidebar-body">
     <!-- ADMIN MENU -->
     <ng-container *ngIf="isAdmin">
-      <h6 class="menu-heading">Admin Panel</h6>
+      <h6 class="menu-heading">{{ 'sidebar.admin_panel' | translate }}</h6>
 
       <a routerLink="/dashboard/admin" routerLinkActive="active" class="menu-link">
-        <i class="bi bi-grid"></i> Tableau de bord
+        <i class="bi bi-grid"></i> {{ 'sidebar.dashboard' | translate }}
       </a>
 
-      <!-- Accordion for Users -->
       <div class="menu-accordion" [class.open]="usersMenuOpen">
         <button class="menu-link menu-toggle" (click)="toggleUsersMenu()" [attr.aria-expanded]="usersMenuOpen">
           <div class="menu-toggle-content">
-            <i class="bi bi-person"></i> Utilisateurs
+            <i class="bi bi-person"></i> {{ 'sidebar.users' | translate }}
           </div>
           <i class="bi bi-chevron-down chevron"></i>
         </button>
 
         <div class="submenu" *ngIf="usersMenuOpen">
           <a routerLink="/admin/users" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-            class="submenu-link">Liste des utilisateurs</a>
-          <a routerLink="/admin/users/create" routerLinkActive="active" class="submenu-link">Créer un utilisateur</a>
+            class="submenu-link">{{ 'sidebar.users_list' | translate }}</a>
+          <a routerLink="/admin/users/create" routerLinkActive="active" class="submenu-link">{{ 'sidebar.create_user' | translate }}</a>
         </div>
       </div>
 
-      <!-- Accordion for Teams -->
       <div class="menu-accordion" [class.open]="teamsMenuOpen">
         <button class="menu-link menu-toggle" (click)="toggleTeamsMenu()" [attr.aria-expanded]="teamsMenuOpen">
           <div class="menu-toggle-content">
-            <i class="bi bi-people"></i> Équipes
+            <i class="bi bi-people"></i> {{ 'sidebar.teams' | translate }}
           </div>
           <i class="bi bi-chevron-down chevron"></i>
         </button>
         <div class="submenu" *ngIf="teamsMenuOpen">
-          <a routerLink="/admin/teams" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="submenu-link">Liste des équipes</a>
-          <a routerLink="/admin/teams/create" routerLinkActive="active" class="submenu-link">Créer une équipe</a>
+          <a routerLink="/admin/teams" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="submenu-link">{{ 'sidebar.teams_list' | translate }}</a>
+          <a routerLink="/admin/teams/create" routerLinkActive="active" class="submenu-link">{{ 'sidebar.create_team' | translate }}</a>
         </div>
       </div>
 
       <a routerLink="/admin/reclamations" routerLinkActive="active" class="menu-link">
-        <i class="bi bi-card-list"></i> Toutes les Réclamations
+        <i class="bi bi-card-list"></i> {{ 'sidebar.all_claims' | translate }}
       </a>
 
       <a routerLink="/admin/roles" routerLinkActive="active" class="menu-link">
-        <i class="bi bi-shield-lock"></i> Rôles
+        <i class="bi bi-shield-lock"></i> {{ 'sidebar.roles' | translate }}
       </a>
 
       <a routerLink="/admin/settings" routerLinkActive="active" class="menu-link">
-        <i class="bi bi-gear"></i> Paramètres
+        <i class="bi bi-gear"></i> {{ 'sidebar.settings' | translate }}
       </a>
     </ng-container>
 
     <!-- SERVICE MANAGER MENU -->
     <ng-container *ngIf="isServiceManager">
-      <h6 class="menu-heading">Manager Panel</h6>
+      <h6 class="menu-heading">{{ 'sidebar.manager_panel' | translate }}</h6>
       
       <div class="menu-accordion" [class.open]="serviceMenuOpen">
         <button class="menu-link menu-toggle" (click)="toggleServiceMenu()" [attr.aria-expanded]="serviceMenuOpen">
           <div class="menu-toggle-content">
-            <i class="bi bi-grid"></i> Tableau de bord
+            <i class="bi bi-grid"></i> {{ 'sidebar.dashboard' | translate }}
           </div>
           <i class="bi bi-chevron-down chevron"></i>
         </button>
         <div class="submenu" *ngIf="serviceMenuOpen">
-          <a routerLink="/dashboard/service-manager" [queryParams]="{view: 'stats'}" routerLinkActive="active" class="submenu-link">Statistiques</a>
-          <a routerLink="/dashboard/service-manager" [queryParams]="{view: 'list'}" routerLinkActive="active" class="submenu-link">Liste des réclamations</a>
+          <a routerLink="/dashboard/service-manager" [queryParams]="{view: 'stats'}" routerLinkActive="active" class="submenu-link">{{ 'sidebar.statistics' | translate }}</a>
+          <a routerLink="/dashboard/service-manager" [queryParams]="{view: 'list'}" routerLinkActive="active" class="submenu-link">{{ 'sidebar.claims_list' | translate }}</a>
         </div>
       </div>
     </ng-container>
 
     <!-- CHEF EQUIPE MENU -->
     <ng-container *ngIf="isChefEquipe">
-      <h6 class="menu-heading">Chef d'équipe</h6>
+      <h6 class="menu-heading">{{ 'sidebar.team_leader' | translate }}</h6>
       <a routerLink="/service-manager/my-team" routerLinkActive="active" class="menu-link">
-        <i class="bi bi-people"></i> Mon Équipe
+        <i class="bi bi-people"></i> {{ 'sidebar.my_team' | translate }}
       </a>
     </ng-container>
 
     <!-- CLIENT MENU -->
     <ng-container *ngIf="isClient && !isAdmin">
-      <h6 class="menu-heading">Client Panel</h6>
+      <h6 class="menu-heading">{{ 'sidebar.client_panel' | translate }}</h6>
 
       <a routerLink="/dashboard/client" routerLinkActive="active" class="menu-link">
-        <i class="bi bi-grid"></i> Tableau de bord
+        <i class="bi bi-grid"></i> {{ 'sidebar.dashboard' | translate }}
       </a>
 
-      <!-- Accordion for Reclamations -->
       <div class="menu-accordion" [class.open]="reclamationsMenuOpen">
         <button class="menu-link menu-toggle" (click)="toggleReclamationsMenu()"
           [attr.aria-expanded]="reclamationsMenuOpen">
           <div class="menu-toggle-content">
-            <i class="bi bi-file-earmark-text"></i> Réclamations
+            <i class="bi bi-file-earmark-text"></i> {{ 'sidebar.claims' | translate }}
           </div>
           <i class="bi bi-chevron-down chevron"></i>
         </button>
 
         <div class="submenu" *ngIf="reclamationsMenuOpen">
-          <a routerLink="/mes-reclamations/nouvelle" routerLinkActive="active" class="submenu-link">Créer une
-            réclamation</a>
+          <a routerLink="/mes-reclamations/nouvelle" routerLinkActive="active" class="submenu-link">{{ 'sidebar.create_claim' | translate }}</a>
         </div>
       </div>
     </ng-container>
 
     <!-- FACE ID PASSKEY -->
     <div style="margin-top: 20px;">
-      <h6 class="menu-heading">Sécurité</h6>
+      <h6 class="menu-heading">{{ 'sidebar.security' | translate }}</h6>
 
       <button class="menu-link" (click)="activateFaceId()" [disabled]="isRegisteringPasskey">
         <i class="bi bi-shield-check"></i>
-        {{ isRegisteringPasskey ? 'Activation...' : 'Activer Face ID' }}
+        {{ isRegisteringPasskey ? ('sidebar.activating' | translate) : ('sidebar.activate_faceid' | translate) }}
       </button>
 
       <small *ngIf="passkeyMessage" style="color: #22c55e; display: block; margin-top: 5px;">
@@ -129,11 +125,11 @@
 
     <!-- RECONNAISSANCE FACIALE -->
     <div class="face-register-section">
-      <h6 class="menu-heading">Reconnaissance faciale</h6>
+      <h6 class="menu-heading">{{ 'sidebar.face_recognition' | translate }}</h6>
 
       <button class="menu-link faceid-button" (click)="openFaceModal()">
         <i class="bi bi-camera"></i>
-        Activer reconnaissance faciale
+        {{ 'sidebar.activate_face_recognition' | translate }}
       </button>
     </div>
   </div>
@@ -141,22 +137,22 @@
   <!-- MODAL RECONNAISSANCE FACIALE -->
   <div class="face-modal-backdrop" *ngIf="showFaceModal">
     <div class="face-modal">
-      <h5>Enregistrement du visage</h5>
+      <h5>{{ 'sidebar.face_register' | translate }}</h5>
 
       <video #videoElement autoplay playsinline class="face-video"></video>
       <canvas #canvasElement class="face-canvas"></canvas>
 
       <div class="face-actions">
-        <button class="face-action-btn" (click)="startCamera()">Ouvrir caméra</button>
-        <button class="face-action-btn" (click)="captureFace()">Capturer</button>
+        <button class="face-action-btn" (click)="startCamera()">{{ 'sidebar.open_camera' | translate }}</button>
+        <button class="face-action-btn" (click)="captureFace()">{{ 'sidebar.capture' | translate }}</button>
         <button class="face-action-btn" (click)="saveFaceToBackend()" [disabled]="!capturedImage">
-          Enregistrer visage
+          {{ 'sidebar.save_face' | translate }}
         </button>
-        <button class="face-action-btn cancel" (click)="closeFaceModal()">Fermer</button>
+        <button class="face-action-btn cancel" (click)="closeFaceModal()">{{ 'sidebar.close' | translate }}</button>
       </div>
 
       <div *ngIf="capturedImage" class="preview-block">
-        <p>Aperçu :</p>
+        <p>{{ 'sidebar.preview' | translate }}</p>
         <img [src]="capturedImage" alt="Captured face" class="face-preview" />
       </div>
 

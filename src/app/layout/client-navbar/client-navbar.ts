@@ -1,17 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-client-navbar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './client-navbar.html',
   styleUrls: ['./client-navbar.css']
 })
 export class ClientNavbarComponent implements OnInit {
   @Input() activeItem: string = '';
-  
+
   user = JSON.parse(localStorage.getItem('user') || 'null');
   menuOpen = false;
 

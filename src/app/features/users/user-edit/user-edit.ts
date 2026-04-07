@@ -7,11 +7,12 @@ import { SidebarComponent } from '../../../layout/sidebar/sidebar';
 import { UserService } from '../../../core/services/user.service';
 import { AccessService } from '../../../core/services/access.service';
 import { Access } from '../../../core/models/access.model';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NavbarComponent, RouterLink, SidebarComponent],
+  imports: [CommonModule, ReactiveFormsModule, NavbarComponent, RouterLink, SidebarComponent, TranslateModule],
   templateUrl: './user-edit.html'
 })
 export class UserEdit implements OnInit {
@@ -29,7 +30,8 @@ export class UserEdit implements OnInit {
     private accessService: AccessService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -68,12 +70,10 @@ export class UserEdit implements OnInit {
           gender: user.gender
         });
         this.selectedRoles = user.roles || [];
-
-        console.log('Form patched, selected roles:', this.selectedRoles);
         this.cdr.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'Impossible de charger les informations de l’utilisateur.';
+        this.errorMessage = this.translate.instant('user_edit.errors.load_failed');
         this.cdr.detectChanges();
       }
     });
@@ -106,13 +106,13 @@ export class UserEdit implements OnInit {
       roles: this.selectedRoles
     }).subscribe({
       next: () => {
-        this.successMessage = 'Utilisateur mis à jour avec succès';
+        this.successMessage = this.translate.instant('user_edit.messages.success');
         setTimeout(() => {
           this.router.navigate(['/admin/users']);
         }, 1000);
       },
       error: () => {
-        this.errorMessage = 'Erreur lors de la mise à jour de l’utilisateur';
+        this.errorMessage = this.translate.instant('user_edit.errors.update_failed');
         this.cdr.detectChanges();
       }
     });

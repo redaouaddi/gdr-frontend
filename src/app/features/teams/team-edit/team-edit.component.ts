@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -7,12 +7,19 @@ import { UserService, UserResponse } from '../../../core/services/user.service';
 import { NavbarComponent } from '../../../layout/navbar/navbar';
 import { SidebarComponent } from '../../../layout/sidebar/sidebar';
 import { finalize, timeout } from 'rxjs/operators';
-import { ChangeDetectorRef } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-team-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, NavbarComponent, SidebarComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    NavbarComponent,
+    SidebarComponent,
+    TranslateModule
+  ],
   templateUrl: './team-edit.component.html'
 })
 export class TeamEditComponent implements OnInit {
@@ -30,7 +37,8 @@ export class TeamEditComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private translate: TranslateService
   ) {
     this.teamForm = this.fb.group({
       nom: ['', Validators.required],
@@ -41,7 +49,9 @@ export class TeamEditComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getAllUsers().subscribe({
       next: (data) => {
-        this.users = data.filter(user => user.roles && (user.roles.includes('ROLE_CHEF_EQUIPE') || user.roles.includes('ROLE_SERVICE_MANAGER')));
+        this.users = data.filter(
+          user => user.roles && (user.roles.includes('ROLE_CHEF_EQUIPE') || user.roles.includes('ROLE_SERVICE_MANAGER'))
+        );
       },
       error: (err) => console.error('Erreur chargement utilisateurs', err)
     });
@@ -51,7 +61,7 @@ export class TeamEditComponent implements OnInit {
       this.teamId = parseInt(idParam, 10);
       this.loadTeamData();
     } else {
-      this.errorMessage = "Identifiant d'équipe manquant.";
+      this.errorMessage = this.translate.instant('team_edit.errors.missing_id');
       this.isFetching = false;
     }
   }
@@ -69,23 +79,23 @@ export class TeamEditComponent implements OnInit {
         })
       )
       .subscribe({
-      next: (equipes) => {
-        const equipe = equipes.find(eq => eq.id === this.teamId);
-        
-        if (equipe) {
-          this.teamForm.patchValue({
-            nom: equipe.nom,
-            chefEmail: equipe.chefEmail
-          });
-        } else {
-          this.errorMessage = "L'équipe n'a pas pu être trouvée dans la liste.";
+        next: (equipes) => {
+          const equipe = equipes.find(eq => eq.id === this.teamId);
+
+          if (equipe) {
+            this.teamForm.patchValue({
+              nom: equipe.nom,
+              chefEmail: equipe.chefEmail
+            });
+          } else {
+            this.errorMessage = this.translate.instant('team_edit.errors.not_found');
+          }
+        },
+        error: (err) => {
+          console.error('Erreur chargement de la liste des équipes', err);
+          this.errorMessage = this.translate.instant('team_edit.errors.load_failed');
         }
-      },
-      error: (err) => {
-        console.error("Erreur chargement de la liste des équipes", err);
-        this.errorMessage = "Impossible de charger les données de l'équipe. Le serveur met trop de temps à répondre.";
-      }
-    });
+      });
   }
 
   onSubmit(): void {
@@ -110,25 +120,28 @@ export class TeamEditComponent implements OnInit {
         })
       )
       .subscribe({
-      next: () => {
-        this.successMessage = 'Équipe modifiée avec succès !';
-        setTimeout(() => {
-          this.router.navigate(['/admin/teams']);
-        }, 1500);
-      },
-      error: (err) => {
-        console.error('Erreur lors de la modification de l\'équipe', err);
-        
-        if (typeof err.error === 'string') {
-          this.errorMessage = err.error;
-        } else if (err.error?.message) {
-          this.errorMessage = err.error.message;
-        } else if (err.error) {
-          this.errorMessage = 'Erreur du serveur : ' + JSON.stringify(err.error);
-        } else {
-          this.errorMessage = 'Erreur inconnue lors de la modification. (Délai dépassé ou serveur injoignable)';
+        next: () => {
+          this.successMessage = this.translate.instant('team_edit.messages.success');
+          setTimeout(() => {
+            this.router.navigate(['/admin/teams']);
+          }, 1500);
+        },
+        error: (err) => {
+          console.error('Erreur lors de la modification de l\'équipe', err);
+
+          if (typeof err.error === 'string') {
+            this.errorMessage = err.error;
+          } else if (err.error?.message) {
+            this.errorMessage = err.error.message;
+          } else if (err.error) {
+            this.errorMessage =
+              this.translate.instant('team_edit.errors.server') +
+              ' : ' +
+              JSON.stringify(err.error);
+          } else {
+            this.errorMessage = this.translate.instant('team_edit.errors.unknown');
+          }
         }
-      }
-    });
+      });
   }
 }

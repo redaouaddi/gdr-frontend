@@ -4,80 +4,63 @@
   <div class="login-card">
     <div class="logo-box">
       <img src="assets/images/dxc-logo.png" alt="DXC Logo" class="logo" />
-      <p class="subtitle">Login to Your Account</p>
+
+      <div class="lang-switcher">
+        <button
+          type="button"
+          class="lang-btn"
+          [class.active]="currentLang === 'fr'"
+          (click)="switchLang('fr')">
+          <img src="assets/images/flags/fr.png" class="flag" alt="FR">
+          FR
+        </button>
+
+        <button
+          type="button"
+          class="lang-btn"
+          [class.active]="currentLang === 'en'"
+          (click)="switchLang('en')">
+          <img src="assets/images/flags/en.png" class="flag" alt="EN">
+          EN
+        </button>
+      </div>
+
+      <p class="subtitle">{{ 'login.subtitle' | translate }}</p>
     </div>
 
-    <!-- FORM LOGIN -->
     <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
       <div class="input-group">
         <span class="icon">👤</span>
-        <input type="email" placeholder="Email" formControlName="email" />
+        <input
+          type="email"
+          [placeholder]="'login.email' | translate"
+          formControlName="email" />
       </div>
 
       <div class="input-group">
         <span class="icon">🔒</span>
-        <input type="password" placeholder="Password" formControlName="password" />
+        <input
+          type="password"
+          [placeholder]="'login.password' | translate"
+          formControlName="password" />
       </div>
 
       <button type="submit" class="login-btn" [disabled]="isLoading">
-         {{ isLoading ? 'Connexion...' : 'Login' }}
+        {{ isLoading ? ('login.loading' | translate) : ('login.button' | translate) }}
       </button>
+
       <small *ngIf="loginError" class="auth-error">
         {{ loginError }}
       </small>
 
-      <!-- ✅ NOUVEAU BOUTON FACE LOGIN -->
-      <button type="button" class="face-login-btn" (click)="openFaceLoginModal()">
-        🔐 Se connecter par visage
+      <button
+        type="button"
+        class="face-login-btn"
+        (click)="openFaceLoginModal()">
+        🔐 {{ 'login.face_button' | translate }}
       </button>
 
     </form>
   </div>
-
-
-<!-- ✅ MODAL FACE LOGIN -->
-<div class="face-modal-backdrop" *ngIf="showFaceLoginModal">
-  <div class="face-modal">
-
-    <h5>Connexion par reconnaissance faciale</h5>
-
-    <video #faceLoginVideo autoplay playsinline class="face-video"></video>
-    <canvas #faceLoginCanvas class="face-canvas"></canvas>
-
-    <div class="face-actions">
-      <button class="face-action-btn" (click)="startFaceLoginCamera()">
-        Ouvrir caméra
-      </button>
-
-      <button class="face-action-btn" (click)="captureFaceLogin()">
-        Capturer
-      </button>
-
-      <button class="face-action-btn" (click)="loginWithFace()" [disabled]="!faceLoginImage">
-        Valider
-      </button>
-
-      <button class="face-action-btn cancel" (click)="closeFaceLoginModal()">
-        Fermer
-      </button>
-    </div>
-
-    <!-- PREVIEW -->
-    <div *ngIf="faceLoginImage" class="preview-block">
-      <p>Aperçu :</p>
-      <img [src]="faceLoginImage" class="face-preview" />
-    </div>
-
-    <!-- MESSAGE -->
-    <small *ngIf="faceLoginMessage" class="face-success">
-      {{ faceLoginMessage }}
-    </small>
-
-    <small *ngIf="faceLoginError" class="face-error">
-      {{ faceLoginError }}
-    </small>
-
-  </div>
-</div>
 </div>

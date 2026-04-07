@@ -5,103 +5,99 @@
   <div class="main-content">
     <div class="client-dashboard">
 
-      <!-- ===== TOP NAVBAR ===== -->
       <app-client-navbar></app-client-navbar>
 
-  <!-- ===== MAIN CONTENT ===== -->
-  <div class="content-wrapper">
+      <div class="content-wrapper">
 
-    <div class="main-section">
-      <h1 class="page-title">Tableau de Bord</h1>
+        <div class="main-section">
+          <h1 class="page-title">{{ 'client_dashboard.title' | translate }}</h1>
 
-      <div class="table-card">
-        <table class="reclamation-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Objet</th>
-              <th>Type</th>
-              <th>État</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let rec of reclamations">
-              <td class="col-id">{{ rec.numeroReclamation }}</td>
-              <td class="col-objet">{{ rec.titre }}</td>
-              <td class="col-type">{{ rec.categorie }}</td>
-              <td class="col-etat">
-                <span [ngClass]="getStatusClass(rec.statut)">{{ rec.statut }}</span>
-              </td>
-            </tr>
-            <!-- Empty rows for visual consistency -->
-            <ng-container *ngIf="reclamations.length < 6">
-              <tr *ngFor="let i of [1,2,3]" class="empty-row">
-                <td></td><td></td><td></td><td></td>
-              </tr>
-            </ng-container>
-          </tbody>
-        </table>
+          <div class="table-card">
+            <table class="reclamation-table">
+              <thead>
+                <tr>
+                  <th>{{ 'client_dashboard.table.id' | translate }}</th>
+                  <th>{{ 'client_dashboard.table.subject' | translate }}</th>
+                  <th>{{ 'client_dashboard.table.type' | translate }}</th>
+                  <th>{{ 'client_dashboard.table.status' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let rec of reclamations">
+                  <td class="col-id">{{ rec.numeroReclamation }}</td>
+                  <td class="col-objet">{{ rec.titre }}</td>
+                  <td class="col-type">{{ translateCategory(rec.categorie) }}</td>
+                  <td class="col-etat">
+                    <span [ngClass]="getStatusClass(rec.statut)">{{ translateStatus(rec.statut) }}</span>
+                  </td>
+                </tr>
 
-        <div class="create-btn-container">
-          <button class="btn-create" (click)="onCreateReclamation()">
-            <span class="btn-arrow">›</span>
-            Créer une Réclamation
-          </button>
-        </div>
-      </div>
-    </div>
+                <ng-container *ngIf="reclamations.length < 6">
+                  <tr *ngFor="let i of [1,2,3]" class="empty-row">
+                    <td></td><td></td><td></td><td></td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
 
-    <!-- ===== CHATBOT WIDGET ===== -->
-    <div class="chatbot-panel" *ngIf="chatOpen">
-      <div class="chat-header">
-        <div class="chat-header-left">
-          <div class="chat-bot-avatar">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </div>
-          <span class="online-dot"></span>
-          <span class="chat-title">Chatbot Support</span>
-        </div>
-        <button class="chat-menu-btn" (click)="toggleChat()">⋮</button>
-      </div>
-
-      <div class="chat-body">
-        <div *ngFor="let msg of chatMessages" [ngClass]="msg.from === 'bot' ? 'msg-bot' : 'msg-user'">
-          <div class="msg-row" *ngIf="msg.from === 'bot'">
-            <div class="bot-icon-small">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            </div>
-            <div class="msg-content">
-              <div class="msg-bubble bot-bubble">{{ msg.text }}</div>
-              <span class="msg-time">{{ msg.time }}</span>
-            </div>
-          </div>
-          <div class="msg-row user-row" *ngIf="msg.from === 'user'">
-            <div class="msg-content">
-              <div class="msg-bubble user-bubble">{{ msg.text }}</div>
-              <span class="msg-time right">{{ msg.time }}</span>
+            <div class="create-btn-container">
+              <button class="btn-create" (click)="onCreateReclamation()">
+                <span class="btn-arrow">›</span>
+                {{ 'client_dashboard.create_claim' | translate }}
+              </button>
             </div>
           </div>
         </div>
+
+        <div class="chatbot-panel" *ngIf="chatOpen">
+          <div class="chat-header">
+            <div class="chat-header-left">
+              <div class="chat-bot-avatar">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <span class="online-dot"></span>
+              <span class="chat-title">{{ 'client_dashboard.chat.title' | translate }}</span>
+            </div>
+            <button class="chat-menu-btn" (click)="toggleChat()">⋮</button>
+          </div>
+
+          <div class="chat-body">
+            <div *ngFor="let msg of chatMessages" [ngClass]="msg.from === 'bot' ? 'msg-bot' : 'msg-user'">
+              <div class="msg-row" *ngIf="msg.from === 'bot'">
+                <div class="bot-icon-small">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <div class="msg-content">
+                  <div class="msg-bubble bot-bubble">{{ msg.text }}</div>
+                  <span class="msg-time">{{ msg.time }}</span>
+                </div>
+              </div>
+              <div class="msg-row user-row" *ngIf="msg.from === 'user'">
+                <div class="msg-content">
+                  <div class="msg-bubble user-bubble">{{ msg.text }}</div>
+                  <span class="msg-time right">{{ msg.time }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <input
+              type="text"
+              [(ngModel)]="chatMessage"
+              [placeholder]="'client_dashboard.chat.placeholder' | translate"
+              (keyup.enter)="sendChat()"
+            />
+            <button class="send-btn" (click)="sendChat()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div class="chat-input-area">
-        <input
-          type="text"
-          [(ngModel)]="chatMessage"
-          placeholder="Écrivez votre message..."
-          (keyup.enter)="sendChat()"
-        />
-        <button class="send-btn" (click)="sendChat()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== FLOATING CHAT BUTTON ===== -->
-  <button class="chat-fab" (click)="toggleChat()" *ngIf="!chatOpen">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-  </button>
+      <button class="chat-fab" (click)="toggleChat()" *ngIf="!chatOpen">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+      </button>
 
     </div>
   </div>

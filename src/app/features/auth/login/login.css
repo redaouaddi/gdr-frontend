@@ -48,6 +48,7 @@ body {
   position: absolute;
   inset: 0;
   backdrop-filter: blur(2px);
+  pointer-events: none;
 }
 
 .login-card {
@@ -71,6 +72,46 @@ body {
   width: 160px;
   display: block;
   margin: 0 auto 15px;
+}
+
+.lang-switcher {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 8px 0 14px;
+}
+
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.lang-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.lang-btn.active {
+  background: linear-gradient(90deg, #3f5efb, #ff5ec7);
+  box-shadow: 0 4px 18px rgba(255, 94, 199, 0.4);
+}
+
+.flag {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
 }
 
 .subtitle {
@@ -99,10 +140,7 @@ body {
   text-align: center;
   color: #d8cfff;
   font-size: 16px;
-}
-
-.input-group .icon.right {
-  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .input-group input {
@@ -117,18 +155,6 @@ body {
 
 .input-group input::placeholder {
   color: #cfc4ff;
-}
-
-.options {
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 18px;
-  color: #e8deff;
-  font-size: 14px;
-}
-
-.options input {
-  margin-right: 8px;
 }
 
 .login-btn {
@@ -150,22 +176,6 @@ body {
   box-shadow: 0 6px 24px rgba(162, 75, 255, 0.55);
 }
 
-.signup-text {
-  margin-top: 18px;
-  color: #e0d6ff;
-  font-size: 14px;
-}
-
-.signup-text a {
-  color: #ffffff;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.signup-text a:hover {
-  text-decoration: underline;
-}
-
 .face-login-btn {
   width: 100%;
   margin-top: 12px;
@@ -178,7 +188,13 @@ body {
   cursor: pointer;
 }
 
-/* MODAL */
+.auth-error {
+  display: block;
+  margin-top: 10px;
+  color: #ffd4d4;
+  font-size: 14px;
+}
+
 .face-modal-backdrop {
   position: fixed;
   inset: 0;

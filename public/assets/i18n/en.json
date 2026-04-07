@@ -1,0 +1,519 @@
+{
+  "login": {
+    "subtitle": "Login to Your Account",
+    "email": "Email",
+    "password": "Password",
+    "button": "Login",
+    "loading": "Signing in...",
+    "face_button": "Sign in with face",
+    "face_title": "Facial recognition login",
+    "open_camera": "Open camera",
+    "capture": "Capture",
+    "validate": "Validate",
+    "close": "Close",
+    "preview": "Preview:"
+  },
+  
+  "dashboard": {
+    "title": "Dashboard"
+  },
+  "common": {
+    "logout": "Logout",
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "select": "Select..."
+  },
+
+
+  "reclamations_all": {
+    "title": "All Claims",
+    "subtitle": "Global history and tracking of all tickets.",
+    "identification": "Identification No.",
+    "ticket_info": "Ticket Information",
+    "priority": "Priority",
+    "current_status": "Current Status",
+    "assigned_team": "Assigned Team",
+    "empty": "No claims found in the system.",
+    "unassigned": "Not assigned",
+    "server_error": "Server is taking too long to respond or is unreachable."
+  },
+
+  "status": {
+    "EN_ATTENTE": "Pending",
+    "OUVERTE": "Open",
+    "EN_COURS": "In progress",
+    "TRAITEE": "Processed",
+    "RESOLUE": "Resolved",
+    "REJETEE": "Rejected"
+  },
+
+  "priority": {
+    "HAUTE": "High",
+    "URGENTE": "Urgent",
+    "MOYENNE": "Medium",
+    "BASSE": "Low"
+  },
+
+  "roles": {
+    "title": "Role Management",
+    "subtitle": "Manage platform access and permissions.",
+    "new_role": "New Role",
+    "role_list": "Role List",
+    "active": "Active",
+    "deleted": "Deleted",
+    "permissions_count": "permissions",
+    "empty": "No roles available.",
+    "create_title": "Create a new role",
+    "role_name": "Role name",
+    "role_name_placeholder": "Ex: QUALITY_AGENT",
+    "available_permissions": "Available permissions",
+    "creating": "Creating...",
+    "confirm_create": "Confirm creation",
+    "details": "Details",
+    "delete_role": "Delete role",
+    "role_id": "Role ID",
+    "created_at": "Creation date",
+    "assigned_permissions": "Assigned permissions",
+    "placeholder": "Select a role from the list to view its details or use the \"New Role\" button to add one.",
+    "confirm_delete": "Are you sure you want to delete this role?"
+  },
+  
+  "permissions": {
+    "LIRE_RECLAMATIONS": "Read claims",
+    "CREER_RECLAMATIONS": "Create claims",
+    "MODIFIER_RECLAMATIONS": "Edit claims",
+    "SUPPRIMER_RECLAMATIONS": "Delete claims",
+    "ASSIGNER_RECLAMATIONS": "Assign claims",
+    "CONSULTER_RAPPORTS": "View reports",
+    "GERER_UTILISATEURS": "Manage users",
+    "GERER_ROLES": "Manage roles"
+  },
+
+  "reclamation_create": {
+    "title": "Create a Claim",
+    "subtitle": "Describe your issue so one of our agents can help you.",
+    "subject": "Subject (Title)",
+    "subject_placeholder": "Ex: Login issue",
+    "category": "Category",
+    "priority": "Priority",
+    "maintenance_type": "Maintenance Type",
+    "domain": "Domain",
+    "other_details": "Please specify (Other)",
+    "other_details_placeholder": "Specify your issue...",
+    "description": "Description",
+    "description_placeholder": "Describe your issue in detail...",
+    "attachment": "Attachment (Screenshot, etc.)",
+    "choose_file": "Choose a file...",
+    "submit": "Submit",
+    "creating": "Creating...",
+    "success_message": "Claim created successfully.",
+    "created_title": "Claim Created!",
+    "created_text": "Your claim has been successfully registered.",
+    "redirect_in": "Redirecting in",
+    "redirect_list": "Redirecting to the list in",
+    "seconds": "second(s)...",
+    "categories": {
+      "PROJET": "Project",
+      "MAINTENANCE": "Existing project maintenance"
+    },
+    "priorities": {
+      "FAIBLE": "Low",
+      "MOYENNE": "Medium",
+      "ELEVEE": "High"
+    },
+    "maintenance_types": {
+      "INCIDENT": "Incident",
+      "DEMANDE_SERVICE": "Service Request"
+    },
+    "incident_categories": {
+      "TECHNIQUE": "Technical",
+      "FACTURATION": "Billing",
+      "SERVICE": "Service",
+      "AUTRE": "Other"
+    },
+    "errors": {
+      "title_required": "Title is required.",
+      "description_required": "Description is required.",
+      "maintenance_type_required": "Please select the maintenance type.",
+      "incident_domain_required": "Please select the incident domain.",
+      "incident_detail_required": "Please specify the incident details.",
+      "create_failed": "An error occurred while creating the claim."
+    }
+  },
+
+  "service_manager": {
+    "title": "Manager Dashboard",
+    "subtitle": "Global view of claim assignment and status.",
+    "undefined_priority": "UNDEFINED",
+    "unassigned": "Unassigned",
+    "rejected": "Rejected",
+    "assign": "Assign",
+    "reassign": "Reassign",
+    "stats": {
+      "pending_unassigned": "Pending (Unassigned)",
+      "in_progress": "In progress",
+      "resolved": "Resolved",
+      "rejected": "Rejected"
+    },
+    "table": {
+      "number_client": "No. / Client",
+      "title_category": "Title & Category",
+      "status": "Status",
+      "priority": "Priority",
+      "current_team": "Current Team",
+      "actions": "Actions",
+      "empty": "No claims."
+    },
+    "modal": {
+      "title": "Claim Assignment",
+      "rejected_by": "Rejected by:",
+      "reason": "Reason:",
+      "choose_team": "Choose technical team",
+      "search_team": "Search for a team...",
+      "no_team_found": "No team found.",
+      "click_to_choose": "Click to choose",
+      "assignment_info": "The claim will be automatically moved to this team's manager queue.",
+      "confirm_assignment": "Confirm assignment"
+    },
+    "errors": {
+      "server_error": "The server is taking too long to respond or is unreachable.",
+      "assign_failed": "Unable to assign the team. Please try again."
+    }
+  },
+  
+  "categories": {
+    "PROJET": "Project",
+    "TECHNIQUE": "Technical",
+    "FACTURATION": "Billing",
+    "SERVICE": "Service",
+    "AUTRE": "Other",
+    "MAINTENANCE": "Maintenance"
+  },
+  "my_team": {
+    "title": "My Team",
+    "subtitle": "Manage your team and recruit agents.",
+    "loading_too_long": "Loading too long? Click here",
+    "no_team_title": "No team assigned",
+    "no_team_text": "You do not yet have a team under your management. Please contact an administrator.",
+    "confirm_remove_agent": "Are you sure you want to remove this agent from your team?",
+    "info": {
+      "title": "Information",
+      "service_name": "Service name",
+      "team_leader": "Team leader",
+      "agents_count": "Number of agents"
+    },
+    "members": {
+      "title": "Team members",
+      "empty": "No agents in this team at the moment.",
+      "name": "Name",
+      "email": "Email",
+      "status": "Status",
+      "action": "Action",
+      "active": "Active",
+      "remove_from_team": "Remove from team"
+    },
+    "recruitment": {
+      "title": "Recruit available agents",
+      "empty": "No available agents at the moment.",
+      "add_to_team": "Add to my team"
+    },
+    "claims": {
+      "title": "Claims Management",
+      "empty": "No claims assigned to this team.",
+      "number": "No.",
+      "title_col": "Title",
+      "priority": "Priority",
+      "status": "Status",
+      "actions": "Actions",
+      "accept": "Accept",
+      "reject": "Reject",
+      "resolved": "Resolved",
+      "no_action": "No action"
+    },
+    "reject_modal": {
+      "title": "Reject claim",
+      "text": "Please provide a mandatory reason to reject claim",
+      "reason_label": "Reason for rejection",
+      "reason_placeholder": "Explain why this claim does not belong to your team...",
+      "confirm": "Confirm rejection"
+    },
+    "messages": {
+      "agent_recruited": "Agent recruited successfully!",
+      "agent_removed": "Agent removed from the team successfully.",
+      "claim_accepted": "Claim {{numero}} accepted.",
+      "claim_resolved": "Claim {{numero}} marked as resolved.",
+      "claim_rejected": "Claim {{numero}} rejected."
+    },
+    "errors": {
+      "load_team": "Unable to load your team data.",
+      "recruit_agent": "Failed to recruit the agent.",
+      "remove_agent": "Unable to remove the agent.",
+      "accept_claim": "Unable to accept the claim.",
+      "resolve_claim": "Unable to close the claim.",
+      "reject_claim": "Error while rejecting the claim."
+    }
+  },
+  "team_create": {
+    "title": "Create a Team",
+    "subtitle": "Create a new team by specifying the team leader's email address (Service Manager).",
+    "team_name": "Team name (Service)",
+    "team_name_placeholder": "Ex: IT Support Level 2",
+    "team_name_required": "Team name is required.",
+    "team_leader_email": "Team Leader Email",
+    "select_team_leader": "Select a team leader...",
+    "valid_email_required": "A valid email is required.",
+    "create_button": "Create team",
+    "messages": {
+      "success": "Team created successfully!"
+    },
+    "errors": {
+      "server_details": "Server error (Details)",
+      "unknown": "Unknown error while creating the team."
+    }
+  },
+  "team_edit": {
+    "title": "Edit Team",
+    "subtitle": "Update the service name or assign a new team leader (Service Manager).",
+    "team_name": "Team name (Service)",
+    "team_name_placeholder": "Ex: IT Support Level 2",
+    "team_name_required": "Team name is required.",
+    "team_leader_email": "Team Leader Email",
+    "select_team_leader": "Select a team leader...",
+    "valid_email_required": "A valid email is required.",
+    "save": "Save",
+    "back_to_list": "Back to list",
+    "messages": {
+      "success": "Team updated successfully!"
+    },
+    "errors": {
+      "missing_id": "Missing team identifier.",
+      "not_found": "The team could not be found in the list.",
+      "load_failed": "Unable to load team data. The server is taking too long to respond.",
+      "server": "Server error",
+      "unknown": "Unknown error while updating. (Timeout or server unreachable)"
+    }
+  },
+  "team_list": {
+    "title": "Team List",
+    "subtitle": "Manage and view all teams (services).",
+    "create_team": "Create a team",
+    "empty": "No teams found. Click on \"Create a team\" to get started.",
+    "unassigned": "Unassigned",
+    "edit": "Edit",
+    "agents_count": "{{count}} agent(s)",
+    "columns": {
+      "id": "ID",
+      "service_name": "Service Name",
+      "team_leader": "Team Leader",
+      "agents_count": "Number of Agents",
+      "actions": "Actions"
+    },
+    "errors": {
+      "load_failed": "Unable to load the team list. The server is taking too long to respond or is unreachable."
+    }
+  },
+  "user_create": {
+    "title": "Add a User",
+    "subtitle": "Create a new user account and fill in their information.",
+    "first_name": "First name",
+    "first_name_placeholder": "Enter first name",
+    "last_name": "Last name",
+    "last_name_placeholder": "Enter last name",
+    "email": "Email",
+    "email_placeholder": "Enter DXC email address",
+    "password": "Password",
+    "password_placeholder": "Enter password",
+    "gender": "Gender",
+    "select_gender": "Choose a gender",
+    "roles": "Roles",
+    "create": "Create",
+    "gender_options": {
+      "MASCULIN": "Male",
+      "FEMININ": "Female"
+    },
+    "messages": {
+      "success": "User created successfully"
+    },
+    "errors": {
+      "create_failed": "Error while creating the user"
+    }
+  },
+  "user_edit": {
+    "title": "Edit User",
+    "subtitle": "Update the user's information.",
+    "first_name": "First name",
+    "first_name_placeholder": "First name",
+    "last_name": "Last name",
+    "last_name_placeholder": "Last name",
+    "email": "Email",
+    "email_placeholder": "DXC Email",
+    "gender": "Gender",
+    "select_gender": "Choose a gender",
+    "roles": "Roles",
+    "save_changes": "Save changes",
+    "gender_options": {
+      "MASCULIN": "Male",
+      "FEMININ": "Female"
+    },
+    "messages": {
+      "success": "User updated successfully"
+    },
+    "errors": {
+      "load_failed": "Unable to load user information.",
+      "update_failed": "Error while updating the user"
+    }
+  },
+  
+  "user_list": {
+    "title": "Users",
+    "export": "Export",
+    "add_user": "Add user",
+    "search_placeholder": "Search for a user...",
+    "empty": "No users found.",
+    "show": "Show",
+    "lines_10": "10 rows",
+    "pagination": "{{start}}-{{end}} of {{total}} viewed",
+    "confirm_delete": "Are you sure you want to delete this user?",
+    "columns": {
+      "first_name": "First name",
+      "last_name": "Last name",
+      "email": "Email",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "status": {
+      "active": "Active",
+      "deleted": "Deleted",
+      "disabled": "Disabled"
+    },
+    "gender": {
+      "MASCULIN": "Male",
+      "FEMININ": "Female"
+    },
+    "details": {
+      "title": "User details",
+      "first_name": "First name:",
+      "last_name": "Last name:",
+      "email": "Email:",
+      "gender": "Gender:",
+      "roles": "Role(s):",
+      "status": "Status:",
+      "created_at": "Creation date:",
+      "updated_at": "Last update:"
+    },
+    "errors": {
+      "load_failed": "Error while loading users.",
+      "delete_failed": "Error while deleting the user"
+    }
+  },
+   "client_navbar": {
+    "notifications": "Notifications",
+    "hello": "Hello,",
+    "logout": "Logout"
+  },
+   "admin_dashboard": {
+    "title": "Admin Dashboard",
+    "cards": {
+      "users": "Users",
+      "claims": "Claims",
+      "in_progress": "In Progress",
+      "sla_respected": "SLA Respected"
+    },
+    "chart": {
+      "title": "Claims Status",
+      "open": "Open",
+      "in_progress": "In Progress",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "recent_activity": {
+      "title": "Recent Activity",
+      "id": "ID",
+      "user": "User",
+      "action": "Action",
+      "user_created": "User creation",
+      "new_claim": "New claim"
+    }
+  },
+  "client_dashboard": {
+    "title": "Dashboard",
+    "create_claim": "Create a Claim",
+    "table": {
+      "id": "ID",
+      "subject": "Subject",
+      "type": "Type",
+      "status": "Status"
+    },
+    "chat": {
+      "title": "Support Chatbot",
+      "placeholder": "Write your message...",
+      "welcome": "Hello!\nHow can I help you?",
+      "auto_reply": "Thank you for your message. An agent will reply to you soon."
+    }
+  },
+  "navbar": {
+    "notifications": "Notifications",
+    "hello": "Hello",
+    "user": "User",
+    "logout": "Logout"
+  },
+  "sidebar": {
+  "admin_panel": "Admin Panel",
+  "dashboard": "Dashboard",
+  "users": "Users",
+  "users_list": "Users list",
+  "create_user": "Create user",
+  "teams": "Teams",
+  "teams_list": "Teams list",
+  "create_team": "Create team",
+  "all_claims": "All Claims",
+  "roles": "Roles",
+  "settings": "Settings",
+  "manager_panel": "Manager Panel",
+  "statistics": "Statistics",
+  "claims_list": "Claims list",
+  "team_leader": "Team leader",
+  "my_team": "My Team",
+  "client_panel": "Client Panel",
+  "claims": "Claims",
+  "create_claim": "Create claim",
+  "security": "Security",
+  "activate_faceid": "Activate Face ID",
+  "activating": "Activating...",
+  "face_recognition": "Facial recognition",
+  "activate_face_recognition": "Activate facial recognition",
+  "face_register": "Face registration",
+  "open_camera": "Open camera",
+  "capture": "Capture",
+  "save_face": "Save face",
+  "close": "Close",
+  "preview": "Preview",
+  "messages": {
+    "faceid_success": "Face ID activated successfully.",
+    "photo_captured": "Photo captured successfully.",
+    "face_saved": "Face saved successfully."
+  },
+  "errors": {
+    "user_not_identified": "User not identified.",
+    "faceid_activation": "Error while activating Face ID.",
+    "camera_access": "Unable to access the camera.",
+    "video_canvas_missing": "Video/canvas elements not found.",
+    "open_camera_first": "Please open the camera first.",
+    "video_not_ready": "Video not ready. Please try again in 1 second.",
+    "capture_failed": "Unable to capture image.",
+    "no_captured_image": "No captured image.",
+    "face_save": "Error while saving face."
+  }
+}
+
+}
+
+
+  
+
+

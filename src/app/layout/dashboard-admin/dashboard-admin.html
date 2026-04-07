@@ -7,61 +7,58 @@
 
     <div class="dashboard px-4">
 
-      <h2 class="title mb-4">Admin Dashboard</h2>
+      <h2 class="title mb-4">{{ 'admin_dashboard.title' | translate }}</h2>
 
-      <!-- CARDS -->
       <div class="cards">
 
         <div class="glass-card stat p-4 mb-3">
-          <h3>Utilisateurs</h3>
+          <h3>{{ 'admin_dashboard.cards.users' | translate }}</h3>
           <p class="number">{{ usersCount }}</p>
         </div>
 
         <div class="glass-card stat p-4 mb-3">
-          <h3>Réclamations</h3>
+          <h3>{{ 'admin_dashboard.cards.claims' | translate }}</h3>
           <p class="number">{{ reclamationsCount }}</p>
         </div>
 
         <div class="glass-card stat p-4 mb-3">
-          <h3>En cours</h3>
-          <p class="number">21</p>
+          <h3>{{ 'admin_dashboard.cards.in_progress' | translate }}</h3>
+          <p class="number">{{ enCoursCount }}</p>
         </div>
 
         <div class="glass-card stat p-4 mb-3">
-          <h3>SLA respecté</h3>
-          <p class="number">92%</p>
+          <h3>{{ 'admin_dashboard.cards.sla_respected' | translate }}</h3>
+          <p class="number">{{ slaRespecte }}%</p>
         </div>
 
       </div>
 
-      <!-- GRAPH -->
       <div class="glass-card chart p-4 mb-3">
-        <h3>Statut des réclamations</h3>
+        <h3>{{ 'admin_dashboard.chart.title' | translate }}</h3>
         <canvas id="claimsChart"></canvas>
       </div>
 
-      <!-- TABLE -->
       <div class="glass-card table p-4 mb-3">
 
-        <h3>Activité récente</h3>
+        <h3>{{ 'admin_dashboard.recent_activity.title' | translate }}</h3>
 
         <table class="dxc-table mt-3">
           <tr>
-            <th>ID</th>
-            <th>Utilisateur</th>
-            <th>Action</th>
+            <th>{{ 'admin_dashboard.recent_activity.id' | translate }}</th>
+            <th>{{ 'admin_dashboard.recent_activity.user' | translate }}</th>
+            <th>{{ 'admin_dashboard.recent_activity.action' | translate }}</th>
           </tr>
 
           <tr>
             <td>1</td>
             <td>admin</td>
-            <td>Création utilisateur</td>
+            <td>{{ 'admin_dashboard.recent_activity.user_created' | translate }}</td>
           </tr>
 
           <tr>
             <td>2</td>
             <td>agent1</td>
-            <td>Nouvelle réclamation</td>
+            <td>{{ 'admin_dashboard.recent_activity.new_claim' | translate }}</td>
           </tr>
         </table>
 

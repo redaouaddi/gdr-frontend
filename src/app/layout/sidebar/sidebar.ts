@@ -4,10 +4,11 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { PasskeyService } from '../../core/services/passkey.service';
 import { HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule],
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.css'],
   standalone: true
@@ -39,7 +40,8 @@ export class SidebarComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private passkeyService: PasskeyService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -76,7 +78,7 @@ export class SidebarComponent implements OnInit {
     const email = user?.email;
 
     if (!email) {
-      this.passkeyError = 'Utilisateur non identifié.';
+      this.passkeyError = this.translate.instant('sidebar.errors.user_not_identified');
       return;
     }
 
@@ -84,13 +86,13 @@ export class SidebarComponent implements OnInit {
 
     try {
       const result: any = await this.passkeyService.startRegistration(email);
-      this.passkeyMessage = result?.message || 'Face ID activé avec succès.';
+      this.passkeyMessage = result?.message || this.translate.instant('sidebar.messages.faceid_success');
     } catch (error: any) {
       console.error(error);
       this.passkeyError =
         error?.error?.message ||
         error?.message ||
-        'Erreur lors de l’activation de Face ID.';
+        this.translate.instant('sidebar.errors.faceid_activation');
     } finally {
       this.isRegisteringPasskey = false;
     }
@@ -124,7 +126,7 @@ export class SidebarComponent implements OnInit {
       }
     } catch (error) {
       console.error(error);
-      this.faceCaptureError = 'Impossible d’accéder à la caméra.';
+      this.faceCaptureError = this.translate.instant('sidebar.errors.camera_access');
     }
   }
 
@@ -136,12 +138,12 @@ export class SidebarComponent implements OnInit {
     const canvas = this.canvasElement?.nativeElement;
 
     if (!video || !canvas) {
-      this.faceCaptureError = 'Éléments vidéo/canvas introuvables.';
+      this.faceCaptureError = this.translate.instant('sidebar.errors.video_canvas_missing');
       return;
     }
 
     if (!this.mediaStream) {
-      this.faceCaptureError = 'Veuillez ouvrir la caméra d’abord.';
+      this.faceCaptureError = this.translate.instant('sidebar.errors.open_camera_first');
       return;
     }
 
@@ -149,7 +151,7 @@ export class SidebarComponent implements OnInit {
     const height = video.videoHeight;
 
     if (!width || !height) {
-      this.faceCaptureError = 'Vidéo non prête. Réessayez dans 1 seconde.';
+      this.faceCaptureError = this.translate.instant('sidebar.errors.video_not_ready');
       return;
     }
 
@@ -158,13 +160,13 @@ export class SidebarComponent implements OnInit {
 
     const context = canvas.getContext('2d');
     if (!context) {
-      this.faceCaptureError = 'Impossible de capturer l’image.';
+      this.faceCaptureError = this.translate.instant('sidebar.errors.capture_failed');
       return;
     }
 
     context.drawImage(video, 0, 0, width, height);
     this.capturedImage = canvas.toDataURL('image/png');
-    this.faceCaptureMessage = 'Photo capturée avec succès.';
+    this.faceCaptureMessage = this.translate.instant('sidebar.messages.photo_captured');
   }
 
   stopCamera() {
@@ -182,12 +184,12 @@ export class SidebarComponent implements OnInit {
     const email = user?.email;
 
     if (!email) {
-      this.faceCaptureError = 'Utilisateur non identifié.';
+      this.faceCaptureError = this.translate.instant('sidebar.errors.user_not_identified');
       return;
     }
 
     if (!this.capturedImage) {
-      this.faceCaptureError = 'Aucune image capturée.';
+      this.faceCaptureError = this.translate.instant('sidebar.errors.no_captured_image');
       return;
     }
 
@@ -197,10 +199,10 @@ export class SidebarComponent implements OnInit {
         image: this.capturedImage
       }).toPromise();
 
-      this.faceCaptureMessage = 'Visage enregistré avec succès.';
+      this.faceCaptureMessage = this.translate.instant('sidebar.messages.face_saved');
     } catch (error) {
       console.error(error);
-      this.faceCaptureError = 'Erreur lors de l’enregistrement du visage.';
+      this.faceCaptureError = this.translate.instant('sidebar.errors.face_save');
     }
   }
 }

@@ -8,27 +8,23 @@
     <div class="container py-4">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2 class="fw-bold mb-1" style="color: #4a2769;">Tableau de Bord Manager</h2>
-          <p class="text-muted mb-0">Vue globale sur l'assignation et le statut réclamations.</p>
+          <h2 class="fw-bold mb-1" style="color: #4a2769;">{{ 'service_manager.title' | translate }}</h2>
+          <p class="text-muted mb-0">{{ 'service_manager.subtitle' | translate }}</p>
         </div>
       </div>
 
-      <!-- Loading State -->
       <div *ngIf="isLoading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Chargement...</span>
+          <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
         </div>
       </div>
 
-      <!-- Error State -->
       <div *ngIf="errorMessage" class="alert alert-danger rounded-3 mt-3">
         <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
       </div>
 
-      <!-- Content -->
       <div *ngIf="!isLoading && !errorMessage">
         
-        <!-- STATS VIEW -->
         <div *ngIf="activeView === 'stats'" class="row g-4 mb-4">
           <div class="col-12 col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 5px solid #ffc107 !important;">
@@ -37,12 +33,13 @@
                   <i class="bi bi-hourglass-split"></i>
                 </div>
                 <div>
-                  <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">En attente (Non assigné)</h6>
+                  <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">{{ 'service_manager.stats.pending_unassigned' | translate }}</h6>
                   <h3 class="mb-0 fw-bold">{{ stats.attente }}</h3>
                 </div>
               </div>
             </div>
           </div>
+
           <div class="col-12 col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 5px solid #0d6efd !important;">
               <div class="card-body p-4 d-flex align-items-center">
@@ -50,12 +47,13 @@
                   <i class="bi bi-play-circle"></i>
                 </div>
                 <div>
-                  <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">En cours</h6>
+                  <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">{{ 'service_manager.stats.in_progress' | translate }}</h6>
                   <h3 class="mb-0 fw-bold">{{ stats.encours }}</h3>
                 </div>
               </div>
             </div>
           </div>
+
           <div class="col-12 col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 5px solid #198754 !important;">
               <div class="card-body p-4 d-flex align-items-center">
@@ -63,12 +61,13 @@
                   <i class="bi bi-check-circle"></i>
                 </div>
                 <div>
-                  <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">Résolues</h6>
+                  <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">{{ 'service_manager.stats.resolved' | translate }}</h6>
                   <h3 class="mb-0 fw-bold">{{ stats.resolues }}</h3>
                 </div>
               </div>
             </div>
           </div>
+
           <div class="col-12 col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 5px solid #dc3545 !important;">
               <div class="card-body p-4 d-flex align-items-center">
@@ -76,7 +75,7 @@
                   <i class="bi bi-x-circle"></i>
                 </div>
                 <div>
-                  <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">Rejetées</h6>
+                  <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">{{ 'service_manager.stats.rejected' | translate }}</h6>
                   <h3 class="mb-0 fw-bold">{{ stats.rejetees }}</h3>
                 </div>
               </div>
@@ -84,7 +83,6 @@
           </div>
         </div>
 
-        <!-- LIST VIEW -->
         <div *ngIf="activeView === 'list'" class="card border-0 shadow-sm rounded-4">
           <div class="card-body p-0">
             
@@ -92,23 +90,21 @@
               <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                   <tr>
-                    <th class="ps-4 py-3">N° / Client</th>
-                    <th>Titre & Categorie</th>
-                    <th>Statut</th>
-                    <th>Priorité</th>
-                    <th>Équipe Actuelle</th>
-                    <th class="pe-4">Actions</th>
+                    <th class="ps-4 py-3">{{ 'service_manager.table.number_client' | translate }}</th>
+                    <th>{{ 'service_manager.table.title_category' | translate }}</th>
+                    <th>{{ 'service_manager.table.status' | translate }}</th>
+                    <th>{{ 'service_manager.table.priority' | translate }}</th>
+                    <th>{{ 'service_manager.table.current_team' | translate }}</th>
+                    <th class="pe-4">{{ 'service_manager.table.actions' | translate }}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- EMPTY STATE -->
                   <tr *ngIf="reclamations.length === 0">
                     <td colspan="6" class="text-center py-5 text-muted">
-                      Aucune réclamation.
+                      {{ 'service_manager.table.empty' | translate }}
                     </td>
                   </tr>
 
-                  <!-- DATA LOOP -->
                   <ng-container *ngFor="let rec of reclamations">
                     <tr>
                       <td class="ps-4 py-3">
@@ -117,7 +113,7 @@
                       </td>
                       <td>
                         <div class="fw-medium text-dark">{{ rec.titre }}</div>
-                        <div class="small text-muted">{{ rec.categorie }}</div>
+                        <div class="small text-muted">{{ translateCategory(rec.categorie) }}</div>
                       </td>
                       <td>
                         <span class="badge rounded-pill" [ngClass]="{
@@ -125,7 +121,7 @@
                           'bg-primary': rec.statut === 'EN_COURS',
                           'bg-success': rec.statut === 'TRAITEE',
                           'bg-danger': rec.statut === 'REJETEE'
-                        }">{{ rec.statut }}</span>
+                        }">{{ translateStatus(rec.statut) }}</span>
                       </td>
                       <td>
                         <span class="badge" [ngClass]="{
@@ -133,7 +129,7 @@
                           'bg-warning text-dark': rec.priorite === 'MOYENNE',
                           'bg-info text-dark': rec.priorite === 'FAIBLE',
                           'bg-secondary': !rec.priorite
-                        }">{{ rec.priorite || 'NON DÉFINIE' }}</span>
+                        }">{{ translatePriority(rec.priorite) }}</span>
                       </td>
                       <td>
                         <div *ngIf="rec.equipeAssignee" class="fw-bold d-inline-flex align-items-center"
@@ -141,10 +137,10 @@
                            <i class="bi bi-people-fill me-2"></i> {{ rec.equipeAssignee }}
                         </div>
                         <div *ngIf="!rec.equipeAssignee" class="text-muted small fst-italic">
-                           Non assigné
+                           {{ 'service_manager.unassigned' | translate }}
                         </div>
                         <div *ngIf="rec.statut === 'REJETEE'" class="badge bg-danger bg-opacity-10 text-danger mt-1">
-                          <i class="bi bi-exclamation-triangle-fill me-1"></i> Rejeté
+                          <i class="bi bi-exclamation-triangle-fill me-1"></i> {{ 'service_manager.rejected' | translate }}
                         </div>
                       </td>
                       <td class="pe-4">
@@ -153,7 +149,7 @@
                                 [ngClass]="{'btn-primary': rec.statut === 'EN_ATTENTE', 'btn-outline-primary': rec.statut !== 'EN_ATTENTE'}"
                                 (click)="openAssignModal(rec)">
                           <i class="bi bi-box-arrow-in-right me-2"></i>
-                          {{ rec.statut === 'EN_ATTENTE' ? 'Assigner' : 'Ré-assigner' }}
+                          {{ rec.statut === 'EN_ATTENTE' ? ('service_manager.assign' | translate) : ('service_manager.reassign' | translate) }}
                         </button>
                       </td>
                     </tr>
@@ -169,63 +165,57 @@
   </div>
 </div>
 
-<!-- Modal d'Assignation -->
 <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5);" *ngIf="selectedReclamation">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content border-0 shadow-lg rounded-4">
       <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
         <h5 class="modal-title fw-bold text-primary">
-          <i class="bi bi-diagram-3-fill me-2"></i> Assignation de la Réclamation
+          <i class="bi bi-diagram-3-fill me-2"></i> {{ 'service_manager.modal.title' | translate }}
         </h5>
         <button type="button" class="btn-close" (click)="closeAssignModal()" aria-label="Close"></button>
       </div>
       
       <div class="modal-body px-4 py-4">
-        <!-- Ticket Context Summary -->
         <div class="card bg-light border-0 rounded-3 mb-4">
           <div class="card-body">
             <h6 class="fw-bold mb-1">Ticket #{{ selectedReclamation.numeroReclamation }} - {{ selectedReclamation.titre }}</h6>
             <p class="text-muted small mb-0">{{ selectedReclamation.description }}</p>
             <div class="d-flex gap-2 mt-3">
-              <span class="badge bg-secondary">{{ selectedReclamation.categorie }}</span>
+              <span class="badge bg-secondary">{{ translateCategory(selectedReclamation.categorie) }}</span>
               <span class="badge" [ngClass]="{
                           'bg-danger': selectedReclamation.priorite === 'ELEVEE' ,
                           'bg-warning text-dark': selectedReclamation.priorite === 'MOYENNE',
                           'bg-info text-dark': selectedReclamation.priorite === 'FAIBLE',
                           'bg-secondary': !selectedReclamation.priorite
-                        }">{{ selectedReclamation.priorite || 'NON DÉFINIE' }}</span>
+                        }">{{ translatePriority(selectedReclamation.priorite) }}</span>
             </div>
           </div>
         </div>
 
-        <!-- Rejected Context Alert -->
         <div *ngIf="selectedReclamation.statut === 'REJETEE' && selectedReclamation.motifRefus" class="alert alert-danger rounded-3 mb-4 shadow-sm border-0">
           <div class="d-flex align-items-start">
             <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
             <div>
-              <h6 class="fw-bold mb-1">Rejeté par : {{ selectedReclamation.equipeAssignee }}</h6>
-              <p class="mb-0 text-dark small fw-medium">Motif : {{ selectedReclamation.motifRefus }}</p>
+              <h6 class="fw-bold mb-1">{{ 'service_manager.modal.rejected_by' | translate }} {{ selectedReclamation.equipeAssignee }}</h6>
+              <p class="mb-0 text-dark small fw-medium">{{ 'service_manager.modal.reason' | translate }} {{ selectedReclamation.motifRefus }}</p>
             </div>
           </div>
         </div>
 
-        <!-- Assignment Selection (Card Grid) -->
         <div class="mb-3">
-          <label class="form-label fw-bold text-dark mb-3">Choisir l'équipe technique</label>
+          <label class="form-label fw-bold text-dark mb-3">{{ 'service_manager.modal.choose_team' | translate }}</label>
           
-          <!-- Search input -->
           <div class="input-group mb-3">
             <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3">
               <i class="bi bi-search text-muted"></i>
             </span>
             <input type="text" class="form-control border-start-0 rounded-end-pill py-2" 
-                   [(ngModel)]="teamSearchTerm" placeholder="Rechercher une équipe...">
+                   [(ngModel)]="teamSearchTerm" [placeholder]="'service_manager.modal.search_team' | translate">
           </div>
 
-          <!-- Team Cards Grid -->
           <div class="row g-3" style="max-height: 300px; overflow-y: auto;">
             <div *ngIf="filteredEquipes.length === 0" class="col-12 text-center py-4 text-muted fst-italic">
-              Aucune équipe trouvée.
+              {{ 'service_manager.modal.no_team_found' | translate }}
             </div>
             <div class="col-12 col-md-4" *ngFor="let eq of filteredEquipes">
               <div class="card border-2 h-100 cursor-pointer team-card" 
@@ -237,21 +227,21 @@
                     <i class="bi bi-person-workspace fs-3" [ngClass]="selectedEquipeId === eq.id ? 'text-white' : 'text-primary'"></i>
                   </div>
                   <h6 class="mb-0 fw-bold" [ngClass]="selectedEquipeId === eq.id ? 'text-white' : 'text-dark'">{{ eq.nom }}</h6>
-                  <small [ngClass]="selectedEquipeId === eq.id ? 'text-white-50' : 'text-muted'">Cliquez pour choisir</small>
+                  <small [ngClass]="selectedEquipeId === eq.id ? 'text-white-50' : 'text-muted'">{{ 'service_manager.modal.click_to_choose' | translate }}</small>
                 </div>
               </div>
             </div>
           </div>
-          <div class="form-text mt-3"><i class="bi bi-info-circle me-1"></i> La réclamation sera automatiquement déplacée dans la file d'attente du chef de cette équipe.</div>
+          <div class="form-text mt-3"><i class="bi bi-info-circle me-1"></i> {{ 'service_manager.modal.assignment_info' | translate }}</div>
         </div>
       </div>
 
       <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
-        <button type="button" class="btn btn-outline-secondary rounded-pill px-4 fw-medium" (click)="closeAssignModal()">Annuler</button>
+        <button type="button" class="btn btn-outline-secondary rounded-pill px-4 fw-medium" (click)="closeAssignModal()">{{ 'common.cancel' | translate }}</button>
         <button type="button" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" 
                 [disabled]="!selectedEquipeId || isAssigning" 
                 (click)="confirmAssign()">
-          <span *ngIf="!isAssigning">Confirmer l'assignation</span>
+          <span *ngIf="!isAssigning">{{ 'service_manager.modal.confirm_assignment' | translate }}</span>
           <span *ngIf="isAssigning" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         </button>
       </div>

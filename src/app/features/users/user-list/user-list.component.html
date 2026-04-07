@@ -6,16 +6,16 @@
     <app-navbar></app-navbar>
     <div class="container-fluid px-5">
       <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-        <h2 class="page-title mb-0">Utilisateurs</h2>
+        <h2 class="page-title mb-0">{{ 'user_list.title' | translate }}</h2>
 
         <div class="d-flex gap-3">
           <button class="btn-dxc-outline d-flex align-items-center gap-2">
-            <i class="bi bi-download"></i> Exporter
+            <i class="bi bi-download"></i> {{ 'user_list.export' | translate }}
           </button>
 
           <a routerLink="/admin/users/create"
             class="btn-dxc-primary d-flex align-items-center gap-2 text-decoration-none">
-            <i class="bi bi-plus-lg"></i> Ajouter un utilisateur
+            <i class="bi bi-plus-lg"></i> {{ 'user_list.add_user' | translate }}
           </a>
         </div>
       </div>
@@ -23,7 +23,7 @@
       <div class="glass-card p-4">
         <div class="search-wrapper mb-4">
           <i class="bi bi-search"></i>
-          <input type="text" class="search-input" placeholder="Rechercher un utilisateur...">
+          <input type="text" class="search-input" [placeholder]="'user_list.search_placeholder' | translate">
         </div>
 
         <div *ngIf="errorMessage" class="alert alert-danger">
@@ -34,11 +34,11 @@
           <table class="dxc-table" *ngIf="users && users.length > 0">
             <thead>
               <tr>
-                <th>Prénom</th>
-                <th>Nom</th>
-                <th>E-mail</th>
-                <th>Statut</th>
-                <th>Actions</th>
+                <th>{{ 'user_list.columns.first_name' | translate }}</th>
+                <th>{{ 'user_list.columns.last_name' | translate }}</th>
+                <th>{{ 'user_list.columns.email' | translate }}</th>
+                <th>{{ 'user_list.columns.status' | translate }}</th>
+                <th>{{ 'user_list.columns.actions' | translate }}</th>
               </tr>
             </thead>
 
@@ -50,21 +50,21 @@
                 <td>
                   <span class="badge rounded-pill px-3 py-2"
                     [ngClass]="user.deleted ? 'bg-secondary' : 'bg-success bg-opacity-10 text-success'">
-                    {{ user.deleted ? 'Supprimé' : 'Actif' }}
+                    {{ translateUserStatus(user.deleted) }}
                   </span>
                 </td>
 
                 <td>
                   <div class="d-flex align-items-center gap-2">
-                    <button class="action-icon view" (click)="openUserDetails(user)">
+                    <button class="action-icon view" (click)="openUserDetails(user)" [title]="'user_list.actions.view' | translate">
                       <i class="bi bi-eye-fill"></i>
                     </button>
 
-                    <button class="action-icon edit" (click)="editUser(user.id)">
+                    <button class="action-icon edit" (click)="editUser(user.id)" [title]="'user_list.actions.edit' | translate">
                       <i class="bi bi-pencil-fill"></i>
                     </button>
 
-                    <button class="action-icon delete" (click)="deleteUser(user.id)">
+                    <button class="action-icon delete" (click)="deleteUser(user.id)" [title]="'user_list.actions.delete' | translate">
                       <i class="bi bi-trash-fill"></i>
                     </button>
                   </div>
@@ -76,19 +76,19 @@
 
         <div *ngIf="(!users || users.length === 0) && !errorMessage" class="alert empty-box text-center text-muted">
           <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-          Aucun utilisateur trouvé.
+          {{ 'user_list.empty' | translate }}
         </div>
 
         <div class="d-flex justify-content-between align-items-center mt-4 text-muted footer-table">
           <div class="d-flex align-items-center gap-2">
-            <span>Afficher</span>
+            <span>{{ 'user_list.show' | translate }}</span>
             <select class="form-select form-select-sm lines-select">
-              <option>10 lignes</option>
+              <option>{{ 'user_list.lines_10' | translate }}</option>
             </select>
           </div>
 
           <div class="d-flex align-items-center gap-3">
-            <span>1-{{ users.length }} sur {{ users.length }} vus</span>
+            <span>{{ 'user_list.pagination' | translate:{ start: 1, end: users.length, total: users.length } }}</span>
             <div class="d-flex gap-1">
               <button class="btn btn-sm btn-light border">
                 <i class="bi bi-chevron-left"></i>
@@ -104,52 +104,52 @@
     </div>
   </div>
 </div>
-<!-- Modal / Card détails utilisateur -->
+
 <div class="user-details-overlay" *ngIf="selectedUser" (click)="closeUserDetails()">
   <div class="user-details-card" (click)="$event.stopPropagation()">
     <div class="details-header">
-      <h3>Détails de l'utilisateur</h3>
+      <h3>{{ 'user_list.details.title' | translate }}</h3>
       <button class="close-btn" (click)="closeUserDetails()">×</button>
     </div>
 
     <div class="details-body">
       <div class="detail-row">
-        <span class="label">Prénom :</span>
+        <span class="label">{{ 'user_list.details.first_name' | translate }}</span>
         <span>{{ selectedUser.firstName || '-' }}</span>
       </div>
 
       <div class="detail-row">
-        <span class="label">Nom :</span>
+        <span class="label">{{ 'user_list.details.last_name' | translate }}</span>
         <span>{{ selectedUser.lastName || '-' }}</span>
       </div>
 
       <div class="detail-row">
-        <span class="label">Email :</span>
+        <span class="label">{{ 'user_list.details.email' | translate }}</span>
         <span>{{ selectedUser.email }}</span>
       </div>
 
       <div class="detail-row">
-        <span class="label">Genre :</span>
-        <span>{{ selectedUser.gender || '-' }}</span>
+        <span class="label">{{ 'user_list.details.gender' | translate }}</span>
+        <span>{{ translateGender(selectedUser.gender) }}</span>
       </div>
 
       <div class="detail-row">
-        <span class="label">Rôle(s) :</span>
+        <span class="label">{{ 'user_list.details.roles' | translate }}</span>
         <span>{{ (selectedUser.roles && selectedUser.roles.length > 0) ? selectedUser.roles.join(', ') : '-' }}</span>
       </div>
 
       <div class="detail-row">
-        <span class="label">Statut :</span>
-        <span>{{ selectedUser.deleted ? 'Désactivé' : 'Actif' }}</span>
+        <span class="label">{{ 'user_list.details.status' | translate }}</span>
+        <span>{{ selectedUser.deleted ? ('user_list.status.disabled' | translate) : ('user_list.status.active' | translate) }}</span>
       </div>
 
       <div class="detail-row">
-        <span class="label">Date de création :</span>
+        <span class="label">{{ 'user_list.details.created_at' | translate }}</span>
         <span>{{ selectedUser.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
       </div>
 
       <div class="detail-row">
-        <span class="label">Dernière mise à jour :</span>
+        <span class="label">{{ 'user_list.details.updated_at' | translate }}</span>
         <span>{{ selectedUser.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
       </div>
     </div>
