@@ -3,11 +3,19 @@ export interface Reclamation {
   numeroReclamation: string;
   titre: string;
   description: string;
-  categorie: string;
-  priorite: string;
+
+  categorie: 'PROJET' | 'MAINTENANCE';
+  priorite: 'FAIBLE' | 'MOYENNE' | 'ELEVEE';
   statut: string;
+
   dateCreation: string;
   dateMiseAJour: string;
+
+  typeMaintenance?: 'INCIDENT' | 'DEMANDE_SERVICE';
+  sousCategorieIncident?: 'TECHNIQUE' | 'FACTURATION' | 'SERVICE' | 'AUTRE';
+  detailsAutreIncident?: string;
+
+  attachmentName?: string;
   motifRefus?: string;
   equipeAssignee?: string;
 }
@@ -15,13 +23,16 @@ export interface Reclamation {
 export interface CreateReclamationRequest {
   titre: string;
   description: string;
-  categorie: string;
-  typeMaintenance?: string;
-  sousCategorieIncident?: string;
+
+  categorie: 'PROJET' | 'MAINTENANCE';
+  priorite: 'FAIBLE' | 'MOYENNE' | 'ELEVEE';
+
+  typeMaintenance?: 'INCIDENT' | 'DEMANDE_SERVICE';
+  sousCategorieIncident?: 'TECHNIQUE' | 'FACTURATION' | 'SERVICE' | 'AUTRE';
   detailsAutreIncident?: string;
-  priorite: string;
 }
 
 export interface ReclamationStatusResponse {
+  numeroReclamation: string;
   statut: string;
 }

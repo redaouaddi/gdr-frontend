@@ -129,9 +129,9 @@
                       </td>
                       <td>
                         <span class="badge" [ngClass]="{
-                          'bg-danger': rec.priorite === 'HAUTE' || rec.priorite === 'URGENTE',
+                          'bg-danger': rec.priorite === 'ELEVEE',
                           'bg-warning text-dark': rec.priorite === 'MOYENNE',
-                          'bg-info text-dark': rec.priorite === 'BASSE',
+                          'bg-info text-dark': rec.priorite === 'FAIBLE',
                           'bg-secondary': !rec.priorite
                         }">{{ rec.priorite || 'NON DÉFINIE' }}</span>
                       </td>
@@ -189,9 +189,9 @@
             <div class="d-flex gap-2 mt-3">
               <span class="badge bg-secondary">{{ selectedReclamation.categorie }}</span>
               <span class="badge" [ngClass]="{
-                          'bg-danger': selectedReclamation.priorite === 'HAUTE' || selectedReclamation.priorite === 'URGENTE',
+                          'bg-danger': selectedReclamation.priorite === 'ELEVEE' ,
                           'bg-warning text-dark': selectedReclamation.priorite === 'MOYENNE',
-                          'bg-info text-dark': selectedReclamation.priorite === 'BASSE',
+                          'bg-info text-dark': selectedReclamation.priorite === 'FAIBLE',
                           'bg-secondary': !selectedReclamation.priorite
                         }">{{ selectedReclamation.priorite || 'NON DÉFINIE' }}</span>
             </div>

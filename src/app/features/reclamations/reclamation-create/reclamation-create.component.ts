@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { ReclamationService } from '../../../core/services/reclamation.service';
-import { CreateReclamationRequest } from '../../../core/models/reclamation.model';
 import { ClientNavbarComponent } from '../../../layout/client-navbar/client-navbar';
 import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { ReclamationService } from '../../../core/services/reclamation.service';
+import { CreateReclamationRequest } from '../../../core/models/reclamation.model';
 
 @Component({
   selector: 'app-reclamation-create',
@@ -20,52 +20,66 @@ export class ReclamationCreateComponent {
     description: '',
     categorie: 'PROJET',
     priorite: 'MOYENNE',
-    typeMaintenance: undefined
+    typeMaintenance: undefined,
+    sousCategorieIncident: undefined,
+    detailsAutreIncident: ''
   };
 
   selectedFile: File | null = null;
-
   isSubmitting = false;
   showSuccess = false;
   countdown = 3;
-
-  successMessage: string = '';
-  errorMessage: string = '';
+  successMessage = '';
+  errorMessage = '';
 
   constructor(
     private reclamationService: ReclamationService,
     private router: Router
   ) {}
 
-  onFileSelected(event: any): void {
-    if (event.target.files && event.target.files.length > 0) {
-      this.selectedFile = event.target.files[0];
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
     }
   }
 
   onSubmit(): void {
-    this.successMessage = '';
     this.errorMessage = '';
+    this.successMessage = '';
 
-    if (!this.reclamation.titre || !this.reclamation.description || !this.reclamation.categorie || !this.reclamation.priorite) {
-      this.errorMessage = 'Veuillez remplir tous les champs obligatoires.';
+    if (!this.reclamation.titre.trim()) {
+      this.errorMessage = 'Le titre est obligatoire.';
+      return;
+    }
+
+    if (!this.reclamation.description.trim()) {
+      this.errorMessage = 'La description est obligatoire.';
       return;
     }
 
     if (this.reclamation.categorie === 'MAINTENANCE' && !this.reclamation.typeMaintenance) {
-      this.errorMessage = 'Veuillez choisir le type de maintenance.';
+      this.errorMessage = 'Veuillez sélectionner le type de maintenance.';
       return;
     }
 
-    if (this.reclamation.typeMaintenance === 'INCIDENT') {
-      if (!this.reclamation.sousCategorieIncident) {
-        this.errorMessage = 'Veuillez choisir le domaine technique de l\'incident.';
-        return;
-      }
-      if (this.reclamation.sousCategorieIncident === 'AUTRE' && !this.reclamation.detailsAutreIncident) {
-        this.errorMessage = 'Veuillez préciser le détail de l\'incident (Autre).';
-        return;
-      }
+    if (
+      this.reclamation.categorie === 'MAINTENANCE' &&
+      this.reclamation.typeMaintenance === 'INCIDENT' &&
+      !this.reclamation.sousCategorieIncident
+    ) {
+      this.errorMessage = 'Veuillez sélectionner le domaine de l’incident.';
+      return;
+    }
+
+    if (
+      this.reclamation.categorie === 'MAINTENANCE' &&
+      this.reclamation.typeMaintenance === 'INCIDENT' &&
+      this.reclamation.sousCategorieIncident === 'AUTRE' &&
+      !this.reclamation.detailsAutreIncident?.trim()
+    ) {
+      this.errorMessage = 'Veuillez préciser le détail de l’incident.';
+      return;
     }
 
     this.isSubmitting = true;
@@ -73,36 +87,31 @@ export class ReclamationCreateComponent {
     this.reclamationService.createReclamation(this.reclamation, this.selectedFile || undefined).subscribe({
       next: () => {
         this.isSubmitting = false;
+        this.successMessage = 'Réclamation créée avec succès.';
         this.showSuccess = true;
-        this.successMessage =
-          "Votre réclamation a été enregistrée avec succès. Un accusé de réception a été envoyé à votre adresse email.";
-        this.errorMessage = '';
         this.startCountdown();
       },
-      error: (err) => {
+      error: (error) => {
+        console.error(error);
         this.isSubmitting = false;
-        this.showSuccess = false;
-        this.successMessage = '';
         this.errorMessage =
-          "Erreur serveur lors de la création de la réclamation.";
-        console.error('Erreur lors de la création', err);
+          error?.error?.message || 'Une erreur est survenue lors de la création de la réclamation.';
       }
     });
   }
 
-  private startCountdown(): void {
-    this.countdown = 3;
+  cancel(): void {
+    this.router.navigate(['/mes-reclamations']);
+  }
 
+  private startCountdown(): void {
     const interval = setInterval(() => {
       this.countdown--;
+
       if (this.countdown <= 0) {
         clearInterval(interval);
         this.router.navigate(['/mes-reclamations']);
       }
     }, 1000);
-  }
-
-  cancel(): void {
-    this.router.navigate(['/mes-reclamations']);
   }
 }
