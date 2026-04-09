@@ -4,15 +4,43 @@
     "email": "Email",
     "password": "Password",
     "button": "Login",
-    "loading": "Signing in...",
     "face_button": "Sign in with face",
-    "face_title": "Facial recognition login",
-    "open_camera": "Open camera",
+    "face_title": "Facial Recognition Login",
+    "open_camera": "Open Camera",
     "capture": "Capture",
     "validate": "Validate",
-    "close": "Close",
-    "preview": "Preview:"
+    "preview": "Preview:",
+    "face_guide": "Place your face in the center of the frame",
+    "errors": {
+      "invalid_credentials": "Invalid email or password",
+      "generic": "An error occurred. Please try again."
+    },
+    "face_messages": {
+      "photo_captured": "Photo captured successfully",
+      "login_success": "Face login successful"
+    },
+    "face_errors": {
+      "camera_access": "Unable to access the camera",
+      "video_canvas_missing": "Video elements not found",
+      "open_camera_first": "Please open the camera first",
+      "video_not_ready": "Video is not ready",
+      "capture_failed": "Unable to capture image",
+      "email_required": "Please enter your email",
+      "image_required": "Please capture an image",
+      "not_recognized": "Face not recognized",
+      "login_failed": "Face login failed"
+    }
   },
+  "auth": {
+    "face_login": {
+      "title": "Facial Recognition Login",
+      "guide_text": "Place your face in the center of the frame",
+      "open_camera": "Open Camera",
+      "capture": "Capture",
+        "preview": "Preview:",
+      "validate": "Validate"
+    }
+},
   
   "dashboard": {
     "title": "Dashboard"
@@ -21,6 +49,7 @@
     "logout": "Logout",
     "loading": "Loading...",
     "cancel": "Cancel",
+    "close": "Close",
     "select": "Select..."
   },
 
@@ -493,10 +522,12 @@
   "save_face": "Save face",
   "close": "Close",
   "preview": "Preview",
+  "face_guide": "Center your face inside the frame",
   "messages": {
     "faceid_success": "Face ID activated successfully.",
     "photo_captured": "Photo captured successfully.",
     "face_saved": "Face saved successfully."
+
   },
   "errors": {
     "user_not_identified": "User not identified.",

@@ -137,23 +137,47 @@
   <!-- MODAL RECONNAISSANCE FACIALE -->
   <div class="face-modal-backdrop" *ngIf="showFaceModal">
     <div class="face-modal">
+
       <h5>{{ 'sidebar.face_register' | translate }}</h5>
 
-      <video #videoElement autoplay playsinline class="face-video"></video>
-      <canvas #canvasElement class="face-canvas"></canvas>
+      <!-- CAMERA AVEC CADRE -->
+      <div class="camera-frame-wrapper">
+  <video #videoElement autoplay playsinline class="face-video"></video>
+
+  <div class="face-guide-overlay">
+    <div class="face-guide-oval"></div>
+    <p class="face-guide-text">
+      {{ 'sidebar.face_guide' | translate }}
+    </p>
+  </div>
+</div>
+
+<canvas #canvasElement class="face-canvas"></canvas>
 
       <div class="face-actions">
-        <button class="face-action-btn" (click)="startCamera()">{{ 'sidebar.open_camera' | translate }}</button>
-        <button class="face-action-btn" (click)="captureFace()">{{ 'sidebar.capture' | translate }}</button>
-        <button class="face-action-btn" (click)="saveFaceToBackend()" [disabled]="!capturedImage">
+        <button class="face-action-btn" (click)="startCamera()">
+          {{ 'sidebar.open_camera' | translate }}
+        </button>
+
+        <button class="face-action-btn" (click)="captureFace()">
+          {{ 'sidebar.capture' | translate }}
+        </button>
+
+        <button
+          class="face-action-btn"
+          (click)="saveFaceToBackend()"
+          [disabled]="!capturedImage">
           {{ 'sidebar.save_face' | translate }}
         </button>
-        <button class="face-action-btn cancel" (click)="closeFaceModal()">{{ 'sidebar.close' | translate }}</button>
+
+        <button class="face-action-btn cancel" (click)="closeFaceModal()">
+          {{ 'sidebar.close' | translate }}
+        </button>
       </div>
 
       <div *ngIf="capturedImage" class="preview-block">
         <p>{{ 'sidebar.preview' | translate }}</p>
-        <img [src]="capturedImage" alt="Captured face" class="face-preview" />
+        <img [src]="capturedImage" class="face-preview" />
       </div>
 
       <small *ngIf="faceCaptureMessage" class="faceid-success">
@@ -163,6 +187,7 @@
       <small *ngIf="faceCaptureError" class="faceid-error">
         {{ faceCaptureError }}
       </small>
+
     </div>
   </div>
 </aside>

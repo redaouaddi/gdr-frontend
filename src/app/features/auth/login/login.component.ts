@@ -154,16 +154,13 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    const width = video.videoWidth;
-    const height = video.videoHeight;
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
 
-    if (!width || !height) {
+    if (!videoWidth || !videoHeight) {
       this.faceLoginError = this.translate.instant('login.face_errors.video_not_ready');
       return;
     }
-
-    canvas.width = width;
-    canvas.height = height;
 
     const context = canvas.getContext('2d');
     if (!context) {
@@ -171,8 +168,28 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    context.drawImage(video, 0, 0, width, height);
-    this.faceLoginImage = canvas.toDataURL('image/png');
+    // Capture centrée pour mieux isoler le visage et réduire l'arrière-plan
+    const cropWidth = videoWidth * 0.45;
+    const cropHeight = videoHeight * 0.7;
+    const sx = (videoWidth - cropWidth) / 2;
+    const sy = (videoHeight - cropHeight) / 2;
+
+    canvas.width = cropWidth;
+    canvas.height = cropHeight;
+
+    context.drawImage(
+      video,
+      sx,
+      sy,
+      cropWidth,
+      cropHeight,
+      0,
+      0,
+      cropWidth,
+      cropHeight
+    );
+
+    this.faceLoginImage = canvas.toDataURL('image/jpeg', 0.95);
     this.faceLoginMessage = this.translate.instant('login.face_messages.photo_captured');
   }
 
@@ -227,9 +244,12 @@ export class LoginComponent implements OnInit {
       }
     } catch (error: any) {
       console.error('ERREUR LOGIN FACE :', error);
-      this.faceLoginError =
-        error?.error?.message ||
-        this.translate.instant('login.face_errors.login_failed');
+
+      if (error.status === 401) {
+        this.faceLoginError = this.translate.instant('login.face_errors.not_recognized');
+      } else {
+        this.faceLoginError = this.translate.instant('login.face_errors.login_failed');
+      }
     }
   }
 }

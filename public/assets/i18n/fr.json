@@ -1,18 +1,46 @@
 {
   "login": {
-    "subtitle": "Connexion à votre compte",
+    "subtitle": "Connectez-vous à votre compte",
     "email": "Email",
     "password": "Mot de passe",
     "button": "Connexion",
-    "loading": "Connexion...",
     "face_button": "Se connecter par visage",
     "face_title": "Connexion par reconnaissance faciale",
     "open_camera": "Ouvrir caméra",
     "capture": "Capturer",
     "validate": "Valider",
-    "close": "Fermer",
-    "preview": "Aperçu :"
+    "preview": "Aperçu :",
+    "face_guide": "Placez votre visage au centre du cadre",
+    "errors": {
+      "invalid_credentials": "Email ou mot de passe incorrect",
+      "generic": "Une erreur est survenue. Réessayez."
+    },
+    "face_messages": {
+      "photo_captured": "Photo capturée avec succès",
+      "login_success": "Connexion par visage réussie"
+    },
+    "face_errors": {
+      "camera_access": "Impossible d’accéder à la caméra",
+      "video_canvas_missing": "Éléments vidéo introuvables",
+      "open_camera_first": "Veuillez ouvrir la caméra d’abord",
+      "video_not_ready": "Vidéo non prête",
+      "capture_failed": "Impossible de capturer l’image",
+      "email_required": "Veuillez saisir votre email",
+      "image_required": "Veuillez capturer une image",
+      "not_recognized": "Visage non reconnu",
+      "login_failed": "Échec de la connexion faciale"
+    }
   },
+  "auth": {
+    "face_login": {
+      "title": "Connexion par reconnaissance faciale",
+      "guide_text": "Placez votre visage au centre du cadre",
+      "open_camera": "Ouvrir caméra",
+      "capture": "Capturer",
+      "preview": "Aperçu :",
+      "validate": "Valider"
+    }
+},
   
   "dashboard": {
     "title": "Tableau de bord"
@@ -21,7 +49,8 @@
     "logout": "Déconnexion",
     "loading": "Chargement...",
     "cancel": "Annuler",
-    "select": "Sélectionner..."
+    "select": "Sélectionner...",
+    "close": "Fermer"
   },
   
   "reclamations_all": {
@@ -494,10 +523,12 @@
   "save_face": "Enregistrer visage",
   "close": "Fermer",
   "preview": "Aperçu",
+  "face_guide": "Centrez votre visage dans le cadre",
   "messages": {
     "faceid_success": "Face ID activé avec succès.",
     "photo_captured": "Photo capturée avec succès.",
     "face_saved": "Visage enregistré avec succès."
+    
   },
   "errors": {
     "user_not_identified": "Utilisateur non identifié.",

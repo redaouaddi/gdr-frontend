@@ -66,48 +66,52 @@
 
   <!-- MODAL FACE LOGIN -->
   <div class="face-modal-backdrop" *ngIf="showFaceLoginModal">
-    <div class="face-modal">
+  <div class="face-modal">
+    <h5>{{ 'auth.face_login.title' | translate }}</h5>
 
-      <h5>{{ 'login.face_title' | translate }}</h5>
-
+    <div class="camera-frame-wrapper">
       <video #faceLoginVideo autoplay playsinline class="face-video"></video>
-      <canvas #faceLoginCanvas class="face-canvas"></canvas>
 
-      <div class="face-actions">
-        <button type="button" class="face-action-btn" (click)="startFaceLoginCamera()">
-          {{ 'login.open_camera' | translate }}
-        </button>
-
-        <button type="button" class="face-action-btn" (click)="captureFaceLogin()">
-          {{ 'login.capture' | translate }}
-        </button>
-
-        <button
-          type="button"
-          class="face-action-btn"
-          (click)="loginWithFace()"
-          [disabled]="!faceLoginImage">
-          {{ 'login.validate' | translate }}
-        </button>
-
-        <button type="button" class="face-action-btn cancel" (click)="closeFaceLoginModal()">
-          {{ 'login.close' | translate }}
-        </button>
+      <div class="face-guide-overlay">
+        <div class="face-guide-oval"></div>
+        <p class="face-guide-text">
+          {{ 'auth.face_login.guide_text' | translate }}
+        </p>
       </div>
-
-      <div *ngIf="faceLoginImage" class="preview-block">
-        <p>{{ 'login.preview' | translate }}</p>
-        <img [src]="faceLoginImage" class="face-preview" />
-      </div>
-
-      <small *ngIf="faceLoginMessage" class="face-success">
-        {{ faceLoginMessage }}
-      </small>
-
-      <small *ngIf="faceLoginError" class="face-error">
-        {{ faceLoginError }}
-      </small>
-
     </div>
+
+    <canvas #faceLoginCanvas class="face-canvas"></canvas>
+
+    <div class="face-actions">
+      <button class="face-action-btn" (click)="startFaceLoginCamera()">
+        {{ 'auth.face_login.open_camera' | translate }}
+      </button>
+
+      <button class="face-action-btn" (click)="captureFaceLogin()">
+        {{ 'auth.face_login.capture' | translate }}
+      </button>
+
+      <button class="face-action-btn" (click)="loginWithFace()" [disabled]="!faceLoginImage">
+        {{ 'auth.face_login.validate' | translate }}
+      </button>
+
+      <button class="face-action-btn cancel" (click)="closeFaceLoginModal()">
+        {{ 'common.close' | translate }}
+      </button>
+    </div>
+
+    <div *ngIf="faceLoginImage" class="preview-block">
+      <p>{{ 'auth.face_login.preview' | translate }}</p>
+      <img [src]="faceLoginImage" class="face-preview" />
+    </div>
+
+    <small *ngIf="faceLoginMessage" class="face-success">
+      {{ faceLoginMessage | translate }}
+    </small>
+
+    <small *ngIf="faceLoginError" class="face-error">
+      {{ faceLoginError | translate }}
+    </small>
   </div>
+</div>
 </div>

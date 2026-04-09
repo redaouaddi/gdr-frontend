@@ -130,44 +130,41 @@ export class SidebarComponent implements OnInit {
     }
   }
 
-  captureFace() {
-    this.faceCaptureError = '';
-    this.faceCaptureMessage = '';
+  captureFace(): void {
+  const video = this.videoElement?.nativeElement;
+  const canvas = this.canvasElement?.nativeElement;
 
-    const video = this.videoElement?.nativeElement;
-    const canvas = this.canvasElement?.nativeElement;
+  if (!video || !canvas) return;
 
-    if (!video || !canvas) {
-      this.faceCaptureError = this.translate.instant('sidebar.errors.video_canvas_missing');
-      return;
-    }
+  const width = video.videoWidth;
+  const height = video.videoHeight;
 
-    if (!this.mediaStream) {
-      this.faceCaptureError = this.translate.instant('sidebar.errors.open_camera_first');
-      return;
-    }
+  const context = canvas.getContext('2d');
+  if (!context) return;
 
-    const width = video.videoWidth;
-    const height = video.videoHeight;
+  const cropWidth = width * 0.45;
+  const cropHeight = height * 0.7;
 
-    if (!width || !height) {
-      this.faceCaptureError = this.translate.instant('sidebar.errors.video_not_ready');
-      return;
-    }
+  const sx = (width - cropWidth) / 2;
+  const sy = (height - cropHeight) / 2;
 
-    canvas.width = width;
-    canvas.height = height;
+  canvas.width = cropWidth;
+  canvas.height = cropHeight;
 
-    const context = canvas.getContext('2d');
-    if (!context) {
-      this.faceCaptureError = this.translate.instant('sidebar.errors.capture_failed');
-      return;
-    }
+  context.drawImage(
+    video,
+    sx,
+    sy,
+    cropWidth,
+    cropHeight,
+    0,
+    0,
+    cropWidth,
+    cropHeight
+  );
 
-    context.drawImage(video, 0, 0, width, height);
-    this.capturedImage = canvas.toDataURL('image/png');
-    this.faceCaptureMessage = this.translate.instant('sidebar.messages.photo_captured');
-  }
+  this.capturedImage = canvas.toDataURL('image/jpeg', 0.95);
+}
 
   stopCamera() {
     if (this.mediaStream) {
