@@ -14,8 +14,14 @@
 }
 
 .dxc-logo {
-  height: 45px;
+  height: 42px;
   object-fit: contain;
+  border-radius: 6px;
+  transition: transform 0.3s ease;
+}
+
+.dxc-logo:hover {
+  transform: scale(1.05);
 }
 
 .nav-btn-signin {
