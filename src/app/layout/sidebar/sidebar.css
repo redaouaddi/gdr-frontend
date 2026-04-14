@@ -24,23 +24,15 @@
   justify-content: center;
 }
 
-.logo-text {
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: 2px;
-  line-height: 1;
-  background: linear-gradient(90deg, #8a2be2 0%, #ff00ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.sidebar-logo {
+  max-width: 110px;
+  display: block;
+  margin: 0 auto;
+  transition: transform 0.3s ease;
 }
 
-.logo-sub {
-  font-size: 0.55rem;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #7623a3;
+.sidebar-logo:hover {
+  transform: scale(1.05);
 }
 
 .sidebar-body {
