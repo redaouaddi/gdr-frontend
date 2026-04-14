@@ -446,29 +446,73 @@
     "logout": "Logout"
   },
    "admin_dashboard": {
-    "title": "Admin Dashboard",
-    "cards": {
-      "users": "Users",
-      "claims": "Claims",
-      "in_progress": "In Progress",
-      "sla_respected": "SLA Respected"
-    },
-    "chart": {
-      "title": "Claims Status",
-      "open": "Open",
-      "in_progress": "In Progress",
-      "resolved": "Resolved",
-      "closed": "Closed"
-    },
-    "recent_activity": {
-      "title": "Recent Activity",
-      "id": "ID",
-      "user": "User",
-      "action": "Action",
-      "user_created": "User creation",
-      "new_claim": "New claim"
+  "title": "Admin Dashboard",
+  "cards": {
+    "users": "Users",
+    "claims": "Claims",
+    "in_progress": "In Progress",
+    "sla_respected": "SLA Respected"
+  },"datasets": {
+  "status": "Claims status",
+  "priority": "Claims priority",
+  "month": "Claims by month",
+  "categorie": "Claims by category"
+},
+"categories": {
+  "project": "Project",
+  "maintenance": "Maintenance",
+  "technical": "Technical",
+  "billing": "Billing",
+  "service": "Service",
+  "other": "Other"
+},
+
+"priorities": {
+  "high": "High",
+  "medium": "Medium",
+  "low": "Low",
+  "urgent": "Urgent"
+}, 
+  "chart": {
+    "title": "Claims Status Distribution",
+    "open": "Open",
+    "in_progress": "In Progress",
+    "resolved": "Resolved",
+    "pending": "Pending",
+    "chart_type": "Chart type",
+    "main_color": "Main color",
+    "closed": "Closed",
+    "data_to_display": "Data to display",
+    "types": {
+      "bar": "Bar",
+      "line": "Line",
+      "pie": "Pie",
+      "doughnut": "Doughnut"
     }
   },
+  "recent_activity": {
+    "title": "Recent Activity",
+    "id": "ID",
+    "user": "User",
+    "action": "Action",
+    "user_created": "User creation",
+    "new_claim": "New claim"
+  },
+"months": {
+  "january": "January",
+  "february": "February",
+  "march": "March",
+  "april": "April",
+  "may": "May",
+  "june": "June",
+  "july": "July",
+  "august": "August",
+  "september": "September",
+  "october": "October",
+  "november": "November",
+  "december": "December"
+}
+},
   "client_dashboard": {
     "title": "Dashboard",
     "create_claim": "Create a Claim",
@@ -492,6 +536,8 @@
     "logout": "Logout"
   },
   "sidebar": {
+  "communication": "Communication",
+"internal_messages": "Internal messaging",  
   "admin_panel": "Admin Panel",
   "dashboard": "Dashboard",
   "users": "Users",
@@ -540,6 +586,16 @@
     "no_captured_image": "No captured image.",
     "face_save": "Error while saving face."
   }
+},
+"internal_messages": {
+  "title": "Internal messaging",
+  "select_claim": "Choose a claim",
+  "choose_claim": "Select a claim",
+  "discussion": "Discussion",
+  "no_messages": "No messages",
+  "placeholder": "Write a message...",
+  "send": "Send",
+  "unknown_user": "Unknown user"
 }
 
 }

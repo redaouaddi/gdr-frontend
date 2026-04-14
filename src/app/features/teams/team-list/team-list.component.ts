@@ -3,15 +3,15 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { EquipeService } from '../../../core/services/equipe.service';
 import { Equipe } from '../../../core/models/equipe.model';
-import { NavbarComponent } from '../../../layout/navbar/navbar';
-import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { Navbar } from '../../../layout/navbar/navbar';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { finalize, timeout } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-team-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, SidebarComponent, TranslateModule],
+  imports: [CommonModule, RouterLink, Navbar, Sidebar, TranslateModule],
   templateUrl: './team-list.component.html'
 })
 export class TeamListComponent implements OnInit {

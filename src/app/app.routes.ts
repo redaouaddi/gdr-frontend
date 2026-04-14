@@ -29,6 +29,7 @@ export const routes: Routes = [
     data: { roles: ['ROLE_ADMIN'] }
   },
 
+
   {
     path: 'dashboard/client',
     component: DashboardClientComponent,
@@ -124,5 +125,13 @@ export const routes: Routes = [
     component: ReclamationCreateComponent,
     canActivate: [authGuard, roleGuard],
     data: { roles: ['ROLE_CLIENT'] }
-  }
+  },
+
+ {
+  path: 'messages-internes',
+  loadComponent: () =>
+    import('./features/messagerie-interne/messages-ineternes').
+      then(m => m.MessagesInternes)
+}
+
 ];

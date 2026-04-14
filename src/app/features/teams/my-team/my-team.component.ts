@@ -5,15 +5,15 @@ import { Equipe } from '../../../core/models/equipe.model';
 import { UserResponse } from '../../../core/services/user.service';
 import { ReclamationService } from '../../../core/services/reclamation.service';
 import { Reclamation } from '../../../core/models/reclamation.model';
-import { NavbarComponent } from '../../../layout/navbar/navbar';
-import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { Navbar } from '../../../layout/navbar/navbar';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-my-team',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, SidebarComponent, FormsModule, TranslateModule],
+  imports: [CommonModule, Navbar, Sidebar, FormsModule, TranslateModule],
   templateUrl: './my-team.component.html'
 })
 export class MyTeamComponent implements OnInit {

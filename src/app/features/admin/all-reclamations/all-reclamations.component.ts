@@ -2,8 +2,8 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReclamationService } from '../../../core/services/reclamation.service';
 import { Reclamation } from '../../../core/models/reclamation.model';
-import { NavbarComponent } from '../../../layout/navbar/navbar';
-import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { Navbar } from '../../../layout/navbar/navbar';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { finalize, timeout } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -12,8 +12,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   standalone: true,
   imports: [
     CommonModule,
-    NavbarComponent,
-    SidebarComponent,
+    Navbar,
+    Sidebar,
     TranslateModule
   ],
   templateUrl: './all-reclamations.component.html'

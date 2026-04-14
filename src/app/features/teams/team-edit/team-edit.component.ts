@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EquipeService } from '../../../core/services/equipe.service';
 import { UserService, UserResponse } from '../../../core/services/user.service';
-import { NavbarComponent } from '../../../layout/navbar/navbar';
-import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { Navbar } from '../../../layout/navbar/navbar';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { finalize, timeout } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -16,8 +16,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     CommonModule,
     ReactiveFormsModule,
     RouterLink,
-    NavbarComponent,
-    SidebarComponent,
+    Navbar,
+    Sidebar,
     TranslateModule
   ],
   templateUrl: './team-edit.component.html'

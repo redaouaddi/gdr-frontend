@@ -2,8 +2,8 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
-import { NavbarComponent } from '../../../layout/navbar/navbar';
-import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { Navbar } from '../../../layout/navbar/navbar';
+import { Sidebar} from '../../../layout/sidebar/sidebar';
 import { UserService } from '../../../core/services/user.service';
 import { AccessService } from '../../../core/services/access.service';
 import { Access } from '../../../core/models/access.model';
@@ -12,7 +12,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-user-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NavbarComponent, RouterLink, SidebarComponent, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, Navbar, RouterLink, Sidebar, TranslateModule],
   templateUrl: './user-edit.html'
 })
 export class UserEdit implements OnInit {

@@ -64,3 +64,100 @@ background:#f1f3f8;
 padding:10px;
 border-bottom:1px solid #eee;
 }
+.chart-controls {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.control-group select,
+.control-group input {
+  padding: 8px;
+}
+.chart {
+  border-radius: 18px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.chart-header h3 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.chart-controls {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+}
+
+.control-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #444;
+}
+
+.control-group select,
+.control-group input[type="color"] {
+  height: 42px;
+  border: 1px solid #d7dbe3;
+  border-radius: 10px;
+  padding: 0 12px;
+  background: #fff;
+  outline: none;
+}
+
+.color-group {
+  min-width: 120px;
+}
+
+.control-group input[type="color"] {
+  padding: 4px;
+  width: 70px;
+  cursor: pointer;
+}
+
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 850px;
+  height: 320px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .chart-wrapper {
+    height: 260px;
+  }
+
+  .chart-header {
+    flex-direction: column;
+  }
+
+  .chart-controls {
+    width: 100%;
+  }
+}

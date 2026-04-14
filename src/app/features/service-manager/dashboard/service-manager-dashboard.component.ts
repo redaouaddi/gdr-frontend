@@ -6,15 +6,15 @@ import { EquipeService } from '../../../core/services/equipe.service';
 import { Reclamation } from '../../../core/models/reclamation.model';
 import { Equipe } from '../../../core/models/equipe.model';
 import { finalize, timeout } from 'rxjs/operators';
-import { NavbarComponent } from '../../../layout/navbar/navbar';
-import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { Navbar } from '../../../layout/navbar/navbar';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-service-manager-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent, SidebarComponent, TranslateModule],
+  imports: [CommonModule, FormsModule, Navbar, Sidebar, TranslateModule],
   templateUrl: './service-manager-dashboard.component.html',
   styleUrls: ['./service-manager-dashboard.component.css']
 })

@@ -1,15 +1,15 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService, UserResponse } from '../../../core/services/user.service';
-import { NavbarComponent } from '../../../layout/navbar/navbar';
+import { Navbar } from '../../../layout/navbar/navbar';
 import { RouterLink, Router } from '@angular/router';
-import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, RouterLink, SidebarComponent, TranslateModule],
+  imports: [CommonModule, Navbar, RouterLink, Sidebar, TranslateModule],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css']
 })
