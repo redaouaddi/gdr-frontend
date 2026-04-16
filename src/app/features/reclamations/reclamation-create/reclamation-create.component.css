@@ -70,6 +70,17 @@ label {
   box-shadow: 0 0 0 2px rgba(98, 54, 255, 0.1);
 }
 
+.date-readonly,
+.date-readonly:focus {
+  background-color: #f4f5f9;
+  color: #9a9db5;
+  cursor: not-allowed;
+  border-color: #e0e0e0;
+  box-shadow: none;
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
 .file-upload-wrapper {
   position: relative;
   display: flex;

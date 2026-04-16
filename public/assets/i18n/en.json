@@ -113,9 +113,15 @@
     "MODIFIER_RECLAMATIONS": "Edit claims",
     "SUPPRIMER_RECLAMATIONS": "Delete claims",
     "ASSIGNER_RECLAMATIONS": "Assign claims",
+    "LIRE_UTILISATEURS": "Read users",
+    "CREER_UTILISATEURS": "Create users",
+    "MODIFIER_UTILISATEURS": "Edit users",
+    "SUPPRIMER_UTILISATEURS": "Delete users",
+    "GERER_ACCES": "Manage access and permissions",
     "CONSULTER_RAPPORTS": "View reports",
-    "GERER_UTILISATEURS": "Manage users",
-    "GERER_ROLES": "Manage roles"
+    "VOIR_NOUVELLES_RECLAMATIONS": "View new claims",
+    "GERER_EQUIPE": "Manage teams",
+    "CREER_EQUIPE": "Create a team"
   },
 
   "reclamation_create": {
@@ -131,6 +137,7 @@
     "other_details_placeholder": "Specify your issue...",
     "description": "Description",
     "description_placeholder": "Describe your issue in detail...",
+    "created_at": "Creation date",
     "attachment": "Attachment (Screenshot, etc.)",
     "choose_file": "Choose a file...",
     "submit": "Submit",
