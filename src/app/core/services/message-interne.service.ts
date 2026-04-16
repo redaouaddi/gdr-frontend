@@ -7,7 +7,6 @@ export interface MessageInterne {
   contenu: string;
   dateEnvoi: string;
   lu: boolean;
-  auteurId: number;
   auteurNom: string;
   reclamationId: number;
 }
@@ -27,7 +26,7 @@ export class MessageInterneService {
     );
   }
 
-  envoyerMessage(message: any): Observable<MessageInterne> {
-    return this.http.post<MessageInterne>(this.api, message);
+  envoyerMessage(reclamationId: number, contenu: string): Observable<MessageInterne> {
+    return this.http.post<MessageInterne>(this.api, { reclamationId, contenu });
   }
 }

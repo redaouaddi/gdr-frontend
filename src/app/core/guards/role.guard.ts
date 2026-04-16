@@ -20,15 +20,15 @@ export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     return true;
   }
 
-  if (userRoles.includes('ROLE_ADMIN')) {
+  if (userRoles.includes('ADMIN')) {
     router.navigate(['/dashboard/admin']);
-  } else if (userRoles.includes('ROLE_CLIENT')) {
+  } else if (userRoles.includes('CLIENT')) {
     router.navigate(['/dashboard/client']);
-  } else if (userRoles.includes('ROLE_AGENT')) {
+  } else if (userRoles.includes('AGENT')) {
     router.navigate(['/agent/missions']);
-  } else if (userRoles.includes('ROLE_MANAGER')) {
+  } else if (userRoles.includes('MANAGER')) {
     router.navigate(['/dashboard/manager']);
-  } else if (userRoles.includes('ROLE_SERVICE_MANAGER')) {
+  } else if (userRoles.includes('SERVICE_MANAGER')) {
     router.navigate(['/dashboard/service-manager']);
   } else {
     router.navigate(['/login']);

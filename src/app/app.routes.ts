@@ -27,7 +27,7 @@ export const routes: Routes = [
     path: 'dashboard/admin',
     component: DashboardAdminComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_ADMIN'] }
+    data: { roles: ['ADMIN'] }
   },
 
 
@@ -35,91 +35,91 @@ export const routes: Routes = [
     path: 'dashboard/client',
     component: DashboardClientComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_CLIENT'] }
+    data: { roles: ['CLIENT'] }
   },
 
   {
     path: 'admin/users',
     component: UserListComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_ADMIN'] }
+    data: { roles: ['ADMIN'] }
   },
 
   {
     path: 'admin/users/create',
     component: UserCreateComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_ADMIN'] }
+    data: { roles: ['ADMIN'] }
   },
 
   {
     path: 'admin/users/edit/:id',
     component: UserEdit,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_ADMIN'] }
+    data: { roles: ['ADMIN'] }
   },
 
   {
     path: 'admin/roles',
     component: Roles,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_ADMIN'] }
+    data: { roles: ['ADMIN'] }
   },
 
   {
     path: 'admin/reclamations',
     component: AllReclamationsComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_ADMIN'] }
+    data: { roles: ['ADMIN'] }
   },
 
   {
     path: 'admin/settings',
     component: Settings,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_ADMIN'] }
+    data: { roles: ['ADMIN'] }
   },
 
   {
     path: 'admin/teams',
     component: TeamListComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_ADMIN'] }
+    data: { roles: ['ADMIN'] }
   },
 
   {
     path: 'admin/teams/create',
     component: TeamCreateComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_ADMIN'] }
+    data: { roles: ['ADMIN'] }
   },
 
   {
     path: 'admin/teams/edit/:id',
     component: TeamEditComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_ADMIN'] }
+    data: { roles: ['ADMIN'] }
   },
 
   {
     path: 'service-manager/my-team',
     component: MyTeamComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_CHEF_EQUIPE', 'ROLE_AGENT'] }
+    data: { roles: ['CHEF_EQUIPE', 'AGENT'] }
   },
 
   {
     path: 'dashboard/service-manager',
     component: ServiceManagerDashboardComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_SERVICE_MANAGER'] }
+    data: { roles: ['SERVICE_MANAGER'] }
   },
   
   {
     path: 'agent/missions',
     component: AgentMissionsComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_AGENT', 'ROLE_CHEF_EQUIPE', 'ROLE_ADMIN'] }
+    data: { roles: ['AGENT', 'CHEF_EQUIPE', 'ADMIN'] }
   },
 
   {
@@ -135,11 +135,5 @@ export const routes: Routes = [
     data: { roles: ['ROLE_CLIENT'] }
   },
 
- {
-  path: 'messages-internes',
-  loadComponent: () =>
-    import('./features/messagerie-interne/messages-ineternes').
-      then(m => m.MessagesInternes)
-}
 
 ];

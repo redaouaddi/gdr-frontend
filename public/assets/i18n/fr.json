@@ -621,13 +621,34 @@
     "status": "Statut",
     "date": "Date de création",
     "actions": "Actions"
+  },
+  "actions": {
+    "accept": "Accepter (mettre en cours)",
+    "resolve": "Marquer comme traitée",
+    "reject": "Rejeter",
+    "notes": "Remarques internes"
+  },
+  "messages": {
+    "accepted": "La réclamation #{{numero}} est maintenant en cours.",
+    "resolved": "La réclamation #{{numero}} a été marquée comme résolue.",
+    "rejected": "La réclamation #{{numero}} a été rejetée.",
+    "error_accept": "Impossible d'accepter la réclamation.",
+    "error_resolve": "Impossible de résoudre la réclamation.",
+    "error_reject": "Impossible de rejeter la réclamation."
+  },
+  "reject_modal": {
+    "title": "Rejeter la réclamation",
+    "text": "Veuillez indiquer le motif du rejet pour la réclamation",
+    "reason_label": "Motif du rejet",
+    "reason_placeholder": "Décrivez la raison du rejet...",
+    "confirm": "Confirmer le rejet"
+    },
+    "notes_modal": {
+      "title": "Remarques internes",
+      "no_notes": "Aucune remarque pour le moment.",
+      "add_label": "Ajouter une remarque",
+      "placeholder": "Écrivez votre remarque ici...",
+      "add_btn": "Ajouter la remarque"
+    }
   }
 }
-
-}
-  
- 
-
-
-
-

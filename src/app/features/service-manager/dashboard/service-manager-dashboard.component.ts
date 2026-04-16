@@ -10,11 +10,13 @@ import { Navbar } from '../../../layout/navbar/navbar';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MessageInterneService, MessageInterne } from '../../../core/services/message-interne.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-service-manager-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, Navbar, Sidebar, TranslateModule],
+  imports: [CommonModule, FormsModule, Navbar, Sidebar, TranslateModule, DatePipe],
   templateUrl: './service-manager-dashboard.component.html',
   styleUrls: ['./service-manager-dashboard.component.css']
 })
@@ -39,6 +41,15 @@ export class ServiceManagerDashboardComponent implements OnInit {
   teamSearchTerm = '';
   isAssigning = false;
 
+  // Internal Remarks state
+  showNoteModal = false;
+  currentMissionNotes: MessageInterne[] = [];
+  newNoteText = '';
+  selectedMissionNoteId?: number;
+  selectedMissionNoteNumero?: string;
+  isSendingNote = false;
+  isLoadingNotes = false;
+
   get filteredEquipes(): Equipe[] {
     if (!this.teamSearchTerm.trim()) return this.equipes;
     return this.equipes.filter(e =>
@@ -49,6 +60,7 @@ export class ServiceManagerDashboardComponent implements OnInit {
   constructor(
     private reclamationService: ReclamationService,
     private equipeService: EquipeService,
+    private messageInterneService: MessageInterneService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private translate: TranslateService
@@ -155,5 +167,57 @@ export class ServiceManagerDashboardComponent implements OnInit {
   translateCategory(categorie: string | undefined): string {
     if (!categorie) return '';
     return this.translate.instant('categories.' + categorie);
+  }
+
+  // Remark Modal Methods
+  openNoteModal(mission: Reclamation): void {
+    if (!mission.id) return;
+    this.selectedMissionNoteId = mission.id;
+    this.selectedMissionNoteNumero = mission.numeroReclamation;
+    this.newNoteText = '';
+    this.showNoteModal = true;
+    this.loadNotes(mission.id);
+  }
+
+  closeNoteModal(): void {
+    this.showNoteModal = false;
+    this.selectedMissionNoteId = undefined;
+    this.selectedMissionNoteNumero = undefined;
+    this.currentMissionNotes = [];
+  }
+
+  loadNotes(reclamationId: number): void {
+    this.isLoadingNotes = true;
+    this.messageInterneService.getMessages(reclamationId).subscribe({
+      next: (data) => {
+        this.currentMissionNotes = data || [];
+        this.isLoadingNotes = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Erreur chargement notes:', err);
+        this.isLoadingNotes = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  ajouterNote(): void {
+    if (!this.selectedMissionNoteId || !this.newNoteText.trim()) return;
+
+    this.isSendingNote = true;
+    this.messageInterneService.envoyerMessage(this.selectedMissionNoteId, this.newNoteText).subscribe({
+      next: (note) => {
+        this.currentMissionNotes.push(note);
+        this.newNoteText = '';
+        this.isSendingNote = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Erreur envoi note:', err);
+        this.isSendingNote = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

@@ -9,11 +9,13 @@ import { Navbar } from '../../../layout/navbar/navbar';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MessageInterneService, MessageInterne } from '../../../core/services/message-interne.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-my-team',
   standalone: true,
-  imports: [CommonModule, Navbar, Sidebar, FormsModule, TranslateModule],
+  imports: [CommonModule, Navbar, Sidebar, FormsModule, TranslateModule, DatePipe],
   templateUrl: './my-team.component.html'
 })
 export class MyTeamComponent implements OnInit {
@@ -27,9 +29,19 @@ export class MyTeamComponent implements OnInit {
   selectedReclamation: Reclamation | null = null;
   motifRefus = '';
 
+  // Internal Remarks state
+  showNoteModal = false;
+  currentMissionNotes: MessageInterne[] = [];
+  newNoteText = '';
+  selectedMissionNoteId?: number;
+  selectedMissionNoteNumero?: string;
+  isSendingNote = false;
+  isLoadingNotes = false;
+
   constructor(
     private equipeService: EquipeService,
     private reclamationService: ReclamationService,
+    private messageInterneService: MessageInterneService,
     private cdr: ChangeDetectorRef,
     private translate: TranslateService
   ) {}
@@ -211,5 +223,57 @@ export class MyTeamComponent implements OnInit {
   translateCategory(categorie: string | undefined): string {
     if (!categorie) return '';
     return this.translate.instant('categories.' + categorie);
+  }
+
+  // Remark Modal Methods
+  openNoteModal(mission: Reclamation): void {
+    if (!mission.id) return;
+    this.selectedMissionNoteId = mission.id;
+    this.selectedMissionNoteNumero = mission.numeroReclamation;
+    this.newNoteText = '';
+    this.showNoteModal = true;
+    this.loadNotes(mission.id);
+  }
+
+  closeNoteModal(): void {
+    this.showNoteModal = false;
+    this.selectedMissionNoteId = undefined;
+    this.selectedMissionNoteNumero = undefined;
+    this.currentMissionNotes = [];
+  }
+
+  loadNotes(reclamationId: number): void {
+    this.isLoadingNotes = true;
+    this.messageInterneService.getMessages(reclamationId).subscribe({
+      next: (data) => {
+        this.currentMissionNotes = data || [];
+        this.isLoadingNotes = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Erreur chargement notes:', err);
+        this.isLoadingNotes = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  ajouterNote(): void {
+    if (!this.selectedMissionNoteId || !this.newNoteText.trim()) return;
+
+    this.isSendingNote = true;
+    this.messageInterneService.envoyerMessage(this.selectedMissionNoteId, this.newNoteText).subscribe({
+      next: (note) => {
+        this.currentMissionNotes.push(note);
+        this.newNoteText = '';
+        this.isSendingNote = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Erreur envoi note:', err);
+        this.isSendingNote = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

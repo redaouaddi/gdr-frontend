@@ -79,15 +79,15 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
 
         const roles = response.roles || [];
-        if (roles.includes('ROLE_ADMIN')) {
+        if (roles.includes('ADMIN')) {
           this.router.navigateByUrl('/dashboard/admin');
-        } else if (roles.includes('ROLE_SERVICE_MANAGER')) {
+        } else if (roles.includes('SERVICE_MANAGER')) {
           this.router.navigateByUrl('/dashboard/service-manager');
-        } else if (roles.includes('ROLE_CHEF_EQUIPE')) {
+        } else if (roles.includes('CHEF_EQUIPE')) {
           this.router.navigateByUrl('/service-manager/my-team');
-        } else if (roles.includes('ROLE_AGENT')) {
+        } else if (roles.includes('AGENT')) {
           this.router.navigateByUrl('/agent/missions');
-        } else if (roles.includes('ROLE_CLIENT') || roles.includes('ROLE_USER')) {
+        } else if (roles.includes('CLIENT') || roles.includes('USER')) {
           this.router.navigateByUrl('/dashboard/client');
         } else {
           this.router.navigateByUrl('/dashboard/client');

@@ -617,9 +617,36 @@
     "status": "Status",
     "date": "Creation Date",
     "actions": "Actions"
+  },
+  "actions": {
+    "accept": "Accept (set in progress)",
+    "resolve": "Mark as resolved",
+    "reject": "Reject",
+    "notes": "Internal remarks"
+  },
+  "messages": {
+    "accepted": "Claim #{{numero}} is now in progress.",
+    "resolved": "Claim #{{numero}} has been marked as resolved.",
+    "rejected": "Claim #{{numero}} has been rejected.",
+    "error_accept": "Unable to accept the claim.",
+    "error_resolve": "Unable to resolve the claim.",
+    "error_reject": "Unable to reject the claim."
+  },
+  "reject_modal": {
+    "title": "Reject Claim",
+    "text": "Please provide a reason for rejecting claim",
+    "reason_label": "Rejection reason",
+    "reason_placeholder": "Describe the reason for rejection...",
+    "confirm": "Confirm rejection"
+  },
+  "notes_modal": {
+    "title": "Internal remarks",
+    "no_notes": "No remarks yet.",
+    "add_label": "Add a remark",
+    "placeholder": "Write your remark here...",
+    "add_btn": "Add remark"
   }
 }
-
 }
 
 

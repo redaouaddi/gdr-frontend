@@ -214,6 +214,13 @@
                               <i class="bi bi-flag-fill me-1"></i> {{ 'my_team.claims.resolved' | translate }}
                             </button>
 
+                            <!-- Bouton Remarques Internes -->
+                            <button class="btn btn-sm btn-outline-info rounded-pill px-3 d-inline-flex align-items-center"
+                                    [title]="'agent_missions.actions.notes' | translate"
+                                    (click)="openNoteModal(rec)">
+                              <i class="bi bi-chat-left-text-fill"></i>
+                            </button>
+
                             <span *ngIf="rec.statut === 'TRAITEE' || rec.statut === 'REJETEE'" class="text-muted small">
                               {{ 'my_team.claims.no_action' | translate }}
                             </span>
@@ -264,6 +271,68 @@
           {{ 'my_team.reject_modal.confirm' | translate }}
         </button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal des Notes/Remarques Internes -->
+<div class="modal-backdrop" *ngIf="showNoteModal">
+  <div class="modal-card modal-large notes-modal">
+    <div class="modal-header">
+      <h5>
+        <i class="bi bi-journal-text me-2 text-primary"></i>
+        {{ 'agent_missions.notes_modal.title' | translate }} #{{ selectedMissionNoteNumero }}
+      </h5>
+      <button class="btn-close-modal" (click)="closeNoteModal()">&#x2715;</button>
+    </div>
+
+    <div class="modal-body notes-container">
+      <!-- Liste des notes existantes (Timeline style) -->
+      <div class="notes-timeline">
+        <div *ngIf="isLoadingNotes" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status"></div>
+        </div>
+
+        <div *ngIf="!isLoadingNotes && currentMissionNotes.length === 0" class="empty-notes">
+          <i class="bi bi-chat-square-dots"></i>
+          <p>{{ 'agent_missions.notes_modal.no_notes' | translate }}</p>
+        </div>
+
+        <div *ngFor="let note of currentMissionNotes" class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <div class="note-meta">
+              <span class="note-author">{{ note.auteurNom }}</span>
+              <span class="note-date">{{ note.dateEnvoi | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="note-text">{{ note.contenu }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulaire pour ajouter une note -->
+      <div class="note-input-section">
+        <label class="modal-label">{{ 'agent_missions.notes_modal.add_label' | translate }}</label>
+        <textarea
+          class="form-control premium-content"
+          rows="3"
+          [(ngModel)]="newNoteText"
+          [placeholder]="'agent_missions.notes_modal.placeholder' | translate">
+        </textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" (click)="closeNoteModal()">
+        {{ 'common.close' | translate }}
+      </button>
+      <button
+        class="btn-modal-confirm"
+        [disabled]="!newNoteText || newNoteText.trim() === '' || isSendingNote"
+        (click)="ajouterNote()">
+        <span *ngIf="!isSendingNote">{{ 'agent_missions.notes_modal.add_btn' | translate }}</span>
+        <span *ngIf="isSendingNote" class="spinner-border spinner-border-sm"></span>
+      </button>
     </div>
   </div>
 </div>
