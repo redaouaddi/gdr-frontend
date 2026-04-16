@@ -1,0 +1,84 @@
+<div class="agent-missions-container">
+  <app-sidebar></app-sidebar>
+
+  <div class="main-content">
+    <app-navbar></app-navbar>
+
+    <div class="content-header">
+      <div class="header-titles">
+        <h1>{{ 'agent_missions.title' | translate }}</h1>
+        <p>{{ 'agent_missions.subtitle' | translate }}</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-refresh" (click)="loadMissions()" [disabled]="loading">
+          <i class="bi bi-arrow-clockwise" [class.spinning]="loading"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="stats-overview" *ngIf="!loading">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="bi bi-list-task"></i></div>
+          <div class="stat-data">
+            <span class="stat-value">{{ missions.length }}</span>
+            <span class="stat-label">Total Missions</span>
+          </div>
+        </div>
+    </div>
+
+    <div class="missions-table-container card-premium">
+      <div class="table-overlay" *ngIf="loading">
+        <div class="loader"></div>
+      </div>
+
+      <table class="dxc-table" *ngIf="!loading && missions.length > 0">
+        <thead>
+          <tr>
+            <th>{{ 'agent_missions.table.id' | translate }}</th>
+            <th>{{ 'agent_missions.table.subject' | translate }}</th>
+            <th>{{ 'agent_missions.table.category' | translate }}</th>
+            <th>{{ 'agent_missions.table.priority' | translate }}</th>
+            <th>{{ 'agent_missions.table.status' | translate }}</th>
+            <th>{{ 'agent_missions.table.date' | translate }}</th>
+            <th>{{ 'agent_missions.table.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let mission of missions">
+            <td class="id-cell">#{{ mission.numeroReclamation }}</td>
+            <td class="subject-cell">
+              <span class="subject-text">{{ mission.titre }}</span>
+            </td>
+            <td>
+              <span class="category-badge">{{ translateCategory(mission.categorie) }}</span>
+            </td>
+            <td>
+              <span class="priority-badge" [ngClass]="getPriorityClass(mission.priorite)">
+                {{ 'priority.' + mission.priorite | translate }}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(mission.statut)">
+                {{ translateStatus(mission.statut) }}
+              </span>
+            </td>
+            <td class="date-cell">{{ mission.dateCreation | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td class="actions-cell">
+              <button class="btn-action view" title="Voir détails">
+                <i class="bi bi-eye"></i>
+              </button>
+              <button class="btn-action chat" title="Messagerie interne">
+                <i class="bi bi-chat-text"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="empty-state" *ngIf="!loading && missions.length === 0">
+        <div class="empty-icon"><i class="bi bi-inbox"></i></div>
+        <h3>{{ 'agent_missions.empty' | translate }}</h3>
+      </div>
+    </div>
+  </div>
+</div>

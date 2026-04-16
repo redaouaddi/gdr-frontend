@@ -565,6 +565,7 @@
     "claims_list": "Liste des réclamations",
     "team_leader": "Chef d'équipe",
     "my_team": "Mon Équipe",
+    "my_missions": "Mes Missions",
     "client_panel": "Client Panel",
     "claims": "Réclamations",
     "create_claim": "Créer une réclamation",
@@ -598,7 +599,7 @@
     "face_save": "Erreur lors de l’enregistrement du visage."
   }
 },
-"internal_messages": {
+  "internal_messages": {
   "title": "Messagerie interne",
   "select_claim": "Choisir une réclamation",
   "choose_claim": "Sélectionner une réclamation",
@@ -607,6 +608,20 @@
   "placeholder": "Écrire un message...",
   "send": "Envoyer",
   "unknown_user": "Utilisateur"
+},
+"agent_missions": {
+  "title": "Mes Missions",
+  "subtitle": "Consultez et gérez les réclamations assignées à votre équipe.",
+  "empty": "Aucune mission assignée pour le moment.",
+  "table": {
+    "id": "ID",
+    "subject": "Objet",
+    "category": "Catégorie",
+    "priority": "Priorité",
+    "status": "Statut",
+    "date": "Date de création",
+    "actions": "Actions"
+  }
 }
 }
   

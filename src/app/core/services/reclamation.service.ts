@@ -75,4 +75,8 @@ export class ReclamationService {
   marquerResolue(numeroReclamation: string): Observable<Reclamation> {
     return this.http.put<Reclamation>(`${this.apiUrl}/${numeroReclamation}/resoudre`, {});
   }
+
+  getMesMissions(): Observable<Reclamation[]> {
+    return this.http.get<Reclamation[]>(`${this.apiUrl}/mes-missions`);
+  }
 }

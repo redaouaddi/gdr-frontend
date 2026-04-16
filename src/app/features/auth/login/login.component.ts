@@ -83,8 +83,10 @@ export class LoginComponent implements OnInit {
           this.router.navigateByUrl('/dashboard/admin');
         } else if (roles.includes('ROLE_SERVICE_MANAGER')) {
           this.router.navigateByUrl('/dashboard/service-manager');
-        } else if (roles.includes('ROLE_CHEF_EQUIPE') || roles.includes('ROLE_AGENT')) {
+        } else if (roles.includes('ROLE_CHEF_EQUIPE')) {
           this.router.navigateByUrl('/service-manager/my-team');
+        } else if (roles.includes('ROLE_AGENT')) {
+          this.router.navigateByUrl('/agent/missions');
         } else if (roles.includes('ROLE_CLIENT') || roles.includes('ROLE_USER')) {
           this.router.navigateByUrl('/dashboard/client');
         } else {

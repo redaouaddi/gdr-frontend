@@ -561,6 +561,7 @@
   "claims_list": "Claims list",
   "team_leader": "Team leader",
   "my_team": "My Team",
+  "my_missions": "My Missions",
   "client_panel": "Client Panel",
   "claims": "Claims",
   "create_claim": "Create claim",
@@ -603,6 +604,20 @@
   "placeholder": "Write a message...",
   "send": "Send",
   "unknown_user": "Unknown user"
+},
+"agent_missions": {
+  "title": "My Missions",
+  "subtitle": "View and manage claims assigned to your team.",
+  "empty": "No missions assigned at the moment.",
+  "table": {
+    "id": "ID",
+    "subject": "Subject",
+    "category": "Category",
+    "priority": "Priority",
+    "status": "Status",
+    "date": "Creation Date",
+    "actions": "Actions"
+  }
 }
 
 }

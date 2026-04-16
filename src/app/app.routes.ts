@@ -17,6 +17,7 @@ import { TeamEditComponent } from './features/teams/team-edit/team-edit.componen
 import { MyTeamComponent } from './features/teams/my-team/my-team.component';
 import { ServiceManagerDashboardComponent } from './features/service-manager/dashboard/service-manager-dashboard.component';
 import { AllReclamationsComponent } from './features/admin/all-reclamations/all-reclamations.component';
+import { AgentMissionsComponent } from './features/reclamations/agent-missions/agent-missions';
 
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -112,6 +113,13 @@ export const routes: Routes = [
     component: ServiceManagerDashboardComponent,
     canActivate: [authGuard, roleGuard],
     data: { roles: ['ROLE_SERVICE_MANAGER'] }
+  },
+  
+  {
+    path: 'agent/missions',
+    component: AgentMissionsComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['ROLE_AGENT', 'ROLE_CHEF_EQUIPE', 'ROLE_ADMIN'] }
   },
 
   {

@@ -25,7 +25,7 @@ export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   } else if (userRoles.includes('ROLE_CLIENT')) {
     router.navigate(['/dashboard/client']);
   } else if (userRoles.includes('ROLE_AGENT')) {
-    router.navigate(['/dashboard/agent']);
+    router.navigate(['/agent/missions']);
   } else if (userRoles.includes('ROLE_MANAGER')) {
     router.navigate(['/dashboard/manager']);
   } else if (userRoles.includes('ROLE_SERVICE_MANAGER')) {
