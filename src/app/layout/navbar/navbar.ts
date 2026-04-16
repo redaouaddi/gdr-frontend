@@ -10,7 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css']
 })
-export class NavbarComponent {
+export class Navbar {
 
   user = JSON.parse(localStorage.getItem('user') || 'null');
   menuOpen = false;

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ClientNavbarComponent } from '../../../layout/client-navbar/client-navbar';
-import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { ReclamationService } from '../../../core/services/reclamation.service';
 import { CreateReclamationRequest } from '../../../core/models/reclamation.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -11,7 +11,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-reclamation-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, ClientNavbarComponent, SidebarComponent, TranslateModule],
+  imports: [CommonModule, FormsModule, ClientNavbarComponent, Sidebar, TranslateModule],
   templateUrl: './reclamation-create.component.html',
   styleUrls: ['./reclamation-create.component.css']
 })

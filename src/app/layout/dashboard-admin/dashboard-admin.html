@@ -2,15 +2,14 @@
   <div class="sidebar-container">
     <app-sidebar></app-sidebar>
   </div>
+
   <div class="main-content">
     <app-navbar></app-navbar>
 
     <div class="dashboard px-4">
-
       <h2 class="title mb-4">{{ 'admin_dashboard.title' | translate }}</h2>
 
       <div class="cards">
-
         <div class="glass-card stat p-4 mb-3">
           <h3>{{ 'admin_dashboard.cards.users' | translate }}</h3>
           <p class="number">{{ usersCount }}</p>
@@ -30,16 +29,71 @@
           <h3>{{ 'admin_dashboard.cards.sla_respected' | translate }}</h3>
           <p class="number">{{ slaRespecte }}%</p>
         </div>
-
       </div>
 
       <div class="glass-card chart p-4 mb-3">
-        <h3>{{ 'admin_dashboard.chart.title' | translate }}</h3>
-        <canvas id="claimsChart"></canvas>
+        <div class="chart-header">
+          <h3>{{ 'admin_dashboard.chart.title' | translate }}</h3>
+
+          <div class="chart-controls">
+            <div class="control-group">
+              <label for="datasetType">
+                {{ 'admin_dashboard.chart.data_to_display' | translate }}
+              </label>
+              <select
+                id="datasetType"
+                [(ngModel)]="selectedDataset"
+                (change)="onDatasetChange()"
+              >
+                <option value="status">
+                  {{ 'admin_dashboard.datasets.status' | translate }}
+                </option>
+                <option value="priority">
+                  {{ 'admin_dashboard.datasets.priority' | translate }}
+                </option>
+                <option value="month">
+                  {{ 'admin_dashboard.datasets.month' | translate }}
+                  </option>
+                <option value="categorie">
+                  {{ 'admin_dashboard.datasets.categorie' | translate }}
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label for="chartType">
+                {{ 'admin_dashboard.chart.chart_type' | translate }}
+              </label>
+              <select
+                id="chartType"
+                [(ngModel)]="chartType"
+                (change)="onChartTypeChange()"
+              >
+                <option *ngFor="let type of chartTypes" [value]="type">
+                  {{ ('admin_dashboard.chart.types.' + type) | translate }}
+                </option>
+              </select>
+            </div>
+
+            <div class="control-group color-group">
+              <label for="chartColor">
+                {{ 'admin_dashboard.chart.main_color' | translate }}
+              </label>
+              <input
+                id="chartColor"
+                type="color"
+                [(ngModel)]="selectedColor"
+                (change)="onColorChange()"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-wrapper">
+          <canvas id="claimsChart"></canvas>
+        </div>
       </div>
 
       <div class="glass-card table p-4 mb-3">
-
         <h3>{{ 'admin_dashboard.recent_activity.title' | translate }}</h3>
 
         <table class="dxc-table mt-3">
@@ -61,9 +115,7 @@
             <td>{{ 'admin_dashboard.recent_activity.new_claim' | translate }}</td>
           </tr>
         </table>
-
       </div>
-
     </div>
   </div>
 </div>

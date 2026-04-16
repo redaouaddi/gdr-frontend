@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { EquipeService } from '../../../core/services/equipe.service';
-import { NavbarComponent } from '../../../layout/navbar/navbar';
-import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { Navbar } from '../../../layout/navbar/navbar';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { UserService, UserResponse } from '../../../core/services/user.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -15,8 +15,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     CommonModule,
     ReactiveFormsModule,
     RouterLink,
-    NavbarComponent,
-    SidebarComponent,
+    Navbar,
+    Sidebar,
     TranslateModule
   ],
   templateUrl: './team-create.component.html'

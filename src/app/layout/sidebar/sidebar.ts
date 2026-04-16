@@ -13,7 +13,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   styleUrls: ['./sidebar.css'],
   standalone: true
 })
-export class SidebarComponent implements OnInit {
+export class Sidebar implements OnInit {
   isAdmin = false;
   isClient = false;
   isServiceManager = false;

@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Access, EPermission } from '../../../core/models/access.model';
 import { AccessService } from '../../../core/services/access.service';
-import { NavbarComponent } from '../../../layout/navbar/navbar';
-import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { Navbar } from '../../../layout/navbar/navbar';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent, SidebarComponent, TranslateModule],
+  imports: [CommonModule, FormsModule, Navbar, Sidebar, TranslateModule],
   templateUrl: './roles.html',
   styleUrls: ['./roles.css'],
 })

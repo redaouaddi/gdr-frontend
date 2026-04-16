@@ -5,13 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { ReclamationService } from '../../core/services/reclamation.service';
 import { Reclamation } from '../../core/models/reclamation.model';
 import { ClientNavbarComponent } from '../client-navbar/client-navbar';
-import { SidebarComponent } from '../sidebar/sidebar';
+import { Sidebar } from '../sidebar/sidebar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard-client',
   standalone: true,
-  imports: [CommonModule, FormsModule, ClientNavbarComponent, SidebarComponent, TranslateModule],
+  imports: [CommonModule, FormsModule, ClientNavbarComponent, Sidebar, TranslateModule],
   templateUrl: './dashboard-client.html',
   styleUrls: ['./dashboard-client.css']
 })

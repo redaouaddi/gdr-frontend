@@ -3,7 +3,7 @@
     "subtitle": "Connectez-vous à votre compte",
     "email": "Email",
     "password": "Mot de passe",
-    "button": "Connexion",
+    "button": "Connecter",
     "face_button": "Se connecter par visage",
     "face_title": "Connexion par reconnaissance faciale",
     "open_camera": "Ouvrir caméra",
@@ -52,7 +52,8 @@
     "select": "Sélectionner...",
     "close": "Fermer"
   },
-  
+
+
   "reclamations_all": {
     "title": "Toutes les Réclamations",
     "subtitle": "Historique global et suivi de l'ensemble des tickets.",
@@ -454,29 +455,75 @@
     "logout": "Déconnexion"
   },
   "admin_dashboard": {
-    "title": "Tableau de bord administrateur",
-    "cards": {
-      "users": "Utilisateurs",
-      "claims": "Réclamations",
-      "in_progress": "En cours",
-      "sla_respected": "SLA respecté"
-    },
-    "chart": {
-      "title": "Statut des réclamations",
-      "open": "Ouvertes",
-      "in_progress": "En cours",
-      "resolved": "Résolues",
-      "closed": "Clôturées"
-    },
-    "recent_activity": {
-      "title": "Activité récente",
-      "id": "ID",
-      "user": "Utilisateur",
-      "action": "Action",
-      "user_created": "Création utilisateur",
-      "new_claim": "Nouvelle réclamation"
+  "title": "Tableau de bord administrateur",
+  "cards": {
+    "users": "Utilisateurs",
+    "claims": "Réclamations",
+    "in_progress": "En cours",
+    "sla_respected": "SLA respecté"
+  },
+    "datasets": {
+  "status": "Statut des réclamations",
+  "priority": "Priorité des réclamations",
+  "month": "Réclamations par mois",
+  "categorie": "Catégories des réclamations"
+
+},
+"categories": {
+  "project": "Projet",
+  "maintenance": "Maintenance",
+  "technical": "Technique",
+  "billing": "Facturation",
+  "service": "Service",
+  "other": "Autre"
+},
+"priorities": {
+  "high": "Haute",
+  "medium": "Moyenne",
+  "low": "Basse",
+  "urgent": "Urgente"
+},
+  "chart": {
+    "title": "Statistiques des réclamations",
+    "open": "Ouvertes",
+    "in_progress": "En cours",
+    "resolved": "Résolues",
+    "closed": "Clôturées",
+    "pending": "En attente",
+    "chart_type": "Type de graphe",
+    "main_color": "Couleur principale",
+    "data_to_display": "Donnée à afficher",
+    
+    "types": {
+      "bar": "Barres",
+      "line": "Ligne",
+      "pie": "Camembert",
+      "doughnut": "Anneau"
     }
   },
+  "recent_activity": {
+    "title": "Activité récente",
+    "id": "ID",
+    "user": "Utilisateur",
+    "action": "Action",
+    "user_created": "Création utilisateur",
+    "new_claim": "Nouvelle réclamation"
+  },
+  "months": {
+  "january": "Janvier",
+  "february": "Février",
+  "march": "Mars",
+  "april": "Avril",
+  "may": "Mai",
+  "june": "Juin",
+  "july": "Juillet",
+  "august": "Août",
+  "september": "Septembre",
+  "october": "Octobre",
+  "november": "Novembre",
+  "december": "Décembre"
+}
+},
   "client_dashboard": {
     "title": "Tableau de Bord",
     "create_claim": "Créer une Réclamation",
@@ -500,41 +547,43 @@
     "logout": "Déconnexion"
   },
   "sidebar": {
-  "admin_panel": "Admin Panel",
-  "dashboard": "Tableau de bord",
-  "users": "Utilisateurs",
-  "users_list": "Liste des utilisateurs",
-  "create_user": "Créer un utilisateur",
-  "teams": "Équipes",
-  "teams_list": "Liste des équipes",
-  "create_team": "Créer une équipe",
-  "all_claims": "Toutes les Réclamations",
-  "roles": "Rôles",
-  "settings": "Paramètres",
-  "manager_panel": "Manager Panel",
-  "statistics": "Statistiques",
-  "claims_list": "Liste des réclamations",
-  "team_leader": "Chef d'équipe",
-  "my_team": "Mon Équipe",
-  "client_panel": "Client Panel",
-  "claims": "Réclamations",
-  "create_claim": "Créer une réclamation",
-  "security": "Sécurité",
-  "activate_faceid": "Activer Face ID",
-  "activating": "Activation...",
-  "face_recognition": "Reconnaissance faciale",
-  "activate_face_recognition": "Activer reconnaissance faciale",
-  "face_register": "Enregistrement du visage",
-  "open_camera": "Ouvrir caméra",
-  "capture": "Capturer",
-  "save_face": "Enregistrer visage",
-  "close": "Fermer",
-  "preview": "Aperçu",
-  "face_guide": "Centrez votre visage dans le cadre",
-  "messages": {
-    "faceid_success": "Face ID activé avec succès.",
-    "photo_captured": "Photo capturée avec succès.",
-    "face_saved": "Visage enregistré avec succès."
+    "communication": "Communication",
+    "internal_messages": "Messagerie interne",
+    "admin_panel": "Admin Panel",
+    "dashboard": "Tableau de bord",
+    "users": "Utilisateurs",
+    "users_list": "Liste des utilisateurs",
+    "create_user": "Créer un utilisateur",
+    "teams": "Équipes",
+    "teams_list": "Liste des équipes",
+    "create_team": "Créer une équipe",
+    "all_claims": "Toutes les Réclamations",
+    "roles": "Rôles",
+    "settings": "Paramètres",
+    "manager_panel": "Manager Panel",
+    "statistics": "Statistiques",
+    "claims_list": "Liste des réclamations",
+    "team_leader": "Chef d'équipe",
+    "my_team": "Mon Équipe",
+    "client_panel": "Client Panel",
+    "claims": "Réclamations",
+    "create_claim": "Créer une réclamation",
+    "security": "Sécurité",
+    "activate_faceid": "Activer Face ID",
+    "activating": "Activation...",
+    "face_recognition": "Reconnaissance faciale",
+    "activate_face_recognition": "Activer reconnaissance faciale",
+    "face_register": "Enregistrement du visage",
+    "open_camera": "Ouvrir caméra",
+    "capture": "Capturer",
+    "save_face": "Enregistrer visage",
+    "close": "Fermer",
+    "preview": "Aperçu",
+    "face_guide": "Centrez votre visage dans le cadre",
+    "messages": {
+      "faceid_success": "Face ID activé avec succès.",
+      "photo_captured": "Photo capturée avec succès.",
+      "face_saved": "Visage enregistré avec succès."
     
   },
   "errors": {
@@ -548,10 +597,21 @@
     "no_captured_image": "Aucune image capturée.",
     "face_save": "Erreur lors de l’enregistrement du visage."
   }
+},
+"internal_messages": {
+  "title": "Messagerie interne",
+  "select_claim": "Choisir une réclamation",
+  "choose_claim": "Sélectionner une réclamation",
+  "discussion": "Discussion",
+  "no_messages": "Aucun message",
+  "placeholder": "Écrire un message...",
+  "send": "Envoyer",
+  "unknown_user": "Utilisateur"
 }
+}
+  
  
 
-}
 
 
 

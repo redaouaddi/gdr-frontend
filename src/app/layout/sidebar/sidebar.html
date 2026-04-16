@@ -103,6 +103,15 @@
         </div>
       </div>
     </ng-container>
+    <!-- INTERNAL MESSAGING (ALL EXCEPT CLIENT) -->
+      <ng-container *ngIf="!isClient">
+        <h6 class="menu-heading">{{ 'sidebar.communication' | translate }}</h6>
+
+        <a routerLink="/messages-internes" routerLinkActive="active" class="menu-link">
+          <i class="bi bi-chat-dots"></i>
+          {{ 'sidebar.internal_messages' | translate }}
+        </a>
+      </ng-container>
 
     <!-- FACE ID PASSKEY -->
     <div style="margin-top: 20px;">

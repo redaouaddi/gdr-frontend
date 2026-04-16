@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { NavbarComponent } from '../../../layout/navbar/navbar';
+import { Navbar } from '../../../layout/navbar/navbar';
 import { UserService } from '../../../core/services/user.service';
-import { SidebarComponent } from '../../../layout/sidebar/sidebar';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { AccessService } from '../../../core/services/access.service';
 import { Access } from '../../../core/models/access.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -12,7 +12,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-user-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, NavbarComponent, SidebarComponent, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, Navbar, Sidebar, TranslateModule],
   templateUrl: './user-create.html',
   styleUrls: ['./user-create.css']
 })
