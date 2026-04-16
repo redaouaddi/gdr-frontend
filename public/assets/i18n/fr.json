@@ -113,9 +113,15 @@
     "MODIFIER_RECLAMATIONS": "Modifier les réclamations",
     "SUPPRIMER_RECLAMATIONS": "Supprimer les réclamations",
     "ASSIGNER_RECLAMATIONS": "Assigner les réclamations",
+    "LIRE_UTILISATEURS": "Lire les utilisateurs",
+    "CREER_UTILISATEURS": "Créer des utilisateurs",
+    "MODIFIER_UTILISATEURS": "Modifier les utilisateurs",
+    "SUPPRIMER_UTILISATEURS": "Supprimer les utilisateurs",
+    "GERER_ACCES": "Gérer les accès et permissions",
     "CONSULTER_RAPPORTS": "Consulter les rapports",
-    "GERER_UTILISATEURS": "Gérer les utilisateurs",
-    "GERER_ROLES": "Gérer les rôles"
+    "VOIR_NOUVELLES_RECLAMATIONS": "Voir les nouvelles réclamations",
+    "GERER_EQUIPE": "Gérer les équipes",
+    "CREER_EQUIPE": "Créer une équipe"
   },
  
   "reclamation_create": {
@@ -131,6 +137,7 @@
     "other_details_placeholder": "Précisez votre incident...",
     "description": "Description",
     "description_placeholder": "Décrivez votre problème en détail...",
+    "created_at": "Date de création",
     "attachment": "Pièce jointe (Capture d'écran, etc.)",
     "choose_file": "Choisir un fichier...",
     "submit": "Soumettre",

@@ -30,6 +30,7 @@ export interface CreateReclamationRequest {
   typeMaintenance?: 'INCIDENT' | 'DEMANDE_SERVICE';
   sousCategorieIncident?: 'TECHNIQUE' | 'FACTURATION' | 'SERVICE' | 'AUTRE';
   detailsAutreIncident?: string;
+  dateCreation?: string;
 }
 
 export interface ReclamationStatusResponse {
