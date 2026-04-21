@@ -54,6 +54,8 @@ export class SlaSettingsComponent implements OnInit {
               { priorite: 'ELEVEE', delaiHeures: 8 }
             ];
           }
+
+          this.sortConfigurations();
         },
         error: (err) => {
           console.error(err);
@@ -113,5 +115,17 @@ export class SlaSettingsComponent implements OnInit {
       default:
         return 'bg-light text-dark';
     }
+  }
+
+  private sortConfigurations(): void {
+    const order: Record<string, number> = {
+      FAIBLE: 1,
+      MOYENNE: 2,
+      ELEVEE: 3
+    };
+
+    this.slaConfigurations.sort((a, b) => {
+      return (order[a.priorite] || 999) - (order[b.priorite] || 999);
+    });
   }
 }

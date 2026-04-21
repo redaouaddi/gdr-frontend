@@ -96,10 +96,21 @@ export class UserCreateComponent implements OnInit {
         }, 1000);
       },
       error: (err) => {
-        console.error('ERREUR CREATE USER =', err);
-        this.errorMessage =
-          err.error?.message || this.translate.instant('user_create.errors.create_failed');
-      }
+          console.error('ERREUR CREATE USER =', err);
+          console.log('DETAIL ERREUR =', err.error);
+          console.log('MESSAGE ERREUR =', err.error?.message);
+          console.log('PAYLOAD ENVOYE =', {
+            firstName: formValue.firstName,
+            lastName: formValue.lastName,
+            email: formValue.email,
+            password: formValue.password,
+            gender: formValue.gender,
+            roles: this.selectedRoles
+          });
+
+          this.errorMessage =
+            err.error?.message || this.translate.instant('user_create.errors.create_failed');
+        }
     });
   }
 }

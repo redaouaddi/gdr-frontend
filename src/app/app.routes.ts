@@ -19,6 +19,7 @@ import { ServiceManagerDashboardComponent } from './features/service-manager/das
 import { AllReclamationsComponent } from './features/admin/all-reclamations/all-reclamations.component';
 import { AgentMissionsComponent } from './features/reclamations/agent-missions/agent-missions';
 import { InternalMessagesComponent } from './features/internal-messages/internal-messages.component';
+import { SlaSettingsComponent } from './features/admin/sla-settings/sla-settings.component';
 
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -142,4 +143,10 @@ export const routes: Routes = [
     data: { roles: ['CLIENT', 'USER', 'ROLE_CLIENT'] }
   },
 
+  {
+  path: 'admin/sla-settings',
+  component: SlaSettingsComponent,
+  canActivate: [authGuard, roleGuard],
+  data: { roles: ['ADMIN'] }
+}
 ];

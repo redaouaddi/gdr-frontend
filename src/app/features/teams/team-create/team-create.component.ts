@@ -42,10 +42,20 @@ export class TeamCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadChefsEquipe();
+  }
+
+  loadChefsEquipe(): void {
     this.userService.getAllUsers().subscribe({
       next: (data) => {
-        this.users = data.filter(
-          user => user.roles && (user.roles.includes('ROLE_CHEF_EQUIPE') || user.roles.includes('ROLE_SERVICE_MANAGER'))
+        this.users = data.filter(user =>
+          user.roles &&
+          (
+            user.roles.includes('CHEF_EQUIPE') ||
+            user.roles.includes('SERVICE_MANAGER') ||
+            user.roles.includes('ROLE_CHEF_EQUIPE') ||
+            user.roles.includes('ROLE_SERVICE_MANAGER')
+          )
         );
       },
       error: (err) => {
@@ -70,6 +80,7 @@ export class TeamCreateComponent implements OnInit {
       next: () => {
         this.successMessage = this.translate.instant('team_create.messages.success');
         this.teamForm.reset();
+
         setTimeout(() => {
           this.router.navigate(['/dashboard/admin']);
         }, 1500);

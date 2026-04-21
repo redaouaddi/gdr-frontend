@@ -32,7 +32,12 @@ export class MyTeamComponent implements OnInit {
 
   ngOnInit(): void {
     const roles = this.authService.getUser()?.roles || [];
-    this.canManageTeam = roles.includes('CHEF_EQUIPE');
+    this.canManageTeam =
+      roles.includes('CHEF_EQUIPE') ||
+      roles.includes('ROLE_CHEF_EQUIPE') ||
+      roles.includes('SERVICE_MANAGER') ||
+      roles.includes('ROLE_SERVICE_MANAGER');
+
     this.loadTeam();
   }
 
@@ -44,6 +49,7 @@ export class MyTeamComponent implements OnInit {
       next: (team) => {
         this.isLoading = false;
         this.myTeam = team;
+
         if (this.myTeam && this.canManageTeam) {
           this.loadFreeAgents();
         }

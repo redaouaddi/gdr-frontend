@@ -2,9 +2,9 @@
   "login": {
     "subtitle": "Connectez-vous à votre compte",
     "email": "Email",
-    "loading": "Connexion en cours...",
     "password": "Mot de passe",
     "button": "Connecter",
+    "loading": "Connexion...",
     "face_button": "Se connecter par visage",
     "face_title": "Connexion par reconnaissance faciale",
     "open_camera": "Ouvrir caméra",
@@ -32,12 +32,21 @@
       "login_failed": "Échec de la connexion faciale"
     }
   },
-
+  "auth": {
+    "face_login": {
+      "title": "Connexion par reconnaissance faciale",
+      "guide_text": "Placez votre visage au centre du cadre",
+      "open_camera": "Ouvrir caméra",
+      "capture": "Capturer",
+      "preview": "Aperçu :",
+      "validate": "Valider"
+    }
+},
+  
   "dashboard": {
     "title": "Tableau de bord"
-  },
-
-  "common": {
+  }, 
+   "common": {
     "logout": "Déconnexion",
     "loading": "Chargement...",
     "cancel": "Annuler",
@@ -45,37 +54,18 @@
     "close": "Fermer"
   },
 
+
   "reclamations_all": {
-    "title": "Toutes les réclamations",
-    "subtitle": "Vue globale des réclamations enregistrées",
-    "identification": "Identification",
-    "ticket_info": "Informations",
+    "title": "Toutes les Réclamations",
+    "subtitle": "Historique global et suivi de l'ensemble des tickets.",
+    "identification": "N° d'identification",
+    "ticket_info": "Informations Ticket",
     "priority": "Priorité",
-    "current_status": "Statut",
-    "sla_status": "Statut SLA",
-    "sla_deadline": "Deadline SLA",
-    "remaining_time": "Temps restant",
-    "assigned_team": "Équipe assignée",
-    "resolved_at": "Résolue le",
+    "current_status": "Statut Actuel",
+    "assigned_team": "Équipe Assignée",
+    "empty": "Aucune réclamation trouvée dans le système.",
     "unassigned": "Non assignée",
-    "empty": "Aucune réclamation trouvée",
-    "server_error": "Erreur serveur lors du chargement des réclamations"
-  },
-
-  "sla_status": {
-    "EN_COURS": "En cours",
-    "PROCHE_DEPASSEMENT": "Proche du dépassement",
-    "DEPASSE": "Dépassé",
-    "RESPECTE": "Respecté"
-  },
-
-  "priority": {
-    "FAIBLE": "Faible",
-    "MOYENNE": "Moyenne",
-    "ELEVEE": "Élevée",
-    "HAUTE": "Haute",
-    "URGENTE": "Urgente",
-    "BASSE": "Basse"
+    "server_error": "Le serveur met trop de temps à répondre ou est inaccessible."
   },
 
   "status": {
@@ -87,80 +77,607 @@
     "REJETEE": "Rejetée"
   },
 
-  "sidebar": {
-    "dashboard": "Tableau de bord",
-    "users": "Utilisateurs",
-    "teams": "Équipes",
-    "all_claims": "Toutes les Réclamations",
-    "roles": "Rôles",
-    "settings": "Paramètres",
-    "my_team": "Mon Équipe",
-    "my_missions": "Mes Missions",
-    "internal_messages": "Messagerie interne",
-    "create_claim": "Créer une réclamation"
-  },
+  "priority": {
+  "FAIBLE": "Faible",
+  "MOYENNE": "Moyenne",
+  "ELEVEE": "Élevée"
+},
 
+  
+  "roles": {
+    "title": "Gestion des Rôles",
+    "subtitle": "Gérez les accès et les permissions de la plateforme.",
+    "new_role": "Nouveau Rôle",
+    "role_list": "Liste des Rôles",
+    "active": "Actif",
+    "deleted": "Supprimé",
+    "permissions_count": "permissions",
+    "empty": "Aucun rôle disponible.",
+    "create_title": "Créer un nouveau rôle",
+    "role_name": "Nom du rôle",
+    "role_name_placeholder": "Ex: AGENT_QUALITE",
+    "available_permissions": "Permissions disponibles",
+    "creating": "Création...",
+    "confirm_create": "Confirmer la création",
+    "details": "Détails",
+    "delete_role": "Supprimer le rôle",
+    "role_id": "ID du rôle",
+    "created_at": "Date de création",
+    "assigned_permissions": "Permissions attribuées",
+    "placeholder": "Sélectionnez un rôle dans la liste pour voir ses détails ou utilisez le bouton \"Nouveau Rôle\" pour en ajouter un.",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer ce rôle ?"
+  },
+  
+  "permissions": {
+    "LIRE_RECLAMATIONS": "Lire les réclamations",
+    "CREER_RECLAMATIONS": "Créer des réclamations",
+    "MODIFIER_RECLAMATIONS": "Modifier les réclamations",
+    "SUPPRIMER_RECLAMATIONS": "Supprimer les réclamations",
+    "ASSIGNER_RECLAMATIONS": "Assigner les réclamations",
+    "LIRE_UTILISATEURS": "Lire les utilisateurs",
+    "CREER_UTILISATEURS": "Créer des utilisateurs",
+    "MODIFIER_UTILISATEURS": "Modifier les utilisateurs",
+    "SUPPRIMER_UTILISATEURS": "Supprimer les utilisateurs",
+    "GERER_ACCES": "Gérer les accès et permissions",
+    "CONSULTER_RAPPORTS": "Consulter les rapports",
+    "VOIR_NOUVELLES_RECLAMATIONS": "Voir les nouvelles réclamations",
+    "GERER_EQUIPE": "Gérer les équipes",
+    "CREER_EQUIPE": "Créer une équipe"
+  },
+ 
   "reclamation_create": {
     "title": "Créer une Réclamation",
-    "subtitle": "Décrivez votre problème afin qu'un agent puisse vous aider.",
-    "subject": "Objet",
+    "subtitle": "Décrivez votre problème afin qu'un de nos agents puisse vous aider.",
+    "subject": "Objet (Titre)",
+    "subject_placeholder": "Ex: Problème de connexion",
     "category": "Catégorie",
     "priority": "Priorité",
+    "maintenance_type": "Type de Maintenance",
+    "domain": "Domaine",
+    "other_details": "Veuillez préciser (Autre)",
+    "other_details_placeholder": "Précisez votre incident...",
     "description": "Description",
+    "description_placeholder": "Décrivez votre problème en détail...",
     "created_at": "Date de création",
+    "attachment": "Pièce jointe (Capture d'écran, etc.)",
+    "choose_file": "Choisir un fichier...",
     "submit": "Soumettre",
     "creating": "Création...",
     "success_message": "Réclamation créée avec succès.",
+    "created_title": "Réclamation Créée !",
+    "created_text": "Votre réclamation a été enregistrée avec succès.",
+    "redirect_in": "Redirection dans",
+    "redirect_list": "Redirection vers la liste dans",
+    "seconds": "seconde(s)...",
+    "categories": {
+      "PROJET": "Projet",
+      "MAINTENANCE": "Maintenance d'un projet existant"
+    },
+    "priorities": {
+      "FAIBLE": "Faible",
+      "MOYENNE": "Moyenne",
+      "ELEVEE": "Élevée"
+    },
+    "maintenance_types": {
+      "INCIDENT": "Incident",
+      "DEMANDE_SERVICE": "Demande Service"
+    },
+    "incident_categories": {
+      "TECHNIQUE": "Technique",
+      "FACTURATION": "Facturation",
+      "SERVICE": "Service",
+      "AUTRE": "Autre"
+    },
     "errors": {
       "title_required": "Le titre est obligatoire.",
       "description_required": "La description est obligatoire.",
-      "create_failed": "Erreur lors de la création."
+      "maintenance_type_required": "Veuillez sélectionner le type de maintenance.",
+      "incident_domain_required": "Veuillez sélectionner le domaine de l’incident.",
+      "incident_detail_required": "Veuillez préciser le détail de l’incident.",
+      "create_failed": "Une erreur est survenue lors de la création de la réclamation."
     }
   },
 
-  "agent_missions": {
-    "title": "Mes Missions",
-    "subtitle": "Consultez et gérez les réclamations assignées.",
-    "empty": "Aucune mission assignée.",
+  
+  "service_manager": {
+    "title": "Tableau de Bord Manager",
+    "subtitle": "Vue globale sur l'assignation et le statut réclamations.",
+    "undefined_priority": "NON DÉFINIE",
+    "unassigned": "Non assigné",
+    "rejected": "Rejeté",
+    "assign": "Assigner",
+    "reassign": "Ré-assigner",
+    "stats": {
+      "pending_unassigned": "En attente (Non assigné)",
+      "in_progress": "En cours",
+      "resolved": "Résolues",
+      "rejected": "Rejetées"
+    },
     "table": {
-      "id": "ID",
-      "subject": "Objet",
-      "category": "Catégorie",
+      "number_client": "N° / Client",
+      "title_category": "Titre & Categorie",
+      "status": "Statut",
+      "priority": "Priorité",
+      "current_team": "Équipe Actuelle",
+      "actions": "Actions",
+      "empty": "Aucune réclamation."
+    },
+    "modal": {
+      "title": "Assignation de la Réclamation",
+      "rejected_by": "Rejeté par :",
+      "reason": "Motif :",
+      "choose_team": "Choisir l'équipe technique",
+      "search_team": "Rechercher une équipe...",
+      "no_team_found": "Aucune équipe trouvée.",
+      "click_to_choose": "Cliquez pour choisir",
+      "assignment_info": "La réclamation sera automatiquement déplacée dans la file d'attente du chef de cette équipe.",
+      "confirm_assignment": "Confirmer l'assignation"
+    },
+    "errors": {
+      "server_error": "Le serveur met trop de temps à répondre ou est inaccessible.",
+      "assign_failed": "Impossible d'assigner l'équipe. Veuillez réessayer."
+    }
+  },
+  
+  "categories": {
+    "PROJET": "Projet",
+    "MAINTENANCE": "Maintenance",
+    "TECHNIQUE": "Technique",
+    "FACTURATION": "Facturation",
+    "SERVICE": "Service",
+    "AUTRE": "Autre"
+  },
+  "my_team": {
+    "title": "Mon Équipe",
+    "subtitle": "Gestion de votre équipe et recrutement d'agents.",
+    "loading_too_long": "Chargement trop long ? Cliquez ici",
+    "no_team_title": "Aucune équipe assignée",
+    "no_team_text": "Vous n'avez pas encore d'équipe sous votre gestion. Veuillez contacter un administrateur.",
+    "confirm_remove_agent": "Êtes-vous sûr de vouloir retirer cet agent de votre équipe ?",
+    "info": {
+      "title": "Informations",
+      "service_name": "Nom du service",
+      "team_leader": "Chef d'équipe",
+      "agents_count": "Nombre d'agents"
+    },
+    "members": {
+      "title": "Membres de l'équipe",
+      "empty": "Aucun agent dans cette équipe pour le moment.",
+      "name": "Nom",
+      "email": "Email",
+      "status": "Statut",
+      "action": "Action",
+      "active": "Actif",
+      "remove_from_team": "Retirer de l'équipe"
+    },
+    "recruitment": {
+      "title": "Recruter des agents libres",
+      "empty": "Aucun agent libre disponible actuellement.",
+      "add_to_team": "Ajouter à mon équipe"
+    },
+    "claims": {
+      "title": "Gestion des Réclamations",
+      "empty": "Aucune réclamation assignée à cette équipe.",
+      "number": "N°",
+      "title_col": "Titre",
       "priority": "Priorité",
       "status": "Statut",
-      "date": "Date de création",
+      "actions": "Actions",
+      "accept": "Accepter",
+      "reject": "Rejeter",
+      "resolved": "Résolu",
+      "no_action": "Aucune action"
+    },
+    "reject_modal": {
+      "title": "Rejeter la réclamation",
+      "text": "Veuillez fournir un motif obligatoire pour rejeter la réclamation",
+      "reason_label": "Motif du rejet",
+      "reason_placeholder": "Expliquez pourquoi cette réclamation ne relève pas de votre équipe...",
+      "confirm": "Confirmer le rejet"
+    },
+    "messages": {
+      "agent_recruited": "Agent recruté avec succès !",
+      "agent_removed": "Agent retiré de l'équipe avec succès.",
+      "claim_accepted": "Réclamation {{numero}} acceptée.",
+      "claim_resolved": "Réclamation {{numero}} marquée comme résolue.",
+      "claim_rejected": "Réclamation {{numero}} rejetée."
+    },
+    "errors": {
+      "load_team": "Impossible de charger les données de votre équipe.",
+      "recruit_agent": "Échec du recrutement de l'agent.",
+      "remove_agent": "Impossible de retirer l'agent.",
+      "accept_claim": "Impossible d'accepter la réclamation.",
+      "resolve_claim": "Impossible de clore la réclamation.",
+      "reject_claim": "Erreur lors du rejet de la réclamation."
+    }
+  },
+  "team_create": {
+    "title": "Créer une Équipe",
+    "subtitle": "Créez une nouvelle équipe en spécifiant l'adresse e-mail du chef d'équipe (Service Manager).",
+    "team_name": "Nom de l'équipe (Service)",
+    "team_name_placeholder": "Ex: Support IT Niveau 2",
+    "team_name_required": "Le nom de l'équipe est requis.",
+    "team_leader_email": "E-mail du Chef d'équipe",
+    "select_team_leader": "Sélectionnez un chef d'équipe...",
+    "valid_email_required": "Un e-mail valide est requis.",
+    "create_button": "Créer l'équipe",
+    "messages": {
+      "success": "Équipe créée avec succès !"
+    },
+    "errors": {
+      "server_details": "Erreur du serveur (Détails)",
+      "unknown": "Erreur inconnue lors de la création."
+    },
+  "team_edit": {
+    "title": "Modifier l'Équipe",
+    "subtitle": "Mettez à jour le nom du service ou affectez un nouveau chef d'équipe (Service Manager).",
+    "team_name": "Nom de l'équipe (Service)",
+    "team_name_placeholder": "Ex: Support IT Niveau 2",
+    "team_name_required": "Le nom de l'équipe est requis.",
+    "team_leader_email": "E-mail du Chef d'équipe",
+    "select_team_leader": "Sélectionnez un chef d'équipe...",
+    "valid_email_required": "Un e-mail valide est requis.",
+    "save": "Enregistrer",
+    "back_to_list": "Retour à la liste",
+    "messages": {
+      "success": "Équipe modifiée avec succès !"
+    },
+    "errors": {
+      "missing_id": "Identifiant d'équipe manquant.",
+      "not_found": "L'équipe n'a pas pu être trouvée dans la liste.",
+      "load_failed": "Impossible de charger les données de l'équipe. Le serveur met trop de temps à répondre.",
+      "server": "Erreur du serveur",
+      "unknown": "Erreur inconnue lors de la modification. (Délai dépassé ou serveur injoignable)"
+    }
+  }
+},
+  "team_list": {
+    "title": "Liste des Équipes",
+    "subtitle": "Gestion et visualisation de toutes les équipes (services).",
+    "create_team": "Créer une équipe",
+    "empty": "Aucune équipe trouvée. Cliquez sur \"Créer une équipe\" pour commencer.",
+    "unassigned": "Non assigné",
+    "edit": "Modifier",
+    "agents_count": "{{count}} agent(s)",
+    "columns": {
+      "id": "ID",
+      "service_name": "Nom du Service",
+      "team_leader": "Chef d'équipe",
+      "agents_count": "Nombre d'agents",
+      "actions": "Actions"
+    },
+    "errors": {
+      "load_failed": "Impossible de charger la liste des équipes. Le serveur met trop de temps à répondre ou est inaccessible."
+    }
+  },
+  "user_create": {
+    "title": "Ajouter un utilisateur",
+    "subtitle": "Créez un nouveau compte utilisateur et renseignez ses informations.",
+    "first_name": "Prénom",
+    "first_name_placeholder": "Entrez le prénom",
+    "last_name": "Nom",
+    "last_name_placeholder": "Entrez le nom",
+    "email": "Email",
+    "email_placeholder": "Entrez l’adresse email DXC",
+    "password": "Mot de passe",
+    "password_placeholder": "Entrez le mot de passe",
+    "gender": "Genre",
+    "select_gender": "Choisir un genre",
+    "roles": "Rôles",
+    "create": "Créer",
+    "gender_options": {
+      "MASCULIN": "Masculin",
+      "FEMININ": "Féminin"
+    },
+    "messages": {
+      "success": "Utilisateur créé avec succès"
+    },
+    "errors": {
+      "create_failed": "Erreur lors de la création de l’utilisateur"
+    }
+  },
+  "user_edit": {
+    "title": "Modifier l'utilisateur",
+    "subtitle": "Mettez à jour les informations de l'utilisateur.",
+    "first_name": "Prénom",
+    "first_name_placeholder": "Prénom",
+    "last_name": "Nom",
+    "last_name_placeholder": "Nom",
+    "email": "Email",
+    "email_placeholder": "Email DXC",
+    "gender": "Genre",
+    "select_gender": "Choisir un genre",
+    "roles": "Rôles",
+    "save_changes": "Enregistrer les modifications",
+    "gender_options": {
+      "MASCULIN": "Masculin",
+      "FEMININ": "Féminin"
+    },
+    "messages": {
+      "success": "Utilisateur mis à jour avec succès"
+    },
+    "errors": {
+      "load_failed": "Impossible de charger les informations de l’utilisateur.",
+      "update_failed": "Erreur lors de la mise à jour de l’utilisateur"
+    }
+  },
+  
+  "user_list": {
+    "title": "Utilisateurs",
+    "export": "Exporter",
+    "add_user": "Ajouter un utilisateur",
+    "search_placeholder": "Rechercher un utilisateur...",
+    "empty": "Aucun utilisateur trouvé.",
+    "show": "Afficher",
+    "lines_10": "10 lignes",
+    "pagination": "{{start}}-{{end}} sur {{total}} vus",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+    "columns": {
+      "first_name": "Prénom",
+      "last_name": "Nom",
+      "email": "E-mail",
+      "status": "Statut",
       "actions": "Actions"
     },
     "actions": {
-      "accept": "Accepter",
-      "resolve": "Traiter",
-      "reject": "Rejeter",
-      "notes": "Remarques internes"
-    }
-  },
-
-  "internal_messages": {
-    "title": "Messagerie interne",
-    "select_claim": "Choisir une réclamation",
-    "discussion": "Discussion",
-    "placeholder": "Écrire un message...",
-    "send": "Envoyer"
-  },
-
-  "sla_settings": {
-    "title": "Paramètres SLA",
-    "subtitle": "Définissez les délais SLA par niveau de priorité",
-    "priority": "Priorité",
-    "delay_hours": "Délai (heures)",
-    "preview": "Aperçu",
-    "hours_label": "{{value}} heure(s)",
-    "save": "Enregistrer",
-    "saving": "Enregistrement...",
-    "success": "Les paramètres SLA ont été enregistrés avec succès.",
+      "view": "Voir",
+      "edit": "Modifier",
+      "delete": "Supprimer"
+    },
+    "status": {
+      "active": "Actif",
+      "deleted": "Supprimé",
+      "disabled": "Désactivé"
+    },
+    "gender": {
+      "MASCULIN": "Masculin",
+      "FEMININ": "Féminin"
+    },
+    "details": {
+      "title": "Détails de l'utilisateur",
+      "first_name": "Prénom :",
+      "last_name": "Nom :",
+      "email": "Email :",
+      "gender": "Genre :",
+      "roles": "Rôle(s) :",
+      "status": "Statut :",
+      "created_at": "Date de création :",
+      "updated_at": "Dernière mise à jour :"
+    },
     "errors": {
-      "load_failed": "Impossible de charger les paramètres SLA.",
-      "save_failed": "Impossible d'enregistrer les paramètres SLA.",
-      "invalid_delay": "Chaque délai SLA doit être supérieur à 0."
+      "load_failed": "Erreur lors du chargement des utilisateurs.",
+      "delete_failed": "Erreur lors de la suppression de l’utilisateur"
     }
+  },
+   "client_navbar": {
+    "notifications": "Notifications",
+    "hello": "Bonjour,",
+    "logout": "Déconnexion"
+  },
+  "admin_dashboard": {
+  "title": "Tableau de bord administrateur",
+  "cards": {
+    "users": "Utilisateurs",
+    "claims": "Réclamations",
+    "in_progress": "En cours",
+    "sla_respected": "SLA respecté"
+  },
+    "datasets": {
+  "status": "Statut des réclamations",
+  "priority": "Priorité des réclamations",
+  "month": "Réclamations par mois",
+  "categorie": "Catégories des réclamations"
+
+},
+"categories": {
+  "project": "Projet",
+  "maintenance": "Maintenance",
+  "technical": "Technique",
+  "billing": "Facturation",
+  "service": "Service",
+  "other": "Autre"
+},
+"priorities": {
+  "high": "ELEVEE",
+  "medium": "Moyenne",
+  "low": "FAIBLE",
+  "urgent": "Urgente"
+  
+},
+  "chart": {
+    "title": "Statistiques des réclamations",
+    "open": "Ouvertes",
+    "in_progress": "En cours",
+    "resolved": "Résolues",
+    "closed": "Clôturées",
+    "pending": "En attente",
+    "chart_type": "Type de graphe",
+    "main_color": "Couleur principale",
+    "data_to_display": "Donnée à afficher",
+    
+    "types": {
+      "bar": "Barres",
+      "line": "Ligne",
+      "pie": "Camembert",
+      "doughnut": "Anneau"
+    }
+  },
+  "recent_activity": {
+    "title": "Activité récente",
+    "id": "ID",
+    "user": "Utilisateur",
+    "action": "Action",
+    "user_created": "Création utilisateur",
+    "new_claim": "Nouvelle réclamation"
+  },
+  "months": {
+  "january": "Janvier",
+  "february": "Février",
+  "march": "Mars",
+  "april": "Avril",
+  "may": "Mai",
+  "june": "Juin",
+  "july": "Juillet",
+  "august": "Août",
+  "september": "Septembre",
+  "october": "Octobre",
+  "november": "Novembre",
+  "december": "Décembre"
+}
+},
+  "client_dashboard": {
+    "title": "Tableau de Bord",
+    "create_claim": "Créer une Réclamation",
+    "table": {
+      "id": "ID",
+      "subject": "Objet",
+      "type": "Type",
+      "status": "État"
+    },
+    "chat": {
+      "title": "Chatbot Support",
+      "placeholder": "Écrivez votre message...",
+      "welcome": "Bonjour !\nComment puis-je vous aider ?",
+      "auto_reply": "Merci pour votre message. Un agent vous répondra bientôt."
+    }
+  },
+   "navbar": {
+    "notifications": "Notifications",
+    "hello": "Bonjour",
+    "user": "Utilisateur",
+    "logout": "Déconnexion"
+  },
+  "sidebar": {
+    "communication": "Communication",
+    "internal_messages": "Messagerie interne",
+    "admin_panel": "Admin Panel",
+    "dashboard": "Tableau de bord",
+    "users": "Utilisateurs",
+    "users_list": "Liste des utilisateurs",
+    "create_user": "Créer un utilisateur",
+    "teams": "Équipes",
+    "teams_list": "Liste des équipes",
+    "create_team": "Créer une équipe",
+    "all_claims": "Toutes les Réclamations",
+    "roles": "Rôles",
+    "settings": "Paramètres",
+    "manager_panel": "Manager Panel",
+    "statistics": "Statistiques",
+    "claims_list": "Liste des réclamations",
+    "team_leader": "Chef d'équipe",
+    "my_team": "Mon Équipe",
+    "my_missions": "Mes Missions",
+    "client_panel": "Client Panel",
+    "claims": "Réclamations",
+    "create_claim": "Créer une réclamation",
+    "security": "Sécurité",
+    "activate_faceid": "Activer Face ID",
+    "activating": "Activation...",
+    "face_recognition": "Reconnaissance faciale",
+    "activate_face_recognition": "Activer reconnaissance faciale",
+    "face_register": "Enregistrement du visage",
+    "open_camera": "Ouvrir caméra",
+    "capture": "Capturer",
+    "save_face": "Enregistrer visage",
+    "close": "Fermer",
+    "preview": "Aperçu",
+    "face_guide": "Centrez votre visage dans le cadre",
+    "messages": {
+      "faceid_success": "Face ID activé avec succès.",
+      "photo_captured": "Photo capturée avec succès.",
+      "face_saved": "Visage enregistré avec succès."
+    
+  },
+  "errors": {
+    "user_not_identified": "Utilisateur non identifié.",
+    "faceid_activation": "Erreur lors de l’activation de Face ID.",
+    "camera_access": "Impossible d’accéder à la caméra.",
+    "video_canvas_missing": "Éléments vidéo/canvas introuvables.",
+    "open_camera_first": "Veuillez ouvrir la caméra d’abord.",
+    "video_not_ready": "Vidéo non prête. Réessayez dans 1 seconde.",
+    "capture_failed": "Impossible de capturer l’image.",
+    "no_captured_image": "Aucune image capturée.",
+    "face_save": "Erreur lors de l’enregistrement du visage."
   }
+},
+  "internal_messages": {
+  "title": "Messagerie interne",
+  "select_claim": "Choisir une réclamation",
+  "choose_claim": "Sélectionner une réclamation",
+  "discussion": "Discussion",
+  "no_messages": "Aucun message",
+  "placeholder": "Écrire un message...",
+  "send": "Envoyer",
+  "unknown_user": "Utilisateur"
+},
+"agent_missions": {
+  "title": "Mes Missions",
+  "subtitle": "Consultez et gérez les réclamations assignées à votre équipe.",
+  "empty": "Aucune mission assignée pour le moment.",
+  "table": {
+    "id": "ID",
+    "subject": "Objet",
+    "category": "Catégorie",
+    "priority": "Priorité",
+    "status": "Statut",
+    "date": "Date de création",
+    "actions": "Actions"
+  },
+  "actions": {
+    "accept": "Accepter (mettre en cours)",
+    "resolve": "Marquer comme traitée",
+    "reject": "Rejeter",
+    "notes": "Remarques internes"
+  },
+  "messages": {
+    "accepted": "La réclamation #{{numero}} est maintenant en cours.",
+    "resolved": "La réclamation #{{numero}} a été marquée comme résolue.",
+    "rejected": "La réclamation #{{numero}} a été rejetée.",
+    "error_accept": "Impossible d'accepter la réclamation.",
+    "error_resolve": "Impossible de résoudre la réclamation.",
+    "error_reject": "Impossible de rejeter la réclamation."
+  },
+  "reject_modal": {
+    "title": "Rejeter la réclamation",
+    "text": "Veuillez indiquer le motif du rejet pour la réclamation",
+    "reason_label": "Motif du rejet",
+    "reason_placeholder": "Décrivez la raison du rejet...",
+    "confirm": "Confirmer le rejet"
+    },
+    "notes_modal": {
+      "title": "Remarques internes",
+      "no_notes": "Aucune remarque pour le moment.",
+      "add_label": "Ajouter une remarque",
+      "placeholder": "Écrivez votre remarque ici...",
+      "add_btn": "Ajouter la remarque"
+    }
+  },
+  "sla_settings": {
+  "title": "Paramètres SLA",
+  "subtitle": "Définir les délais SLA par niveau de priorité",
+  "priority": "Priorité",
+  "delay_hours": "Délai (heures)",
+  "preview": "Aperçu",
+  "hours_label": "{{value}} heure(s)",
+  "save": "Enregistrer",
+  "saving": "Enregistrement...",
+  "success": "Les paramètres SLA ont été enregistrés avec succès.",
+  "errors": {
+    "load_failed": "Impossible de charger les paramètres SLA. Le serveur met trop de temps à répondre ou est inaccessible.",
+    "save_failed": "Impossible d'enregistrer les paramètres SLA.",
+    "invalid_delay": "Chaque délai SLA doit être supérieur à 0."
+  }
+},
+ "sla_status": {
+    "EN_COURS": "En cours",
+    "PROCHE_DEPASSEMENT": "Proche du dépassement",
+    "DEPASSE": "Dépassement",
+    "RESPECTE": "Respecté"
+  },
+
+  "sla": {
+    "expired": "Dépassement",
+    "respected": "Respecté"
+  }
+
 }
