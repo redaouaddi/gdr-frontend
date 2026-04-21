@@ -1,0 +1,63 @@
+<div class="app-layout">
+  <div class="sidebar-container">
+    <app-sidebar></app-sidebar>
+  </div>
+
+  <div class="main-content">
+    <app-navbar></app-navbar>
+
+    <div class="messages-page">
+      <h2>{{ 'internal_messages.title' | translate }}</h2>
+
+      <div class="messages-card">
+        <div class="selector-row">
+          <label for="reclamationId">{{ 'internal_messages.select_claim' | translate }}</label>
+          <select
+            id="reclamationId"
+            [ngModel]="selectedReclamationId"
+            (ngModelChange)="onSelectReclamation($event)">
+            <option [ngValue]="undefined">{{ 'internal_messages.choose_claim' | translate }}</option>
+            <option *ngFor="let rec of reclamations" [ngValue]="rec.id">
+              {{ rec.numeroReclamation }} - {{ rec.titre }}
+            </option>
+          </select>
+        </div>
+
+        <div class="discussion">
+          <h5>{{ 'internal_messages.discussion' | translate }}</h5>
+
+          <div class="messages-list" *ngIf="!loadingMessages; else loadingTpl">
+            <div *ngIf="currentMessages.length === 0" class="empty">
+              {{ 'internal_messages.no_messages' | translate }}
+            </div>
+
+            <div *ngFor="let msg of currentMessages; trackBy: trackByMessageId" class="msg-item">
+              <div class="msg-meta">
+                <strong>{{ msg.auteurNom || ('internal_messages.unknown_user' | translate) }}</strong>
+                <span>{{ msg.dateEnvoi | date: 'short' }}</span>
+              </div>
+              <div class="msg-body">{{ msg.contenu }}</div>
+            </div>
+          </div>
+
+          <ng-template #loadingTpl>
+            <div class="empty">{{ 'common.loading' | translate }}</div>
+          </ng-template>
+        </div>
+
+        <div class="composer">
+          <input
+            type="text"
+            [placeholder]="'internal_messages.placeholder' | translate"
+            [(ngModel)]="newMessage"
+            [disabled]="!selectedReclamationId || sending"
+            (keyup.enter)="send()"
+          />
+          <button (click)="send()" [disabled]="!selectedReclamationId || !newMessage.trim() || sending">
+            {{ 'internal_messages.send' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

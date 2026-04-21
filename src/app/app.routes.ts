@@ -18,6 +18,7 @@ import { MyTeamComponent } from './features/teams/my-team/my-team.component';
 import { ServiceManagerDashboardComponent } from './features/service-manager/dashboard/service-manager-dashboard.component';
 import { AllReclamationsComponent } from './features/admin/all-reclamations/all-reclamations.component';
 import { AgentMissionsComponent } from './features/reclamations/agent-missions/agent-missions';
+import { InternalMessagesComponent } from './features/internal-messages/internal-messages.component';
 
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -120,6 +121,12 @@ export const routes: Routes = [
     component: AgentMissionsComponent,
     canActivate: [authGuard, roleGuard],
     data: { roles: ['AGENT', 'CHEF_EQUIPE', 'ADMIN'] }
+  },
+
+  {
+    path: 'messages-internes',
+    component: InternalMessagesComponent,
+    canActivate: [authGuard]
   },
 
   {
