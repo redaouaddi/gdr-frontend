@@ -3,6 +3,7 @@
     "subtitle": "Login to Your Account",
     "email": "Email",
     "password": "Password",
+    "loading": "Signing in...",
     "button": "Login",
     "face_button": "Sign in with face",
     "face_title": "Facial Recognition Login",
@@ -54,35 +55,48 @@
   },
 
 
+  
   "reclamations_all": {
     "title": "All Claims",
-    "subtitle": "Global history and tracking of all tickets.",
-    "identification": "Identification No.",
-    "ticket_info": "Ticket Information",
+    "subtitle": "Global overview of registered claims",
+    "identification": "Identification",
+    "ticket_info": "Information",
     "priority": "Priority",
-    "current_status": "Current Status",
+    "current_status": "Status",
+    "sla_status": "SLA Status",
+    "sla_deadline": "SLA Deadline",
+    "remaining_time": "Remaining Time",
     "assigned_team": "Assigned Team",
-    "empty": "No claims found in the system.",
-    "unassigned": "Not assigned",
-    "server_error": "Server is taking too long to respond or is unreachable."
+    "resolved_at": "Resolved At",
+    "unassigned": "Unassigned",
+    "empty": "No claims found",
+    "server_error": "Server error while loading claims"
+  },
+
+  "priority": {
+    "FAIBLE": "Low",
+    "MOYENNE": "Medium",
+    "ELEVEE": "High"
   },
 
   "status": {
     "EN_ATTENTE": "Pending",
-    "OUVERTE": "Open",
-    "EN_COURS": "In progress",
+    "EN_COURS": "In Progress",
     "TRAITEE": "Processed",
-    "RESOLUE": "Resolved",
     "REJETEE": "Rejected"
   },
 
-  "priority": {
-    "HAUTE": "High",
-    "URGENTE": "Urgent",
-    "MOYENNE": "Medium",
-    "BASSE": "Low"
+  "sla_status": {
+    "EN_COURS": "On Track",
+    "PROCHE_DEPASSEMENT": "Near Breach",
+    "DEPASSE": "Breached",
+    "RESPECTE": "Met"
   },
 
+  "sla": {
+    "expired": "Breached",
+    "respected": "Met"
+  },
   "roles": {
     "title": "Role Management",
     "subtitle": "Manage platform access and permissions.",
@@ -645,6 +659,22 @@
     "add_label": "Add a remark",
     "placeholder": "Write your remark here...",
     "add_btn": "Add remark"
+  }
+},
+"sla_settings": {
+  "title": "SLA Settings",
+  "subtitle": "Define SLA delays by priority level",
+  "priority": "Priority",
+  "delay_hours": "Delay (hours)",
+  "preview": "Preview",
+  "hours_label": "{{value}} hour(s)",
+  "save": "Save",
+  "saving": "Saving...",
+  "success": "SLA settings were saved successfully.",
+  "errors": {
+    "load_failed": "Unable to load SLA settings.",
+    "save_failed": "Unable to save SLA settings.",
+    "invalid_delay": "Each SLA delay must be greater than 0."
   }
 }
 }

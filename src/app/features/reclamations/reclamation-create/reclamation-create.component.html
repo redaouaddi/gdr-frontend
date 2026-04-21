@@ -2,6 +2,7 @@
   <div class="sidebar-container">
     <app-sidebar></app-sidebar>
   </div>
+
   <div class="main-content">
     <div class="reclamation-dashboard">
       <app-client-navbar></app-client-navbar>
@@ -14,10 +15,11 @@
           </div>
 
           <form (ngSubmit)="onSubmit()" #recForm="ngForm">
-            
+
             <div class="form-group">
               <label for="titre">
-                {{ 'reclamation_create.subject' | translate }} <span class="required">*</span>
+                {{ 'reclamation_create.subject' | translate }}
+                <span class="required">*</span>
               </label>
               <input
                 type="text"
@@ -33,56 +35,127 @@
             <div class="form-row">
               <div class="form-group half">
                 <label for="categorie">
-                  {{ 'reclamation_create.category' | translate }} <span class="required">*</span>
+                  {{ 'reclamation_create.category' | translate }}
+                  <span class="required">*</span>
                 </label>
-                <select id="categorie" name="categorie" [(ngModel)]="reclamation.categorie" required class="form-control">
-                  <option value="PROJET">{{ 'reclamation_create.categories.PROJET' | translate }}</option>
-                  <option value="MAINTENANCE">{{ 'reclamation_create.categories.MAINTENANCE' | translate }}</option>
+                <select
+                  id="categorie"
+                  name="categorie"
+                  [(ngModel)]="reclamation.categorie"
+                  required
+                  class="form-control"
+                >
+                  <option value="PROJET">
+                    {{ 'reclamation_create.categories.PROJET' | translate }}
+                  </option>
+                  <option value="MAINTENANCE">
+                    {{ 'reclamation_create.categories.MAINTENANCE' | translate }}
+                  </option>
                 </select>
               </div>
 
               <div class="form-group half">
                 <label for="priorite">
-                  {{ 'reclamation_create.priority' | translate }} <span class="required">*</span>
+                  {{ 'reclamation_create.priority' | translate }}
+                  <span class="required">*</span>
                 </label>
-                <select id="priorite" name="priorite" [(ngModel)]="reclamation.priorite" required class="form-control">
-                  <option value="FAIBLE">{{ 'reclamation_create.priorities.FAIBLE' | translate }}</option>
-                  <option value="MOYENNE">{{ 'reclamation_create.priorities.MOYENNE' | translate }}</option>
-                  <option value="ELEVEE">{{ 'reclamation_create.priorities.ELEVEE' | translate }}</option>
+                <select
+                  id="priorite"
+                  name="priorite"
+                  [(ngModel)]="reclamation.priorite"
+                  required
+                  class="form-control"
+                >
+                  <option value="FAIBLE">
+                    {{ 'reclamation_create.priorities.FAIBLE' | translate }}
+                  </option>
+                  <option value="MOYENNE">
+                    {{ 'reclamation_create.priorities.MOYENNE' | translate }}
+                  </option>
+                  <option value="ELEVEE">
+                    {{ 'reclamation_create.priorities.ELEVEE' | translate }}
+                  </option>
                 </select>
+
+                <div class="sla-preview">
+                  <div class="sla-line">
+                    ⏱ SLA estimé :
+                    <strong>{{ getSlaHours() }} h</strong>
+                  </div>
+
+                  <div class="sla-line">
+                    📅 Deadline estimée :
+                    <strong>{{ getEstimatedDeadline() }}</strong>
+                  </div>
+                </div>
               </div>
             </div>
 
             <div class="form-row" *ngIf="reclamation.categorie === 'MAINTENANCE'">
               <div class="form-group half">
                 <label for="typeMaintenance">
-                  {{ 'reclamation_create.maintenance_type' | translate }} <span class="required">*</span>
+                  {{ 'reclamation_create.maintenance_type' | translate }}
+                  <span class="required">*</span>
                 </label>
-                <select id="typeMaintenance" name="typeMaintenance" [(ngModel)]="reclamation.typeMaintenance" required class="form-control">
-                  <option [ngValue]="undefined" disabled selected>{{ 'common.select' | translate }}</option>
-                  <option value="INCIDENT">{{ 'reclamation_create.maintenance_types.INCIDENT' | translate }}</option>
-                  <option value="DEMANDE_SERVICE">{{ 'reclamation_create.maintenance_types.DEMANDE_SERVICE' | translate }}</option>
+                <select
+                  id="typeMaintenance"
+                  name="typeMaintenance"
+                  [(ngModel)]="reclamation.typeMaintenance"
+                  required
+                  class="form-control"
+                >
+                  <option [ngValue]="undefined" disabled selected>
+                    {{ 'common.select' | translate }}
+                  </option>
+                  <option value="INCIDENT">
+                    {{ 'reclamation_create.maintenance_types.INCIDENT' | translate }}
+                  </option>
+                  <option value="DEMANDE_SERVICE">
+                    {{ 'reclamation_create.maintenance_types.DEMANDE_SERVICE' | translate }}
+                  </option>
                 </select>
               </div>
-              
+
               <div class="form-group half" *ngIf="reclamation.typeMaintenance === 'INCIDENT'">
                 <label for="sousCategorieIncident">
-                  {{ 'reclamation_create.domain' | translate }} <span class="required">*</span>
+                  {{ 'reclamation_create.domain' | translate }}
+                  <span class="required">*</span>
                 </label>
-                <select id="sousCategorieIncident" name="sousCategorieIncident" [(ngModel)]="reclamation.sousCategorieIncident" required class="form-control">
-                  <option [ngValue]="undefined" disabled selected>{{ 'common.select' | translate }}</option>
-                  <option value="TECHNIQUE">{{ 'reclamation_create.incident_categories.TECHNIQUE' | translate }}</option>
-                  <option value="FACTURATION">{{ 'reclamation_create.incident_categories.FACTURATION' | translate }}</option>
-                  <option value="SERVICE">{{ 'reclamation_create.incident_categories.SERVICE' | translate }}</option>
-                  <option value="AUTRE">{{ 'reclamation_create.incident_categories.AUTRE' | translate }}</option>
+                <select
+                  id="sousCategorieIncident"
+                  name="sousCategorieIncident"
+                  [(ngModel)]="reclamation.sousCategorieIncident"
+                  required
+                  class="form-control"
+                >
+                  <option [ngValue]="undefined" disabled selected>
+                    {{ 'common.select' | translate }}
+                  </option>
+                  <option value="TECHNIQUE">
+                    {{ 'reclamation_create.incident_categories.TECHNIQUE' | translate }}
+                  </option>
+                  <option value="FACTURATION">
+                    {{ 'reclamation_create.incident_categories.FACTURATION' | translate }}
+                  </option>
+                  <option value="SERVICE">
+                    {{ 'reclamation_create.incident_categories.SERVICE' | translate }}
+                  </option>
+                  <option value="AUTRE">
+                    {{ 'reclamation_create.incident_categories.AUTRE' | translate }}
+                  </option>
                 </select>
               </div>
+
               <div class="form-group half" *ngIf="reclamation.typeMaintenance !== 'INCIDENT'"></div>
             </div>
 
-            <div class="form-group" *ngIf="reclamation.typeMaintenance === 'INCIDENT' && reclamation.sousCategorieIncident === 'AUTRE'">
+            <div
+              class="form-group"
+              *ngIf="reclamation.typeMaintenance === 'INCIDENT' && reclamation.sousCategorieIncident === 'AUTRE'"
+            >
               <label for="detailsAutreIncident">
-                {{ 'reclamation_create.other_details' | translate }} <span class="required">*</span>
+                {{ 'reclamation_create.other_details' | translate }}
+                <span class="required">*</span>
               </label>
               <input
                 type="text"
@@ -97,7 +170,8 @@
 
             <div class="form-group">
               <label for="description">
-                {{ 'reclamation_create.description' | translate }} <span class="required">*</span>
+                {{ 'reclamation_create.description' | translate }}
+                <span class="required">*</span>
               </label>
               <textarea
                 id="description"
@@ -118,21 +192,47 @@
                 type="text"
                 id="dateCreation"
                 name="dateCreation"
-                [value]="reclamation.dateCreation"
+                [value]="dateCreationAffichage"
                 class="form-control date-readonly"
                 disabled
               >
             </div>
 
             <div class="form-group file-upload-group">
-              <label for="fileUpload">{{ 'reclamation_create.attachment' | translate }}</label>
+              <label for="fileUpload">
+                {{ 'reclamation_create.attachment' | translate }}
+              </label>
               <div class="file-upload-wrapper">
-                <input type="file" id="fileUpload" (change)="onFileSelected($event)" class="file-input" accept="image/*,.pdf,.doc,.docx" />
+                <input
+                  type="file"
+                  id="fileUpload"
+                  (change)="onFileSelected($event)"
+                  class="file-input"
+                  accept="image/*,.pdf,.doc,.docx"
+                />
+
                 <div class="upload-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
                 </div>
+
                 <span class="file-name" *ngIf="selectedFile">{{ selectedFile.name }}</span>
-                <span class="file-placeholder" *ngIf="!selectedFile">{{ 'reclamation_create.choose_file' | translate }}</span>
+                <span class="file-placeholder" *ngIf="!selectedFile">
+                  {{ 'reclamation_create.choose_file' | translate }}
+                </span>
               </div>
             </div>
 
@@ -140,9 +240,18 @@
               <button type="button" class="btn-cancel" (click)="cancel()">
                 {{ 'common.cancel' | translate }}
               </button>
-              <button type="submit" class="btn-submit" [disabled]="isSubmitting || !recForm.form.valid">
-                <span *ngIf="isSubmitting">{{ 'reclamation_create.creating' | translate }}</span>
-                <span *ngIf="!isSubmitting">{{ 'reclamation_create.submit' | translate }}</span>
+
+              <button
+                type="submit"
+                class="btn-submit"
+                [disabled]="isSubmitting || !recForm.form.valid"
+              >
+                <span *ngIf="isSubmitting">
+                  {{ 'reclamation_create.creating' | translate }}
+                </span>
+                <span *ngIf="!isSubmitting">
+                  {{ 'reclamation_create.submit' | translate }}
+                </span>
               </button>
             </div>
 
@@ -153,7 +262,9 @@
       <div *ngIf="successMessage" class="custom-alert-success">
         {{ successMessage }}
         <div *ngIf="showSuccess">
-          {{ 'reclamation_create.redirect_in' | translate }} {{ countdown }} {{ 'reclamation_create.seconds' | translate }}
+          {{ 'reclamation_create.redirect_in' | translate }}
+          {{ countdown }}
+          {{ 'reclamation_create.seconds' | translate }}
         </div>
       </div>
 
@@ -164,12 +275,26 @@
       <div class="success-overlay" *ngIf="showSuccess">
         <div class="success-modal">
           <div class="success-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </div>
-          <h2 class="success-title">{{ 'reclamation_create.created_title' | translate }}</h2>
-          <p class="success-text">{{ 'reclamation_create.created_text' | translate }}</p>
+
+          <h2 class="success-title">
+            {{ 'reclamation_create.created_title' | translate }}
+          </h2>
+
+          <p class="success-text">
+            {{ 'reclamation_create.created_text' | translate }}
+          </p>
+
           <div class="redirect-info">
             {{ 'reclamation_create.redirect_list' | translate }}
             <span class="countdown">{{ countdown }}</span> s...

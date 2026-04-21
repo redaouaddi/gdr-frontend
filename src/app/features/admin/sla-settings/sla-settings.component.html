@@ -1,0 +1,88 @@
+<div class="app-layout">
+  <div class="sidebar-container">
+    <app-sidebar></app-sidebar>
+  </div>
+
+  <div class="main-content" style="background:#f5f7fb; min-height:100vh;">
+    <app-navbar></app-navbar>
+
+    <div class="container py-4">
+      <div class="mb-4">
+        <h2 class="fw-bold mb-1" style="color: #4a2769;">
+          {{ 'sla_settings.title' | translate }}
+        </h2>
+        <p class="text-muted mb-0">
+          {{ 'sla_settings.subtitle' | translate }}
+        </p>
+      </div>
+
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="successMessage" class="alert alert-success rounded-3">
+        {{ successMessage }}
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger rounded-3">
+        {{ errorMessage }}
+      </div>
+
+      <div *ngIf="!isLoading" class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>{{ 'sla_settings.priority' | translate }}</th>
+                  <th>{{ 'sla_settings.delay_hours' | translate }}</th>
+                  <th>{{ 'sla_settings.preview' | translate }}</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let cfg of slaConfigurations">
+                  <td>
+                    <span class="badge rounded-pill fw-medium" [ngClass]="getPriorityBadgeClass(cfg.priorite)">
+                      {{ translatePriority(cfg.priorite) }}
+                    </span>
+                  </td>
+
+                  <td style="max-width: 220px;">
+                    <input
+                      type="number"
+                      min="1"
+                      class="form-control"
+                      [(ngModel)]="cfg.delaiHeures"
+                    >
+                  </td>
+
+                  <td>
+                    <span class="text-muted">
+                      {{ 'sla_settings.hours_label' | translate:{ value: cfg.delaiHeures } }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="d-flex justify-content-end mt-4">
+            <button
+              class="btn btn-primary px-4 rounded-pill"
+              (click)="saveAll()"
+              [disabled]="isSaving"
+            >
+              <span *ngIf="isSaving">{{ 'sla_settings.saving' | translate }}</span>
+              <span *ngIf="!isSaving">{{ 'sla_settings.save' | translate }}</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

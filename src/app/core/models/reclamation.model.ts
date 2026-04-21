@@ -18,6 +18,11 @@ export interface Reclamation {
   attachmentName?: string;
   motifRefus?: string;
   equipeAssignee?: string;
+
+  slaDeadline?: string;
+  slaStatus?: 'EN_COURS' | 'PROCHE_DEPASSEMENT' | 'DEPASSE' | 'RESPECTE';
+  dateResolution?: string;
+  clientNom?: string;
 }
 
 export interface CreateReclamationRequest {
@@ -30,10 +35,14 @@ export interface CreateReclamationRequest {
   typeMaintenance?: 'INCIDENT' | 'DEMANDE_SERVICE';
   sousCategorieIncident?: 'TECHNIQUE' | 'FACTURATION' | 'SERVICE' | 'AUTRE';
   detailsAutreIncident?: string;
-  dateCreation?: string;
 }
 
 export interface ReclamationStatusResponse {
   numeroReclamation: string;
   statut: string;
+  dateMiseAJour?: string;
+
+  slaDeadline?: string;
+  slaStatus?: 'EN_COURS' | 'PROCHE_DEPASSEMENT' | 'DEPASSE' | 'RESPECTE';
+  dateResolution?: string;
 }

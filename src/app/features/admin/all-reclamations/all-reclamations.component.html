@@ -2,14 +2,19 @@
   <div class="sidebar-container">
     <app-sidebar></app-sidebar>
   </div>
+
   <div class="main-content" style="background:#f5f7fb; min-height:100vh;">
     <app-navbar></app-navbar>
 
     <div class="container py-4">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2 class="fw-bold mb-1" style="color: #4a2769;">{{ 'reclamations_all.title' | translate }}</h2>
-          <p class="text-muted mb-0">{{ 'reclamations_all.subtitle' | translate }}</p>
+          <h2 class="fw-bold mb-1" style="color: #4a2769;">
+            {{ 'reclamations_all.title' | translate }}
+          </h2>
+          <p class="text-muted mb-0">
+            {{ 'reclamations_all.subtitle' | translate }}
+          </p>
         </div>
       </div>
 
@@ -25,7 +30,7 @@
 
       <div *ngIf="!isLoading && !errorMessage" class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-0">
-          
+
           <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
               <thead class="table-light">
@@ -34,12 +39,16 @@
                   <th>{{ 'reclamations_all.ticket_info' | translate }}</th>
                   <th>{{ 'reclamations_all.priority' | translate }}</th>
                   <th>{{ 'reclamations_all.current_status' | translate }}</th>
+                  <th>{{ 'reclamations_all.sla_status' | translate }}</th>
+                  <th>{{ 'reclamations_all.sla_deadline' | translate }}</th>
+                  <th>{{ 'reclamations_all.remaining_time' | translate }}</th>
                   <th class="pe-4">{{ 'reclamations_all.assigned_team' | translate }}</th>
                 </tr>
               </thead>
+
               <tbody>
                 <tr *ngIf="reclamations.length === 0">
-                  <td colspan="5" class="text-center py-5 text-muted">
+                  <td colspan="8" class="text-center py-5 text-muted">
                     {{ 'reclamations_all.empty' | translate }}
                   </td>
                 </tr>
@@ -47,30 +56,74 @@
                 <tr *ngFor="let rec of reclamations">
                   <td class="ps-4 py-3">
                     <div class="fw-bold text-primary mb-1">#{{ rec.numeroReclamation }}</div>
-                    <div class="small text-muted"><i class="bi bi-clock me-1"></i>{{ rec.dateCreation | date:'dd/MM/yyyy HH:mm' }}</div>
+                    <div class="small text-muted">
+                      <i class="bi bi-clock me-1"></i>
+                      {{ formatDate(rec.dateCreation) }}
+                    </div>
                   </td>
+
                   <td>
                     <div class="fw-medium text-dark">{{ rec.titre }}</div>
                     <div class="small text-muted">{{ rec.categorie }}</div>
                   </td>
+
                   <td>
                     <span class="badge rounded-pill fw-medium" [ngClass]="getPriorityClass(rec.priorite)">
-                      {{ translatePriority(rec.priorite)}}
+                      {{ translatePriority(rec.priorite) }}
                     </span>
                   </td>
+
                   <td>
                     <span class="badge rounded-pill shadow-sm" [ngClass]="getBadgeClass(rec.statut)">
-                      {{ translateStatus(rec.statut)  }}
+                      {{ translateStatus(rec.statut) }}
                     </span>
-                    <div *ngIf="rec.statut === 'REJETEE' && rec.motifRefus" class="small text-danger mt-1" style="max-width: 15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" [title]="rec.motifRefus">
+
+                    <div
+                      *ngIf="rec.statut === 'REJETEE' && rec.motifRefus"
+                      class="small text-danger mt-1"
+                      style="max-width: 15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                      [title]="rec.motifRefus"
+                    >
                       <i class="bi bi-exclamation-circle-fill me-1"></i>{{ rec.motifRefus }}
                     </div>
                   </td>
+
+                  <td>
+                    <span class="badge rounded-pill fw-medium" [ngClass]="getSlaClass(rec.slaStatus)">
+                      {{ translateSlaStatus(rec.slaStatus) }}
+                    </span>
+                  </td>
+
+                  <td>
+                    <div class="small fw-semibold text-dark">
+                      {{ formatDate(rec.slaDeadline) }}
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="small fw-semibold"
+                         [ngClass]="{
+                           'text-danger': rec.slaStatus === 'DEPASSE',
+                           'text-warning': rec.slaStatus === 'PROCHE_DEPASSEMENT',
+                           'text-success': rec.slaStatus === 'EN_COURS',
+                           'text-info': rec.slaStatus === 'RESPECTE'
+                         }">
+                      {{ getRemainingTime(rec.slaDeadline, rec.slaStatus) }}
+                    </div>
+
+                    <div *ngIf="rec.dateResolution" class="small text-muted mt-1">
+                      {{ 'reclamations_all.resolved_at' | translate }} :
+                      {{ formatDate(rec.dateResolution) }}
+                    </div>
+                  </td>
+
                   <td class="pe-4">
                     <span *ngIf="rec.equipeAssignee" class="fw-semibold text-dark">
                       <i class="bi bi-diagram-3-fill me-1 text-muted"></i>{{ rec.equipeAssignee }}
                     </span>
-                    <span *ngIf="!rec.equipeAssignee" class="text-muted fst-italic">{{ 'reclamations_all.unassigned' | translate }}</span>
+                    <span *ngIf="!rec.equipeAssignee" class="text-muted fst-italic">
+                      {{ 'reclamations_all.unassigned' | translate }}
+                    </span>
                   </td>
                 </tr>
               </tbody>

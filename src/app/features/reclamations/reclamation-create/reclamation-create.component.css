@@ -287,3 +287,32 @@ label {
   from { transform: scale(0.8); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+
+/* ===== SLA Preview ===== */
+
+.sla-preview {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f7f5ff 0%, #eef0fd 100%);
+  border: 1px solid #e6e3ff;
+  box-shadow: 0 4px 10px rgba(98, 54, 255, 0.06);
+}
+
+.sla-line {
+  font-size: 14px;
+  color: #4b4f69;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sla-line:last-child {
+  margin-bottom: 0;
+}
+
+.sla-line strong {
+  color: #6236ff;
+  font-weight: 700;
+}
