@@ -73,7 +73,7 @@
                         <th>{{ 'my_team.members.name' | translate }}</th>
                         <th>{{ 'my_team.members.email' | translate }}</th>
                         <th>{{ 'my_team.members.status' | translate }}</th>
-                        <th class="text-end">{{ 'my_team.members.action' | translate }}</th>
+                        <th class="text-end" *ngIf="canManageTeam">{{ 'my_team.members.action' | translate }}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -85,7 +85,7 @@
                             {{ 'my_team.members.active' | translate }}
                           </span>
                         </td>
-                        <td class="text-end">
+                        <td class="text-end" *ngIf="canManageTeam">
                           <button
                             class="btn btn-sm btn-outline-danger border-0 rounded-circle"
                             (click)="retirer(agent.id)"
@@ -102,7 +102,7 @@
             </div>
           </div>
 
-          <div class="col-12 mt-4">
+          <div class="col-12 mt-4" *ngIf="canManageTeam">
             <div class="card border-0 shadow-sm rounded-4">
               <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
@@ -144,195 +144,8 @@
             </div>
           </div>
 
-          <div class="col-12 mt-4">
-            <div class="card border-0 shadow-sm rounded-4">
-              <div class="card-body p-4">
-                <h5 class="fw-bold mb-4 border-bottom pb-2">{{ 'my_team.claims.title' | translate }}</h5>
-
-                <div *ngIf="reclamations.length === 0" class="text-center py-4 text-muted">
-                  {{ 'my_team.claims.empty' | translate }}
-                </div>
-
-                <div class="table-responsive" *ngIf="reclamations.length > 0">
-                  <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                      <tr>
-                        <th>{{ 'my_team.claims.number' | translate }}</th>
-                        <th>{{ 'my_team.claims.title_col' | translate }}</th>
-                        <th>{{ 'my_team.claims.priority' | translate }}</th>
-                        <th>{{ 'my_team.claims.status' | translate }}</th>
-                        <th class="text-end">{{ 'my_team.claims.actions' | translate }}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let rec of reclamations">
-                        <td class="fw-medium text-primary">#{{ rec.numeroReclamation }}</td>
-                        <td>
-                          <span class="d-block fw-semibold text-dark">{{ rec.titre }}</span>
-                          <small class="text-muted">{{ translateCategory(rec.categorie) }}</small>
-                        </td>
-                        <td>
-                          <span class="badge" [ngClass]="{
-                            'bg-danger': rec.priorite === 'ELEVEE',
-                            'bg-warning text-dark': rec.priorite === 'MOYENNE',
-                            'bg-info text-dark': rec.priorite === 'FAIBLE'
-                          }">{{ translatePriority(rec.priorite) }}</span>
-                        </td>
-                        <td>
-                          <span class="badge rounded-pill px-3 py-2" [ngClass]="{
-                            'bg-secondary text-white': rec.statut === 'EN_ATTENTE',
-                            'bg-primary': rec.statut === 'EN_COURS',
-                            'bg-success': rec.statut === 'TRAITEE',
-                            'bg-danger': rec.statut === 'REJETEE'
-                          }">
-                            <i class="bi" [ngClass]="{
-                              'bi-hourglass': rec.statut === 'EN_ATTENTE',
-                              'bi-play-fill': rec.statut === 'EN_COURS',
-                              'bi-check-all': rec.statut === 'TRAITEE',
-                              'bi-x-circle': rec.statut === 'REJETEE'
-                            }"></i>
-                            {{ translateStatus(rec.statut) }}
-                          </span>
-                        </td>
-                        <td class="text-end">
-                          <div class="d-flex justify-content-end gap-2">
-                            <button *ngIf="rec.statut === 'EN_ATTENTE'"
-                                    class="btn btn-sm btn-success rounded-pill px-3 shadow-sm"
-                                    (click)="accepter(rec.numeroReclamation)">
-                              <i class="bi bi-check-lg me-1"></i> {{ 'my_team.claims.accept' | translate }}
-                            </button>
-
-                            <button *ngIf="rec.statut === 'EN_ATTENTE' || rec.statut === 'EN_COURS'"
-                                    class="btn btn-sm btn-outline-danger rounded-pill px-3"
-                                    (click)="openRejectModal(rec)">
-                              <i class="bi bi-x-lg me-1"></i> {{ 'my_team.claims.reject' | translate }}
-                            </button>
-
-                            <button *ngIf="rec.statut === 'EN_COURS'"
-                                    class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm"
-                                    (click)="resoudre(rec.numeroReclamation)">
-                              <i class="bi bi-flag-fill me-1"></i> {{ 'my_team.claims.resolved' | translate }}
-                            </button>
-
-                            <!-- Bouton Remarques Internes -->
-                            <button class="btn btn-sm btn-outline-info rounded-pill px-3 d-inline-flex align-items-center"
-                                    [title]="'agent_missions.actions.notes' | translate"
-                                    (click)="openNoteModal(rec)">
-                              <i class="bi bi-chat-left-text-fill"></i>
-                            </button>
-
-                            <span *ngIf="rec.statut === 'TRAITEE' || rec.statut === 'REJETEE'" class="text-muted small">
-                              {{ 'my_team.claims.no_action' | translate }}
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </ng-template>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5);" *ngIf="selectedReclamation">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg rounded-4">
-      <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
-        <h5 class="modal-title fw-bold text-danger">{{ 'my_team.reject_modal.title' | translate }}</h5>
-        <button type="button" class="btn-close" (click)="closeRejectModal()" aria-label="Close"></button>
-      </div>
-      <div class="modal-body px-4 py-4">
-        <p class="text-muted mb-3">
-          {{ 'my_team.reject_modal.text' | translate }}
-          <span class="fw-bold text-dark">#{{ selectedReclamation.numeroReclamation }}</span>.
-        </p>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">{{ 'my_team.reject_modal.reason_label' | translate }}</label>
-          <textarea class="form-control bg-light"
-                    rows="3"
-                    [(ngModel)]="motifRefus"
-                    [placeholder]="'my_team.reject_modal.reason_placeholder' | translate"></textarea>
-        </div>
-      </div>
-      <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
-        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" (click)="closeRejectModal()">
-          {{ 'common.cancel' | translate }}
-        </button>
-        <button type="button"
-                class="btn btn-danger rounded-pill px-4"
-                [disabled]="!motifRefus || motifRefus.trim() === ''"
-                (click)="rejectReclamation()">
-          {{ 'my_team.reject_modal.confirm' | translate }}
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal des Notes/Remarques Internes -->
-<div class="modal-backdrop" *ngIf="showNoteModal">
-  <div class="modal-card modal-large notes-modal">
-    <div class="modal-header">
-      <h5>
-        <i class="bi bi-journal-text me-2 text-primary"></i>
-        {{ 'agent_missions.notes_modal.title' | translate }} #{{ selectedMissionNoteNumero }}
-      </h5>
-      <button class="btn-close-modal" (click)="closeNoteModal()">&#x2715;</button>
-    </div>
-
-    <div class="modal-body notes-container">
-      <!-- Liste des notes existantes (Timeline style) -->
-      <div class="notes-timeline">
-        <div *ngIf="isLoadingNotes" class="text-center py-4">
-          <div class="spinner-border text-primary" role="status"></div>
-        </div>
-
-        <div *ngIf="!isLoadingNotes && currentMissionNotes.length === 0" class="empty-notes">
-          <i class="bi bi-chat-square-dots"></i>
-          <p>{{ 'agent_missions.notes_modal.no_notes' | translate }}</p>
-        </div>
-
-        <div *ngFor="let note of currentMissionNotes" class="timeline-item">
-          <div class="timeline-marker"></div>
-          <div class="timeline-content">
-            <div class="note-meta">
-              <span class="note-author">{{ note.auteurNom }}</span>
-              <span class="note-date">{{ note.dateEnvoi | date:'dd/MM/yyyy HH:mm' }}</span>
-            </div>
-            <div class="note-text">{{ note.contenu }}</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Formulaire pour ajouter une note -->
-      <div class="note-input-section">
-        <label class="modal-label">{{ 'agent_missions.notes_modal.add_label' | translate }}</label>
-        <textarea
-          class="form-control premium-content"
-          rows="3"
-          [(ngModel)]="newNoteText"
-          [placeholder]="'agent_missions.notes_modal.placeholder' | translate">
-        </textarea>
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn-modal-cancel" (click)="closeNoteModal()">
-        {{ 'common.close' | translate }}
-      </button>
-      <button
-        class="btn-modal-confirm"
-        [disabled]="!newNoteText || newNoteText.trim() === '' || isSendingNote"
-        (click)="ajouterNote()">
-        <span *ngIf="!isSendingNote">{{ 'agent_missions.notes_modal.add_btn' | translate }}</span>
-        <span *ngIf="isSendingNote" class="spinner-border spinner-border-sm"></span>
-      </button>
     </div>
   </div>
 </div>

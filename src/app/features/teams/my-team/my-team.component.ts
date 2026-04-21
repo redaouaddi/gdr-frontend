@@ -3,50 +3,36 @@ import { CommonModule } from '@angular/common';
 import { EquipeService } from '../../../core/services/equipe.service';
 import { Equipe } from '../../../core/models/equipe.model';
 import { UserResponse } from '../../../core/services/user.service';
-import { ReclamationService } from '../../../core/services/reclamation.service';
-import { Reclamation } from '../../../core/models/reclamation.model';
 import { Navbar } from '../../../layout/navbar/navbar';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { MessageInterneService, MessageInterne } from '../../../core/services/message-interne.service';
-import { DatePipe } from '@angular/common';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-my-team',
   standalone: true,
-  imports: [CommonModule, Navbar, Sidebar, FormsModule, TranslateModule, DatePipe],
+  imports: [CommonModule, Navbar, Sidebar, FormsModule, TranslateModule],
   templateUrl: './my-team.component.html'
 })
 export class MyTeamComponent implements OnInit {
   myTeam: Equipe | null = null;
   freeAgents: UserResponse[] = [];
-  reclamations: Reclamation[] = [];
+  canManageTeam = false;
   isLoading = true;
   successMessage = '';
   errorMessage = '';
 
-  selectedReclamation: Reclamation | null = null;
-  motifRefus = '';
-
-  // Internal Remarks state
-  showNoteModal = false;
-  currentMissionNotes: MessageInterne[] = [];
-  newNoteText = '';
-  selectedMissionNoteId?: number;
-  selectedMissionNoteNumero?: string;
-  isSendingNote = false;
-  isLoadingNotes = false;
-
   constructor(
     private equipeService: EquipeService,
-    private reclamationService: ReclamationService,
-    private messageInterneService: MessageInterneService,
     private cdr: ChangeDetectorRef,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    const roles = this.authService.getUser()?.roles || [];
+    this.canManageTeam = roles.includes('CHEF_EQUIPE');
     this.loadTeam();
   }
 
@@ -58,9 +44,8 @@ export class MyTeamComponent implements OnInit {
       next: (team) => {
         this.isLoading = false;
         this.myTeam = team;
-        if (this.myTeam && this.myTeam.id) {
+        if (this.myTeam && this.canManageTeam) {
           this.loadFreeAgents();
-          this.loadReclamations(this.myTeam.id);
         }
       },
       error: (err) => {
@@ -134,145 +119,6 @@ export class MyTeamComponent implements OnInit {
       error: (err) => {
         console.error('Erreur retrait agent', err);
         this.errorMessage = err.error?.message || this.translate.instant('my_team.errors.remove_agent');
-      }
-    });
-  }
-
-  loadReclamations(teamId: number): void {
-    this.reclamationService.getReclamationsParEquipe(teamId).subscribe({
-      next: (data) => {
-        this.reclamations = data;
-      },
-      error: (err) => console.error('Erreur chargement réclamations:', err)
-    });
-  }
-
-  openRejectModal(reclamation: Reclamation): void {
-    this.selectedReclamation = reclamation;
-    this.motifRefus = '';
-  }
-
-  closeRejectModal(): void {
-    this.selectedReclamation = null;
-    this.motifRefus = '';
-  }
-
-  accepter(numeroReclamation: string): void {
-    this.reclamationService.accepterReclamation(numeroReclamation).subscribe({
-      next: () => {
-        this.successMessage = this.translate.instant('my_team.messages.claim_accepted', {
-          numero: numeroReclamation
-        });
-        if (this.myTeam && this.myTeam.id) this.loadReclamations(this.myTeam.id);
-      },
-      error: (err) => {
-        console.error('Erreur acceptation', err);
-        this.errorMessage = this.translate.instant('my_team.errors.accept_claim');
-      }
-    });
-  }
-
-  resoudre(numeroReclamation: string): void {
-    this.reclamationService.marquerResolue(numeroReclamation).subscribe({
-      next: () => {
-        this.successMessage = this.translate.instant('my_team.messages.claim_resolved', {
-          numero: numeroReclamation
-        });
-        if (this.myTeam && this.myTeam.id) this.loadReclamations(this.myTeam.id);
-      },
-      error: (err) => {
-        console.error('Erreur résolution', err);
-        this.errorMessage = this.translate.instant('my_team.errors.resolve_claim');
-      }
-    });
-  }
-
-  rejectReclamation(): void {
-    if (!this.selectedReclamation || !this.motifRefus.trim()) return;
-
-    this.reclamationService.rejeterReclamation(
-      this.selectedReclamation.numeroReclamation,
-      this.motifRefus
-    ).subscribe({
-      next: () => {
-        this.successMessage = this.translate.instant('my_team.messages.claim_rejected', {
-          numero: this.selectedReclamation?.numeroReclamation
-        });
-        this.closeRejectModal();
-        if (this.myTeam?.id) {
-          this.loadReclamations(this.myTeam.id);
-        }
-      },
-      error: (err) => {
-        console.error('Erreur rejet réclamation', err);
-        this.errorMessage = this.translate.instant('my_team.errors.reject_claim');
-      }
-    });
-  }
-
-  translateStatus(statut: string | undefined): string {
-    if (!statut) return '';
-    return this.translate.instant('status.' + statut);
-  }
-
-  translatePriority(priorite: string | undefined): string {
-    if (!priorite) return '';
-    return this.translate.instant('priority.' + priorite);
-  }
-
-  translateCategory(categorie: string | undefined): string {
-    if (!categorie) return '';
-    return this.translate.instant('categories.' + categorie);
-  }
-
-  // Remark Modal Methods
-  openNoteModal(mission: Reclamation): void {
-    if (!mission.id) return;
-    this.selectedMissionNoteId = mission.id;
-    this.selectedMissionNoteNumero = mission.numeroReclamation;
-    this.newNoteText = '';
-    this.showNoteModal = true;
-    this.loadNotes(mission.id);
-  }
-
-  closeNoteModal(): void {
-    this.showNoteModal = false;
-    this.selectedMissionNoteId = undefined;
-    this.selectedMissionNoteNumero = undefined;
-    this.currentMissionNotes = [];
-  }
-
-  loadNotes(reclamationId: number): void {
-    this.isLoadingNotes = true;
-    this.messageInterneService.getMessages(reclamationId).subscribe({
-      next: (data) => {
-        this.currentMissionNotes = data || [];
-        this.isLoadingNotes = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Erreur chargement notes:', err);
-        this.isLoadingNotes = false;
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
-  ajouterNote(): void {
-    if (!this.selectedMissionNoteId || !this.newNoteText.trim()) return;
-
-    this.isSendingNote = true;
-    this.messageInterneService.envoyerMessage(this.selectedMissionNoteId, this.newNoteText).subscribe({
-      next: (note) => {
-        this.currentMissionNotes.push(note);
-        this.newNoteText = '';
-        this.isSendingNote = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Erreur envoi note:', err);
-        this.isSendingNote = false;
-        this.cdr.detectChanges();
       }
     });
   }

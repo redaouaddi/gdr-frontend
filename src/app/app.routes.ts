@@ -139,7 +139,7 @@ export const routes: Routes = [
     path: 'mes-reclamations/nouvelle',
     component: ReclamationCreateComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['ROLE_CLIENT'] }
+    data: { roles: ['CLIENT', 'USER', 'ROLE_CLIENT'] }
   },
 
 ];
