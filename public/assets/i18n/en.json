@@ -466,73 +466,159 @@
     "hello": "Hello,",
     "logout": "Logout"
   },
-   "admin_dashboard": {
-  "title": "Admin Dashboard",
+ "admin_dashboard": {
+  "title": "Administrator Supervision Center",
+  "subtitle": "Agent-oriented global dashboard for application monitoring",
+  "multi_agent_active": "Multi-agent system active",
+
   "cards": {
     "users": "Users",
+    "users_desc": "Registered accounts",
     "claims": "Claims",
-    "in_progress": "In Progress",
-    "sla_respected": "SLA Respected"
-  },"datasets": {
-  "status": "Claims status",
-  "priority": "Claims priority",
-  "month": "Claims by month",
-  "categorie": "Claims by category"
-},
-"categories": {
-  "project": "Project",
-  "maintenance": "Maintenance",
-  "technical": "Technical",
-  "billing": "Billing",
-  "service": "Service",
-  "other": "Other"
-},
+    "claims_desc": "Total requests",
+    "in_progress": "In progress",
+    "in_progress_desc": "Active processing",
+    "sla_respected": "SLA respected",
+    "sla_desc": "Global performance"
+  },
 
-"priorities": {
-  "high": "High",
-  "medium": "Medium",
-  "low": "Low",
-  "urgent": "Urgent"
-}, 
-  "chart": {
-    "title": "Claims Status Distribution",
-    "open": "Open",
-    "in_progress": "In Progress",
-    "resolved": "Resolved",
-    "pending": "Pending",
-    "chart_type": "Chart type",
-    "main_color": "Main color",
-    "closed": "Closed",
-    "data_to_display": "Data to display",
-    "types": {
-      "bar": "Bar",
-      "line": "Line",
-      "pie": "Pie",
-      "doughnut": "Doughnut"
+  "agents": {
+    "title": "Intelligent supervision agents",
+    "subtitle": "Each agent analyzes a specific part of the application workflow.",
+    "active": "Active",
+
+    "visualization": {
+      "title": "Visualization Agent",
+      "selected_type": "Selected type",
+      "reasons": {
+        "month": "Visualization Agent: the line chart was automatically selected because the data represents a monthly trend.",
+        "status": "Visualization Agent: a distribution chart was selected to better read claim statuses.",
+        "priority": "Visualization Agent: a bar chart was selected to clearly compare priority levels.",
+        "category": "Visualization Agent: a bar chart was selected to compare the most frequent categories."
+      }
+    },
+
+    "sla": {
+      "title": "SLA Agent",
+      "description": "Monitors claims close to SLA breach.",
+      "alerts": "SLA alert(s) detected",
+      "breaches_detected": "breach(es) detected"
+    },
+
+    "workload": {
+      "title": "Workload Agent",
+      "description": "Analyzes agent workload and detects overload situations.",
+      "most_loaded": "Most loaded agent"
+    },
+
+    "workflow": {
+      "title": "Workflow Agent",
+      "description": "Tracks the complete claim workflow and detects bottlenecks.",
+      "no_blockage": "No critical bottleneck detected"
     }
   },
+
+  "workload": {
+    "title": "Workload Agent — Operational balancing",
+    "subtitle": "Automatic analysis of ticket distribution by agent.",
+    "agent": "Agent",
+    "tickets": "Open tickets",
+    "level": "Level",
+    "recommendation": "Recommendation",
+
+    "levels": {
+      "overloaded": "Overloaded",
+      "busy": "Busy",
+      "normal": "Normal"
+    },
+
+    "recommendations": {
+      "reassign": "Reassign some tickets to an available agent",
+      "monitor": "Monitor this agent’s workload",
+      "available": "Available for new claims"
+    }
+  },
+
+  "workflow": {
+    "title": "Global claims workflow",
+    "subtitle": "Tracking of the full processing cycle.",
+    "client": "Client",
+    "service_manager": "Service Manager",
+    "team_leader": "Team Leader",
+    "agent": "Agent",
+    "creation": "Creation",
+    "assignment": "Assignment",
+    "validation": "Validation",
+    "processing": "Processing",
+    "closure": "Closure"
+  },
+
+  "chart": {
+    "title": "Intelligent statistics",
+    "data_to_display": "Data to analyze",
+
+    "labels": {
+      "status": "Claims by status",
+      "priority": "Claims by priority",
+      "month": "Claims by month",
+      "category": "Claims by category",
+      "default": "Claims statistics"
+    }
+  },
+
+  "datasets": {
+    "status": "Claim statuses",
+    "priority": "Claim priorities",
+    "month": "Claims by month",
+    "categorie": "Claim categories"
+  },
+
   "recent_activity": {
-    "title": "Recent Activity",
+    "title": "Recent activity",
+    "subtitle": "Traceability of important actions in the application.",
     "id": "ID",
     "user": "User",
+    "role": "Role",
     "action": "Action",
+    "impact": "Impact",
     "user_created": "User creation",
-    "new_claim": "New claim"
+    "new_claim": "New claim",
+    "claim_processing": "Claim processing",
+    "access_management": "Access management",
+    "to_assign": "To assign",
+    "productivity": "Productivity"
   },
-"months": {
-  "january": "January",
-  "february": "February",
-  "march": "March",
-  "april": "April",
-  "may": "May",
-  "june": "June",
-  "july": "July",
-  "august": "August",
-  "september": "September",
-  "october": "October",
-  "november": "November",
-  "december": "December"
-}
+
+  "recommendation": {
+    "title": "Recommendation Agent",
+    "subtitle": "Decision support for the administrator.",
+    "item1": "Prioritize claims close to SLA breach.",
+    "item2": "Reassign tickets from overloaded agents.",
+    "item3": "Monitor the most frequent categories.",
+    "item4": "Analyze blocked tickets in the workflow."
+  },
+
+  "sla_details": {
+    "title": "SLA Agent — Breach details",
+    "subtitle": "Claims affected by SLA delay with the concerned agent.",
+    "claim": "Claim",
+    "priority": "Priority",
+    "agent": "Concerned agent",
+    "deadline": "SLA deadline",
+    "delay": "Delay",
+    "action": "Recommended action",
+
+    "actions": {
+      "remind_agent": "Remind the concerned agent",
+      "reassign": "Reassign to an available agent"
+    }
+  },
+
+  "priorities": {
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  }
 },
   "client_dashboard": {
     "title": "Dashboard",

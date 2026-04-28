@@ -1,13 +1,36 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import Chart from 'chart.js/auto';
-import { Navbar } from '../navbar/navbar';
-import { Sidebar} from '../sidebar/sidebar';
-import { UserService } from '../../core/services/user.service';
-import { ReclamationService } from '../../core/services/reclamation.service';
+import { Chart, registerables } from 'chart.js';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { DashboardService, ChartData } from '../../core/services/dashboard.service';
+
+import { Sidebar } from '../sidebar/sidebar';
+import { Navbar } from '../navbar/navbar';
+import {
+  DashboardService,
+  ChartData,
+  DashboardStats
+} from '../../core/services/dashboard.service';
+
+Chart.register(...registerables);
+
+interface AgentWorkload {
+  name: string;
+  tickets: number;
+  level: string;
+  levelClass: string;
+  recommendation: string;
+}
+
+interface SlaBreach {
+  numero: string;
+  priorite: string;
+  priorityClass: string;
+  agent: string;
+  deadline: string;
+  delay: string;
+  action: string;
+}
 
 @Component({
   selector: 'app-dashboard-admin',
@@ -15,312 +38,388 @@ import { DashboardService, ChartData } from '../../core/services/dashboard.servi
   imports: [
     CommonModule,
     FormsModule,
-    Navbar,
+    TranslateModule,
     Sidebar,
-    TranslateModule
+    Navbar
   ],
   templateUrl: './dashboard-admin.html',
   styleUrls: ['./dashboard-admin.css']
 })
-export class DashboardAdminComponent implements OnInit, AfterViewInit {
+export class DashboardAdminComponent implements OnInit {
 
-  usersCount: number = 0;
-  reclamationsCount: number = 0;
+  /* ================= KPI DYNAMIQUES ================= */
 
-  enCoursCount: number = 21;
-  slaRespecte: number = 92;
+  usersCount = 0;
+  reclamationsCount = 0;
+  enCoursCount = 0;
+  slaRespecte = 0;
 
-  chart: Chart | null = null;
+  /* ================= CHART ================= */
+
+  selectedDataset: 'status' | 'priority' | 'month' | 'categorie' = 'status';
 
   chartType: 'bar' | 'line' | 'pie' | 'doughnut' = 'bar';
-  chartTypes: ('bar' | 'line' | 'pie' | 'doughnut')[] = ['bar', 'line', 'pie', 'doughnut'];
 
-  selectedDataset: 'status' | 'priority'|'month'| 'categorie' = 'status';
-  selectedColor: string = '#3b82f6';
+  selectedColor = '#2563eb';
 
   chartData: ChartData[] = [];
 
+  chart: Chart | null = null;
+
+  smartAgentReason = '';
+
+  workflowStatus = '';
+
+  /* ================= AGENT CHARGE ================= */
+
+  agentWorkloads: AgentWorkload[] = [];
+
+  mostLoadedAgent: AgentWorkload = {
+    name: '',
+    tickets: 0,
+    level: '',
+    levelClass: '',
+    recommendation: ''
+  };
+
+  /* ================= AGENT SLA ================= */
+
+  slaBreaches: SlaBreach[] = [];
+
   constructor(
-    private userService: UserService,
-    private reclamationService: ReclamationService,
     private dashboardService: DashboardService,
     private translate: TranslateService
   ) {}
 
+  /* ================================================= */
+
   ngOnInit(): void {
-    this.loadUsersCount();
-    this.loadReclamationsCount();
+
+    this.loadStats();
+
+    this.initializeAgentsData();
+
     this.loadSelectedChartData();
 
     this.translate.onLangChange.subscribe(() => {
+      this.initializeAgentsData();
+      this.applySmartVisualizationAgent();
       this.renderChart();
     });
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.renderChart();
-    }, 0);
-  }
+  /* ================= KPI ================= */
 
-  loadUsersCount(): void {
-    this.userService.getAllUsers().subscribe({
-      next: (users) => {
-        this.usersCount = users.length;
+  loadStats(): void {
+
+    this.dashboardService.getDashboardStats().subscribe({
+      next: (data: DashboardStats) => {
+        this.usersCount = data.usersCount;
+        this.reclamationsCount = data.reclamationsCount;
+        this.enCoursCount = data.enCoursCount;
+        this.slaRespecte = data.slaRespecte;
       },
+
       error: (err) => {
-        console.error('Erreur chargement utilisateurs:', err);
+        console.error('Erreur chargement KPI dashboard :', err);
       }
     });
   }
 
-  loadReclamationsCount(): void {
-    this.reclamationService.getReclamationsCount().subscribe({
-      next: (count) => {
-        this.reclamationsCount = count;
+  /* ================= INIT AGENTS ================= */
+
+  initializeAgentsData(): void {
+
+    this.workflowStatus = this.translate.instant(
+      'admin_dashboard.agents.workflow.no_blockage'
+    );
+
+    this.agentWorkloads = [
+      {
+        name: 'agent1',
+        tickets: 12,
+        level: '',
+        levelClass: '',
+        recommendation: ''
       },
-      error: (err) => {
-        console.error('Erreur chargement réclamations:', err);
-      }
-    });
-  }
-
-  loadSelectedChartData(): void {
-    if (this.selectedDataset === 'status') {
-      this.dashboardService.getStatusChart().subscribe({
-        next: (data) => {
-          this.chartData = data;
-          this.renderChart();
-        },
-        error: (err) => {
-          console.error('Erreur chargement statistiques statut:', err);
-        }
-      });
-    }else if (this.selectedDataset === 'priority') {
-    this.dashboardService.getPrioriteChart().subscribe({
-      next: (data) => {
-        this.chartData = data;
-        this.renderChart();
+      {
+        name: 'agent2',
+        tickets: 6,
+        level: '',
+        levelClass: '',
+        recommendation: ''
       },
-      error: (err) => {
-        console.error('Erreur chargement statistiques priorité:', err);
+      {
+        name: 'agent3',
+        tickets: 3,
+        level: '',
+        levelClass: '',
+        recommendation: ''
       }
-    });
-  } else if (this.selectedDataset === 'categorie') {
-    this.dashboardService.getCategorieChart().subscribe({
-      next: (data) => {
-        this.chartData = data;
-        this.renderChart();
+    ];
+
+    this.analyzeAgentWorkload();
+
+    this.slaBreaches = [
+      {
+        numero: 'REC-102',
+        priorite: this.translate.instant(
+          'admin_dashboard.priorities.high'
+        ),
+        priorityClass: 'danger',
+        agent: 'agent1',
+        deadline: '28/04/2026 10:30',
+        delay: '+45 min',
+        action: this.translate.instant(
+          'admin_dashboard.sla_details.actions.remind_agent'
+        )
       },
-      error: (err) => {
-        console.error('Erreur chargement statistiques catégorie:', err);
+
+      {
+        numero: 'REC-108',
+        priorite: this.translate.instant(
+          'admin_dashboard.priorities.medium'
+        ),
+        priorityClass: 'warning',
+        agent: 'agent2',
+        deadline: '28/04/2026 09:00',
+        delay: '+2h',
+        action: this.translate.instant(
+          'admin_dashboard.sla_details.actions.reassign'
+        )
       }
-    });
+    ];
   }
 
-  else if (this.selectedDataset === 'month') {
-    this.dashboardService.getMonthChart().subscribe(data => {
-      this.chartData = data;
-      this.renderChart();
-    });
-    }
-  }
-  
+  /* ================= AGENT CHARGE ================= */
 
-  renderChart(): void {
-    const canvas = document.getElementById('claimsChart') as HTMLCanvasElement;
+  analyzeAgentWorkload(): void {
 
-    if (!canvas || this.chartData.length === 0) {
-      return;
-    }
+    this.agentWorkloads = this.agentWorkloads.map(agent => {
 
-    if (this.chart) {
-      this.chart.destroy();
-    }
-
-    const labels = this.chartData.map(item => this.translateChartLabel(item.label));
-    const values = this.chartData.map(item => item.value);
-
-    const backgroundColors = this.generateChartColors(values.length);
-    const borderColors = [...backgroundColors];
-
-    this.chart = new Chart(canvas, {
-      type: this.chartType,
-      data: {
-        labels,
-        datasets: [
-          {
-            label: this.getChartTitle(),
-            data: values,
-            backgroundColor: backgroundColors,
-            borderColor: borderColors,
-            borderWidth: 1,
-            borderRadius: this.chartType === 'bar' ? 8 : 0,
-            tension: this.chartType === 'line' ? 0.35 : 0
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        layout: {
-          padding: 10
-        },
-        plugins: {
-          legend: {
-            display: true,
-            position: 'top'
-          }
-        },
-        scales: this.chartType === 'bar' || this.chartType === 'line'
-          ? {
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  precision: 0
-                }
-              }
-            }
-          : {}
+      if (agent.tickets >= 10) {
+        return {
+          ...agent,
+          level: this.translate.instant(
+            'admin_dashboard.workload.levels.overloaded'
+          ),
+          levelClass: 'danger',
+          recommendation: this.translate.instant(
+            'admin_dashboard.workload.recommendations.reassign'
+          )
+        };
       }
+
+      if (agent.tickets >= 6) {
+        return {
+          ...agent,
+          level: this.translate.instant(
+            'admin_dashboard.workload.levels.busy'
+          ),
+          levelClass: 'warning',
+          recommendation: this.translate.instant(
+            'admin_dashboard.workload.recommendations.monitor'
+          )
+        };
+      }
+
+      return {
+        ...agent,
+        level: this.translate.instant(
+          'admin_dashboard.workload.levels.normal'
+        ),
+        levelClass: 'success',
+        recommendation: this.translate.instant(
+          'admin_dashboard.workload.recommendations.available'
+        )
+      };
+
     });
+
+    this.mostLoadedAgent = this.agentWorkloads.reduce((max, agent) =>
+      agent.tickets > max.tickets ? agent : max
+    );
   }
 
-  onChartTypeChange(): void {
-    this.renderChart();
-  }
-
-  onColorChange(): void {
-    this.renderChart();
-  }
+  /* ================= CHART ================= */
 
   onDatasetChange(): void {
     this.loadSelectedChartData();
   }
 
-  generateChartColors(count: number): string[] {
-    if (this.chartType === 'bar' || this.chartType === 'line') {
-      return Array(count).fill(this.selectedColor);
+  loadSelectedChartData(): void {
+
+    if (this.selectedDataset === 'status') {
+
+      this.dashboardService.getStatusChart().subscribe({
+        next: (data) => {
+          this.chartData = data;
+          this.applySmartVisualizationAgent();
+          this.renderChart();
+        }
+      });
     }
+
+    else if (this.selectedDataset === 'priority') {
+
+      this.dashboardService.getPrioriteChart().subscribe({
+        next: (data) => {
+          this.chartData = data;
+          this.applySmartVisualizationAgent();
+          this.renderChart();
+        }
+      });
+    }
+
+    else if (this.selectedDataset === 'month') {
+
+      this.dashboardService.getMonthChart().subscribe({
+        next: (data) => {
+          this.chartData = data;
+          this.applySmartVisualizationAgent();
+          this.renderChart();
+        }
+      });
+    }
+
+    else if (this.selectedDataset === 'categorie') {
+
+      this.dashboardService.getCategorieChart().subscribe({
+        next: (data) => {
+          this.chartData = data;
+          this.applySmartVisualizationAgent();
+          this.renderChart();
+        }
+      });
+    }
+  }
+
+  applySmartVisualizationAgent(): void {
+
+    const itemsCount = this.chartData.length;
+
+    if (this.selectedDataset === 'month') {
+      this.chartType = 'line';
+      this.selectedColor = '#4f46e5';
+
+      this.smartAgentReason = this.translate.instant(
+        'admin_dashboard.agents.visualization.reasons.month'
+      );
+    }
+
+    else if (this.selectedDataset === 'status') {
+      this.chartType = itemsCount <= 5 ? 'doughnut' : 'bar';
+      this.selectedColor = '#2563eb';
+
+      this.smartAgentReason = this.translate.instant(
+        'admin_dashboard.agents.visualization.reasons.status'
+      );
+    }
+
+    else if (this.selectedDataset === 'priority') {
+      this.chartType = 'bar';
+      this.selectedColor = '#f59e0b';
+
+      this.smartAgentReason = this.translate.instant(
+        'admin_dashboard.agents.visualization.reasons.priority'
+      );
+    }
+
+    else {
+      this.chartType = 'bar';
+      this.selectedColor = '#7c3aed';
+
+      this.smartAgentReason = this.translate.instant(
+        'admin_dashboard.agents.visualization.reasons.category'
+      );
+    }
+  }
+
+  renderChart(): void {
+
+    const canvas =
+      document.getElementById('claimsChart') as HTMLCanvasElement;
+
+    if (!canvas) return;
+
+    if (this.chart) {
+      this.chart.destroy();
+    }
+
+    const labels = this.chartData.map(item => item.label);
+    const values = this.chartData.map(item => item.value);
+
+    this.chart = new Chart(canvas, {
+      type: this.chartType,
+
+      data: {
+        labels: labels,
+
+        datasets: [
+          {
+            label: this.getChartLabel(),
+            data: values,
+            backgroundColor: this.generateColors(values.length),
+            borderColor: this.generateColors(values.length),
+            borderWidth: 2,
+            tension: 0.35,
+            fill: this.chartType === 'line'
+          }
+        ]
+      },
+
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  }
+
+  generateColors(count: number): string[] {
 
     const palette = [
-      this.selectedColor,
-      '#22c55e',
+      '#2563eb',
+      '#7c3aed',
+      '#16a34a',
       '#f59e0b',
-      '#ef4444',
-      '#8b5cf6',
-      '#06b6d4',
-      '#84cc16',
-      '#f97316'
+      '#dc2626',
+      '#06b6d4'
     ];
 
-    const colors: string[] = [];
-    for (let i = 0; i < count; i++) {
-      colors.push(palette[i % palette.length]);
-    }
-
-    return colors;
+    return Array.from(
+      { length: count },
+      (_, i) => palette[i % palette.length]
+    );
   }
 
- getChartTitle(): string {
-  if (this.selectedDataset === 'status') {
-    return this.translate.instant('admin_dashboard.datasets.status');
-  }
+  getChartLabel(): string {
 
-  if (this.selectedDataset === 'priority') {
-    return this.translate.instant('admin_dashboard.datasets.priority');
-  }
-   if (this.selectedDataset === 'month') {
-    return this.translate.instant('admin_dashboard.datasets.month');
-  }
+    switch (this.selectedDataset) {
 
-  if (this.selectedDataset === 'categorie') {
-    return this.translate.instant('admin_dashboard.datasets.category');
-  }
-    return '';
-  }
+      case 'status':
+        return this.translate.instant(
+          'admin_dashboard.chart.labels.status'
+        );
 
-  translateChartLabel(label: string): string {
-    if (this.selectedDataset === 'status') {
-      switch (label) {
-        case 'EN_ATTENTE':
-          return this.translate.instant('admin_dashboard.chart.pending');
-        case 'EN_COURS':
-          return this.translate.instant('admin_dashboard.chart.in_progress');
-        case 'RESOLUE':
-          return this.translate.instant('admin_dashboard.chart.resolved');
-        case 'FERMEE':
-          return this.translate.instant('admin_dashboard.chart.closed');
-        case 'OUVERTE':
-          return this.translate.instant('admin_dashboard.chart.open');
-        default:
-          return label;
-      }
-    }
+      case 'priority':
+        return this.translate.instant(
+          'admin_dashboard.chart.labels.priority'
+        );
 
-    if (this.selectedDataset === 'priority') {
-      switch (label) {
-        case 'HAUTE':
-          return this.translate.instant('admin_dashboard.priorities.high');
-        case 'MOYENNE':
-          return this.translate.instant('admin_dashboard.priorities.medium');
-        case 'BASSE':
-          return this.translate.instant('admin_dashboard.priorities.low');
-        case 'URGENTE':
-          return this.translate.instant('admin_dashboard.priorities.urgent');
-        default:
-          return label;
-      }
-    }
-     if (this.selectedDataset === 'month') {
-    switch (label) {
-      case '1':
-        return this.translate.instant('admin_dashboard.months.january');
-      case '2':
-        return this.translate.instant('admin_dashboard.months.february');
-      case '3':
-        return this.translate.instant('admin_dashboard.months.march');
-      case '4':
-        return this.translate.instant('admin_dashboard.months.april');
-      case '5':
-        return this.translate.instant('admin_dashboard.months.may');
-      case '6':
-        return this.translate.instant('admin_dashboard.months.june');
-      case '7':
-        return this.translate.instant('admin_dashboard.months.july');
-      case '8':
-        return this.translate.instant('admin_dashboard.months.august');
-      case '9':
-        return this.translate.instant('admin_dashboard.months.september');
-      case '10':
-        return this.translate.instant('admin_dashboard.months.october');
-      case '11':
-        return this.translate.instant('admin_dashboard.months.november');
-      case '12':
-        return this.translate.instant('admin_dashboard.months.december');
+      case 'month':
+        return this.translate.instant(
+          'admin_dashboard.chart.labels.month'
+        );
+
+      case 'categorie':
+        return this.translate.instant(
+          'admin_dashboard.chart.labels.category'
+        );
+
       default:
-        return label;
+        return this.translate.instant(
+          'admin_dashboard.chart.labels.default'
+        );
     }
-  }
-
-if (this.selectedDataset === 'categorie') {
-    switch (label) {
-      case 'PROJET':
-        return this.translate.instant('admin_dashboard.categories.project');
-      case 'MAINTENANCE':
-        return this.translate.instant('admin_dashboard.categories.maintenance');
-      case 'TECHNIQUE':
-        return this.translate.instant('admin_dashboard.categories.technical');
-      case 'FACTURATION':
-        return this.translate.instant('admin_dashboard.categories.billing');
-      case 'SERVICE':
-        return this.translate.instant('admin_dashboard.categories.service');
-      case 'AUTRE':
-        return this.translate.instant('admin_dashboard.categories.other');
-      default:
-        return label;
-    }
-  }
-    return label;
   }
 }

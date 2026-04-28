@@ -455,75 +455,158 @@
     "logout": "Déconnexion"
   },
   "admin_dashboard": {
-  "title": "Tableau de bord administrateur",
+  "title": "Centre de supervision administrateur",
+  "subtitle": "Dashboard global orienté agent pour le pilotage de l’application",
+  "multi_agent_active": "Système multi-agents actif",
+
   "cards": {
     "users": "Utilisateurs",
+    "users_desc": "Comptes enregistrés",
     "claims": "Réclamations",
+    "claims_desc": "Total des demandes",
     "in_progress": "En cours",
-    "sla_respected": "SLA respecté"
+    "in_progress_desc": "Traitement actif",
+    "sla_respected": "SLA respecté",
+    "sla_desc": "Performance globale"
   },
-    "datasets": {
-  "status": "Statut des réclamations",
-  "priority": "Priorité des réclamations",
-  "month": "Réclamations par mois",
-  "categorie": "Catégories des réclamations"
 
-},
-"categories": {
-  "project": "Projet",
-  "maintenance": "Maintenance",
-  "technical": "Technique",
-  "billing": "Facturation",
-  "service": "Service",
-  "other": "Autre"
-},
-"priorities": {
-  "high": "ELEVEE",
-  "medium": "Moyenne",
-  "low": "FAIBLE",
-  "urgent": "Urgente"
-  
-},
-  "chart": {
-    "title": "Statistiques des réclamations",
-    "open": "Ouvertes",
-    "in_progress": "En cours",
-    "resolved": "Résolues",
-    "closed": "Clôturées",
-    "pending": "En attente",
-    "chart_type": "Type de graphe",
-    "main_color": "Couleur principale",
-    "data_to_display": "Donnée à afficher",
-    
-    "types": {
-      "bar": "Barres",
-      "line": "Ligne",
-      "pie": "Camembert",
-      "doughnut": "Anneau"
+  "agents": {
+    "title": "Agents intelligents de supervision",
+    "subtitle": "Chaque agent analyse une partie précise du fonctionnement de l’application.",
+    "active": "Actif",
+
+    "visualization": {
+      "title": "Agent Visualisation",
+      "selected_type": "Type choisi",
+      "reasons": {
+        "month": "Agent Visualisation : le graphique linéaire a été choisi automatiquement car les données représentent une évolution mensuelle.",
+        "status": "Agent Visualisation : un graphique de répartition a été choisi pour mieux lire les statuts des réclamations.",
+        "priority": "Agent Visualisation : un graphique en barres a été choisi pour comparer clairement les niveaux de priorité.",
+        "category": "Agent Visualisation : un graphique en barres a été choisi pour comparer les catégories les plus fréquentes."
+      }
+    },
+
+    "sla": {
+      "title": "Agent SLA",
+      "description": "Surveille les réclamations proches du dépassement SLA.",
+      "alerts": "alerte(s) SLA détectée(s)",
+      "breaches_detected": "dépassement(s) détecté(s)"
+    },
+
+    "workload": {
+      "title": "Agent Charge",
+      "description": "Analyse la charge de travail des agents et détecte les surcharges.",
+      "most_loaded": "Agent le plus chargé"
+    },
+
+    "workflow": {
+      "title": "Agent Workflow",
+      "description": "Suit le parcours complet des réclamations et détecte les blocages.",
+      "no_blockage": "Aucun blocage critique détecté"
     }
   },
+
+  "workload": {
+    "title": "Agent Charge — Équilibrage opérationnel",
+    "subtitle": "Analyse automatique de la répartition des tickets par agent.",
+    "agent": "Agent",
+    "tickets": "Tickets en cours",
+    "level": "Niveau",
+    "recommendation": "Recommandation",
+
+    "levels": {
+      "overloaded": "Surchargé",
+      "busy": "Chargé",
+      "normal": "Normal"
+    },
+
+    "recommendations": {
+      "reassign": "Réaffecter certains tickets vers un agent disponible",
+      "monitor": "Surveiller la charge de cet agent",
+      "available": "Disponible pour nouvelles réclamations"
+    }
+  },
+
+  "workflow": {
+    "title": "Workflow global des réclamations",
+    "subtitle": "Suivi du cycle complet de traitement.",
+    "client": "Client",
+    "service_manager": "Service Manager",
+    "team_leader": "Chef d’équipe",
+    "agent": "Agent",
+    "creation": "Création",
+    "assignment": "Affectation",
+    "validation": "Validation",
+    "processing": "Traitement",
+    "closure": "Clôture"
+  },
+
+  "chart": {
+    "title": "Statistiques intelligentes",
+    "data_to_display": "Donnée à analyser",
+
+    "labels": {
+      "status": "Réclamations par statut",
+      "priority": "Réclamations par priorité",
+      "month": "Réclamations par mois",
+      "category": "Réclamations par catégorie",
+      "default": "Statistiques des réclamations"
+    }
+  },
+
+  "datasets": {
+    "status": "Statut des réclamations",
+    "priority": "Priorité des réclamations",
+    "month": "Réclamations par mois",
+    "categorie": "Catégories des réclamations"
+  },
+
   "recent_activity": {
     "title": "Activité récente",
+    "subtitle": "Traçabilité des actions importantes dans l’application.",
     "id": "ID",
     "user": "Utilisateur",
+    "role": "Rôle",
     "action": "Action",
+    "impact": "Impact",
     "user_created": "Création utilisateur",
-    "new_claim": "Nouvelle réclamation"
+    "new_claim": "Nouvelle réclamation",
+    "claim_processing": "Traitement réclamation",
+    "access_management": "Gestion accès",
+    "to_assign": "À affecter",
+    "productivity": "Productivité"
   },
-  "months": {
-  "january": "Janvier",
-  "february": "Février",
-  "march": "Mars",
-  "april": "Avril",
-  "may": "Mai",
-  "june": "Juin",
-  "july": "Juillet",
-  "august": "Août",
-  "september": "Septembre",
-  "october": "Octobre",
-  "november": "Novembre",
-  "december": "Décembre"
-}
+
+  "recommendation": {
+    "title": "Agent Recommandation",
+    "subtitle": "Aide à la décision administrateur.",
+    "item1": "Prioriser les réclamations proches du SLA.",
+    "item2": "Réaffecter les tickets des agents surchargés.",
+    "item3": "Surveiller les catégories les plus fréquentes.",
+    "item4": "Analyser les tickets bloqués dans le workflow."
+  },
+
+  "sla_details": {
+    "title": "Agent SLA — Détails des dépassements",
+    "subtitle": "Réclamations concernées par un retard SLA avec l’agent concerné.",
+    "claim": "Réclamation",
+    "priority": "Priorité",
+    "agent": "Agent concerné",
+    "deadline": "Deadline SLA",
+    "delay": "Retard",
+    "action": "Action recommandée",
+
+    "actions": {
+      "remind_agent": "Relancer l’agent concerné",
+      "reassign": "Réaffecter à un agent disponible"
+    }
+  },
+
+  "priorities": {
+    "high": "Élevée",
+    "medium": "Moyenne",
+    "low": "Faible"
+  }
 },
   "client_dashboard": {
     "title": "Tableau de Bord",

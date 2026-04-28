@@ -6,85 +6,259 @@
   <div class="main-content">
     <app-navbar></app-navbar>
 
-    <div class="dashboard px-4">
-      <h2 class="title mb-4">{{ 'admin_dashboard.title' | translate }}</h2>
+    <div class="dashboard">
 
-      <div class="cards">
-        <div class="glass-card stat p-4 mb-3">
-          <h3>{{ 'admin_dashboard.cards.users' | translate }}</h3>
-          <p class="number">{{ usersCount }}</p>
+      <div class="dashboard-header">
+        <div>
+          <h2>{{ 'admin_dashboard.title' | translate }}</h2>
+          <p>{{ 'admin_dashboard.subtitle' | translate }}</p>
         </div>
 
-        <div class="glass-card stat p-4 mb-3">
-          <h3>{{ 'admin_dashboard.cards.claims' | translate }}</h3>
-          <p class="number">{{ reclamationsCount }}</p>
-        </div>
-
-        <div class="glass-card stat p-4 mb-3">
-          <h3>{{ 'admin_dashboard.cards.in_progress' | translate }}</h3>
-          <p class="number">{{ enCoursCount }}</p>
-        </div>
-
-        <div class="glass-card stat p-4 mb-3">
-          <h3>{{ 'admin_dashboard.cards.sla_respected' | translate }}</h3>
-          <p class="number">{{ slaRespecte }}%</p>
+        <div class="agent-badge">
+          {{ 'admin_dashboard.multi_agent_active' | translate }}
         </div>
       </div>
 
-      <div class="glass-card chart p-4 mb-3">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span>{{ 'admin_dashboard.cards.users' | translate }}</span>
+          <h3>{{ usersCount }}</h3>
+          <p>{{ 'admin_dashboard.cards.users_desc' | translate }}</p>
+        </div>
+
+        <div class="kpi-card">
+          <span>{{ 'admin_dashboard.cards.claims' | translate }}</span>
+          <h3>{{ reclamationsCount }}</h3>
+          <p>{{ 'admin_dashboard.cards.claims_desc' | translate }}</p>
+        </div>
+
+        <div class="kpi-card warning">
+          <span>{{ 'admin_dashboard.cards.in_progress' | translate }}</span>
+          <h3>{{ enCoursCount }}</h3>
+          <p>{{ 'admin_dashboard.cards.in_progress_desc' | translate }}</p>
+        </div>
+
+        <div class="kpi-card success">
+          <span>{{ 'admin_dashboard.cards.sla_respected' | translate }}</span>
+          <h3>{{ slaRespecte }}%</h3>
+          <p>{{ 'admin_dashboard.cards.sla_desc' | translate }}</p>
+        </div>
+      </div>
+
+      <div class="agents-section">
+        <div class="section-title">
+          <h3>{{ 'admin_dashboard.agents.title' | translate }}</h3>
+          <p>{{ 'admin_dashboard.agents.subtitle' | translate }}</p>
+        </div>
+
+        <div class="agents-grid">
+          <div class="agent-card visualisation">
+            <div class="agent-header">
+              <h4>{{ 'admin_dashboard.agents.visualization.title' | translate }}</h4>
+              <span class="agent-status active">
+                {{ 'admin_dashboard.agents.active' | translate }}
+              </span>
+            </div>
+
+            <p>{{ smartAgentReason }}</p>
+
+            <div class="agent-result">
+              {{ 'admin_dashboard.agents.visualization.selected_type' | translate }} :
+              <strong>{{ chartType }}</strong>
+            </div>
+          </div>
+
+          <div class="agent-card sla">
+            <div class="agent-header">
+              <h4>{{ 'admin_dashboard.agents.sla.title' | translate }}</h4>
+              <span class="agent-status active">
+                {{ 'admin_dashboard.agents.active' | translate }}
+              </span>
+            </div>
+
+            <p>{{ 'admin_dashboard.agents.sla.description' | translate }}</p>
+
+            <div class="agent-result danger">
+              {{ slaBreaches.length }}
+              {{ 'admin_dashboard.agents.sla.breaches_detected' | translate }}
+            </div>
+          </div>
+
+          <div class="agent-card charge">
+            <div class="agent-header">
+              <h4>{{ 'admin_dashboard.agents.workload.title' | translate }}</h4>
+              <span class="agent-status active">
+                {{ 'admin_dashboard.agents.active' | translate }}
+              </span>
+            </div>
+
+            <p>{{ 'admin_dashboard.agents.workload.description' | translate }}</p>
+
+            <div class="agent-result warning">
+              {{ 'admin_dashboard.agents.workload.most_loaded' | translate }} :
+              <strong>{{ mostLoadedAgent.name }}</strong>
+            </div>
+          </div>
+
+          <div class="agent-card workflow-agent">
+            <div class="agent-header">
+              <h4>{{ 'admin_dashboard.agents.workflow.title' | translate }}</h4>
+              <span class="agent-status active">
+                {{ 'admin_dashboard.agents.active' | translate }}
+              </span>
+            </div>
+
+            <p>{{ 'admin_dashboard.agents.workflow.description' | translate }}</p>
+
+            <div class="agent-result">
+              {{ workflowStatus }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sla-details-card">
+        <div class="section-title">
+          <h3>{{ 'admin_dashboard.sla_details.title' | translate }}</h3>
+          <p>{{ 'admin_dashboard.sla_details.subtitle' | translate }}</p>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'admin_dashboard.sla_details.claim' | translate }}</th>
+              <th>{{ 'admin_dashboard.sla_details.priority' | translate }}</th>
+              <th>{{ 'admin_dashboard.sla_details.agent' | translate }}</th>
+              <th>{{ 'admin_dashboard.sla_details.deadline' | translate }}</th>
+              <th>{{ 'admin_dashboard.sla_details.delay' | translate }}</th>
+              <th>{{ 'admin_dashboard.sla_details.action' | translate }}</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let item of slaBreaches">
+              <td>{{ item.numero }}</td>
+
+              <td>
+                <span class="tag" [ngClass]="item.priorityClass">
+                  {{ item.priorite }}
+                </span>
+              </td>
+
+              <td>{{ item.agent }}</td>
+              <td>{{ item.deadline }}</td>
+
+              <td>
+                <span class="tag danger">
+                  {{ item.delay }}
+                </span>
+              </td>
+
+              <td>{{ item.action }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="workload-card">
+        <div class="section-title">
+          <h3>{{ 'admin_dashboard.workload.title' | translate }}</h3>
+          <p>{{ 'admin_dashboard.workload.subtitle' | translate }}</p>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'admin_dashboard.workload.agent' | translate }}</th>
+              <th>{{ 'admin_dashboard.workload.tickets' | translate }}</th>
+              <th>{{ 'admin_dashboard.workload.level' | translate }}</th>
+              <th>{{ 'admin_dashboard.workload.recommendation' | translate }}</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let agent of agentWorkloads">
+              <td>{{ agent.name }}</td>
+              <td>{{ agent.tickets }}</td>
+
+              <td>
+                <span class="tag" [ngClass]="agent.levelClass">
+                  {{ agent.level }}
+                </span>
+              </td>
+
+              <td>{{ agent.recommendation }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="workflow-card">
+        <div class="section-title">
+          <h3>{{ 'admin_dashboard.workflow.title' | translate }}</h3>
+          <p>{{ 'admin_dashboard.workflow.subtitle' | translate }}</p>
+        </div>
+
+        <div class="workflow">
+          <div class="step">
+            <span>{{ 'admin_dashboard.workflow.client' | translate }}</span>
+            <strong>{{ 'admin_dashboard.workflow.creation' | translate }}</strong>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="step">
+            <span>{{ 'admin_dashboard.workflow.service_manager' | translate }}</span>
+            <strong>{{ 'admin_dashboard.workflow.assignment' | translate }}</strong>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="step">
+            <span>{{ 'admin_dashboard.workflow.team_leader' | translate }}</span>
+            <strong>{{ 'admin_dashboard.workflow.validation' | translate }}</strong>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="step">
+            <span>{{ 'admin_dashboard.workflow.agent' | translate }}</span>
+            <strong>{{ 'admin_dashboard.workflow.processing' | translate }}</strong>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="step">
+            <span>{{ 'admin_dashboard.workflow.client' | translate }}</span>
+            <strong>{{ 'admin_dashboard.workflow.closure' | translate }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
         <div class="chart-header">
-          <h3>{{ 'admin_dashboard.chart.title' | translate }}</h3>
+          <div>
+            <h3>{{ 'admin_dashboard.chart.title' | translate }}</h3>
+            <p>{{ smartAgentReason }}</p>
+          </div>
 
           <div class="chart-controls">
-            <div class="control-group">
-              <label for="datasetType">
-                {{ 'admin_dashboard.chart.data_to_display' | translate }}
-              </label>
-              <select
-                id="datasetType"
-                [(ngModel)]="selectedDataset"
-                (change)="onDatasetChange()"
-              >
-                <option value="status">
-                  {{ 'admin_dashboard.datasets.status' | translate }}
-                </option>
-                <option value="priority">
-                  {{ 'admin_dashboard.datasets.priority' | translate }}
-                </option>
-                <option value="month">
-                  {{ 'admin_dashboard.datasets.month' | translate }}
-                  </option>
-                <option value="categorie">
-                  {{ 'admin_dashboard.datasets.categorie' | translate }}
-              </select>
-            </div>
+            <label>{{ 'admin_dashboard.chart.data_to_display' | translate }}</label>
 
-            <div class="control-group">
-              <label for="chartType">
-                {{ 'admin_dashboard.chart.chart_type' | translate }}
-              </label>
-              <select
-                id="chartType"
-                [(ngModel)]="chartType"
-                (change)="onChartTypeChange()"
-              >
-                <option *ngFor="let type of chartTypes" [value]="type">
-                  {{ ('admin_dashboard.chart.types.' + type) | translate }}
-                </option>
-              </select>
-            </div>
-
-            <div class="control-group color-group">
-              <label for="chartColor">
-                {{ 'admin_dashboard.chart.main_color' | translate }}
-              </label>
-              <input
-                id="chartColor"
-                type="color"
-                [(ngModel)]="selectedColor"
-                (change)="onColorChange()"
-              />
-            </div>
+            <select [(ngModel)]="selectedDataset" (change)="onDatasetChange()">
+              <option value="status">
+                {{ 'admin_dashboard.datasets.status' | translate }}
+              </option>
+              <option value="priority">
+                {{ 'admin_dashboard.datasets.priority' | translate }}
+              </option>
+              <option value="month">
+                {{ 'admin_dashboard.datasets.month' | translate }}
+              </option>
+              <option value="categorie">
+                {{ 'admin_dashboard.datasets.categorie' | translate }}
+              </option>
+            </select>
           </div>
         </div>
 
@@ -93,29 +267,79 @@
         </div>
       </div>
 
-      <div class="glass-card table p-4 mb-3">
-        <h3>{{ 'admin_dashboard.recent_activity.title' | translate }}</h3>
+      <div class="bottom-grid">
+        <div class="activity-card">
+          <div class="section-title">
+            <h3>{{ 'admin_dashboard.recent_activity.title' | translate }}</h3>
+            <p>{{ 'admin_dashboard.recent_activity.subtitle' | translate }}</p>
+          </div>
 
-        <table class="dxc-table mt-3">
-          <tr>
-            <th>{{ 'admin_dashboard.recent_activity.id' | translate }}</th>
-            <th>{{ 'admin_dashboard.recent_activity.user' | translate }}</th>
-            <th>{{ 'admin_dashboard.recent_activity.action' | translate }}</th>
-          </tr>
+          <table>
+            <thead>
+              <tr>
+                <th>{{ 'admin_dashboard.recent_activity.id' | translate }}</th>
+                <th>{{ 'admin_dashboard.recent_activity.user' | translate }}</th>
+                <th>{{ 'admin_dashboard.recent_activity.role' | translate }}</th>
+                <th>{{ 'admin_dashboard.recent_activity.action' | translate }}</th>
+                <th>{{ 'admin_dashboard.recent_activity.impact' | translate }}</th>
+              </tr>
+            </thead>
 
-          <tr>
-            <td>1</td>
-            <td>admin</td>
-            <td>{{ 'admin_dashboard.recent_activity.user_created' | translate }}</td>
-          </tr>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>admin</td>
+                <td>ADMIN</td>
+                <td>{{ 'admin_dashboard.recent_activity.user_created' | translate }}</td>
+                <td>
+                  <span class="tag info">
+                    {{ 'admin_dashboard.recent_activity.access_management' | translate }}
+                  </span>
+                </td>
+              </tr>
 
-          <tr>
-            <td>2</td>
-            <td>agent1</td>
-            <td>{{ 'admin_dashboard.recent_activity.new_claim' | translate }}</td>
-          </tr>
-        </table>
+              <tr>
+                <td>2</td>
+                <td>client1</td>
+                <td>CLIENT</td>
+                <td>{{ 'admin_dashboard.recent_activity.new_claim' | translate }}</td>
+                <td>
+                  <span class="tag warning">
+                    {{ 'admin_dashboard.recent_activity.to_assign' | translate }}
+                  </span>
+                </td>
+              </tr>
+
+              <tr>
+                <td>3</td>
+                <td>agent1</td>
+                <td>AGENT</td>
+                <td>{{ 'admin_dashboard.recent_activity.claim_processing' | translate }}</td>
+                <td>
+                  <span class="tag success">
+                    {{ 'admin_dashboard.recent_activity.productivity' | translate }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="recommendation-card">
+          <div class="section-title">
+            <h3>{{ 'admin_dashboard.recommendation.title' | translate }}</h3>
+            <p>{{ 'admin_dashboard.recommendation.subtitle' | translate }}</p>
+          </div>
+
+          <ul>
+            <li>{{ 'admin_dashboard.recommendation.item1' | translate }}</li>
+            <li>{{ 'admin_dashboard.recommendation.item2' | translate }}</li>
+            <li>{{ 'admin_dashboard.recommendation.item3' | translate }}</li>
+            <li>{{ 'admin_dashboard.recommendation.item4' | translate }}</li>
+          </ul>
+        </div>
       </div>
+
     </div>
   </div>
 </div>
