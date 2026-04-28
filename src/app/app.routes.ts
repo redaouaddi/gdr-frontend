@@ -118,11 +118,13 @@ export const routes: Routes = [
   },
   
   {
-    path: 'agent/missions',
-    component: AgentMissionsComponent,
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['AGENT', 'CHEF_EQUIPE', 'ADMIN'] }
-  },
+  path: 'agent/missions',
+  component: AgentMissionsComponent
+},
+{
+  path: 'chef-equipe/missions',
+  component: AgentMissionsComponent
+},
 
   {
     path: 'messages-internes',

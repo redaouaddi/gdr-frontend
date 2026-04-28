@@ -54,6 +54,10 @@ export class Sidebar implements OnInit {
     }
   }
 
+  canSeeInternalMessaging(): boolean {
+    return !this.isClient;
+  }
+
   toggleUsersMenu() {
     this.usersMenuOpen = !this.usersMenuOpen;
   }
@@ -86,7 +90,8 @@ export class Sidebar implements OnInit {
 
     try {
       const result: any = await this.passkeyService.startRegistration(email);
-      this.passkeyMessage = result?.message || this.translate.instant('sidebar.messages.faceid_success');
+      this.passkeyMessage =
+        result?.message || this.translate.instant('sidebar.messages.faceid_success');
     } catch (error: any) {
       console.error(error);
       this.passkeyError =
@@ -131,40 +136,40 @@ export class Sidebar implements OnInit {
   }
 
   captureFace(): void {
-  const video = this.videoElement?.nativeElement;
-  const canvas = this.canvasElement?.nativeElement;
+    const video = this.videoElement?.nativeElement;
+    const canvas = this.canvasElement?.nativeElement;
 
-  if (!video || !canvas) return;
+    if (!video || !canvas) return;
 
-  const width = video.videoWidth;
-  const height = video.videoHeight;
+    const width = video.videoWidth;
+    const height = video.videoHeight;
 
-  const context = canvas.getContext('2d');
-  if (!context) return;
+    const context = canvas.getContext('2d');
+    if (!context) return;
 
-  const cropWidth = width * 0.45;
-  const cropHeight = height * 0.7;
+    const cropWidth = width * 0.45;
+    const cropHeight = height * 0.7;
 
-  const sx = (width - cropWidth) / 2;
-  const sy = (height - cropHeight) / 2;
+    const sx = (width - cropWidth) / 2;
+    const sy = (height - cropHeight) / 2;
 
-  canvas.width = cropWidth;
-  canvas.height = cropHeight;
+    canvas.width = cropWidth;
+    canvas.height = cropHeight;
 
-  context.drawImage(
-    video,
-    sx,
-    sy,
-    cropWidth,
-    cropHeight,
-    0,
-    0,
-    cropWidth,
-    cropHeight
-  );
+    context.drawImage(
+      video,
+      sx,
+      sy,
+      cropWidth,
+      cropHeight,
+      0,
+      0,
+      cropWidth,
+      cropHeight
+    );
 
-  this.capturedImage = canvas.toDataURL('image/jpeg', 0.95);
-}
+    this.capturedImage = canvas.toDataURL('image/jpeg', 0.95);
+  }
 
   stopCamera() {
     if (this.mediaStream) {

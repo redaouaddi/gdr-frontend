@@ -23,6 +23,8 @@ export interface Reclamation {
   slaStatus?: 'EN_COURS' | 'PROCHE_DEPASSEMENT' | 'DEPASSE' | 'RESPECTE';
   dateResolution?: string;
   clientNom?: string;
+
+  slaCountdownLabel?: string;
 }
 
 export interface CreateReclamationRequest {
@@ -46,3 +48,4 @@ export interface ReclamationStatusResponse {
   slaStatus?: 'EN_COURS' | 'PROCHE_DEPASSEMENT' | 'DEPASSE' | 'RESPECTE';
   dateResolution?: string;
 }
+

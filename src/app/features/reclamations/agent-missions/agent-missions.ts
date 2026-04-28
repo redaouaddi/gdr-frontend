@@ -1,29 +1,59 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
 import { ReclamationService } from '../../../core/services/reclamation.service';
 import { Reclamation } from '../../../core/models/reclamation.model';
-import { Sidebar } from '../../../layout/sidebar/sidebar';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Navbar } from '../../../layout/navbar/navbar';
 import { MessageInterneService, MessageInterne } from '../../../core/services/message-interne.service';
-import { FormsModule } from '@angular/forms';
-import { DatePipe } from '@angular/common';
+
+import { Sidebar } from '../../../layout/sidebar/sidebar';
+import { Navbar } from '../../../layout/navbar/navbar';
 
 @Component({
   selector: 'app-agent-missions',
   standalone: true,
-  imports: [CommonModule, Sidebar, Navbar, TranslateModule, FormsModule, DatePipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    Sidebar,
+    Navbar,
+    TranslateModule,
+    DatePipe
+  ],
   templateUrl: './agent-missions.html',
   styleUrls: ['./agent-missions.css']
 })
-export class AgentMissionsComponent implements OnInit {
+export class AgentMissionsComponent implements OnInit, OnDestroy {
   missions: Reclamation[] = [];
   loading = true;
+
   successMessage = '';
   errorMessage = '';
 
-  // Internal Remarks state
+  // toast SLA
+  slaAlertMessage = '';
+  alreadyWarnedMissions: Set<string> = new Set();
+
+  // rôles
+  currentRole = '';
+  isChefEquipe = false;
+  isAgent = false;
+  isClient = false;
+
+  // modal détails
+  showDetailsModal = false;
+  selectedMissionDetails: Reclamation | null = null;
+
+  // modal rejet
+  showRejectModal = false;
+  selectedMissionToReject: Reclamation | null = null;
+  motifRejet = '';
+  rejectError = '';
+  isRejecting = false;
+
+  // notes internes
   showNoteModal = false;
   currentMissionNotes: MessageInterne[] = [];
   newNoteText = '';
@@ -31,6 +61,9 @@ export class AgentMissionsComponent implements OnInit {
   selectedMissionNumero?: string;
   isSendingNote = false;
   isLoadingNotes = false;
+
+  private countdownInterval: any;
+  private slaToastTimeout: any;
 
   constructor(
     private reclamationService: ReclamationService,
@@ -41,101 +74,177 @@ export class AgentMissionsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.detectRole();
     this.loadMissions();
+    this.startCountdownRefresh();
   }
 
-  loadMissions(): void {
-    this.loading = true;
-    this.successMessage = '';
-    this.errorMessage = '';
-    this.reclamationService.getMesMissions().subscribe({
-      next: (data) => {
-        this.missions = data || [];
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('AGENT MISSIONS - ERREUR:', err);
-        this.missions = [];
-        this.loading = false;
-        this.cdr.detectChanges();
-      }
-    });
+  ngOnDestroy(): void {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
+
+    if (this.slaToastTimeout) {
+      clearTimeout(this.slaToastTimeout);
+    }
   }
 
+  detectRole(): void {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const role = user?.role || user?.roles?.[0] || '';
+
+    this.currentRole = role;
+
+    this.isChefEquipe =
+      role === 'CHEF_EQUIPE' ||
+      role === 'ROLE_CHEF_EQUIPE' ||
+      role === 'SERVICE_MANAGER' ||
+      role === 'ROLE_SERVICE_MANAGER';
+
+    this.isAgent =
+      role === 'AGENT' ||
+      role === 'ROLE_AGENT';
+
+    this.isClient =
+      role === 'CLIENT' ||
+      role === 'ROLE_CLIENT' ||
+      role === 'USER' ||
+      role === 'ROLE_USER';
+  }
+
+ loadMissions(): void {
+  this.loading = true;
+
+  this.reclamationService.getMesMissions().subscribe({
+    next: (data) => {
+
+      console.log('MISSIONS RECUES >>>', data);
+
+      this.missions = (data || []).map((mission: any) => ({
+        ...mission,
+        slaCountdownLabel: this.computeSlaCountdownLabel(mission)
+      }));
+
+      this.loading = false;
+      this.cdr.detectChanges();
+    },
+
+    error: (err) => {
+      console.error(err);
+      this.loading = false;
+    }
+  });
+}
+
+  // =========================
+  // ACTIONS CHEF D'EQUIPE
+  // =========================
   accepter(numeroReclamation: string): void {
     this.clearMessages();
+
     this.reclamationService.accepterReclamation(numeroReclamation).subscribe({
       next: () => {
-        this.successMessage = this.translate.instant('agent_missions.messages.accepted', { numero: numeroReclamation });
+        this.successMessage = this.translate.instant('agent_missions.messages.accepted', {
+          numero: numeroReclamation
+        });
         this.loadMissions();
       },
       error: (err) => {
         console.error('Erreur acceptation:', err);
-        this.errorMessage = err.error?.message || this.translate.instant('agent_missions.messages.error_accept');
+        this.errorMessage =
+          err?.error?.message ||
+          this.translate.instant('agent_missions.messages.error_accept');
       }
     });
   }
 
+  openRejectModal(mission: Reclamation): void {
+    this.selectedMissionToReject = mission;
+    this.motifRejet = '';
+    this.rejectError = '';
+    this.showRejectModal = true;
+  }
+
+  closeRejectModal(): void {
+    this.showRejectModal = false;
+    this.selectedMissionToReject = null;
+    this.motifRejet = '';
+    this.rejectError = '';
+    this.isRejecting = false;
+  }
+
+  confirmReject(): void {
+    if (!this.selectedMissionToReject?.numeroReclamation) {
+      return;
+    }
+
+    if (!this.motifRejet.trim()) {
+      this.rejectError = 'Le motif de rejet est obligatoire.';
+      return;
+    }
+
+    this.isRejecting = true;
+    this.rejectError = '';
+    this.clearMessages();
+
+    this.reclamationService
+      .rejeterReclamation(this.selectedMissionToReject.numeroReclamation, this.motifRejet.trim())
+      .subscribe({
+        next: () => {
+          this.successMessage = `Réclamation ${this.selectedMissionToReject?.numeroReclamation} rejetée avec succès.`;
+          this.closeRejectModal();
+          this.loadMissions();
+        },
+        error: (err) => {
+          console.error('Erreur rejet:', err);
+          this.rejectError =
+            err?.error?.message || 'Erreur lors du rejet de la réclamation.';
+          this.isRejecting = false;
+        }
+      });
+  }
+
+  // =========================
+  // ACTIONS AGENT
+  // =========================
   resoudre(numeroReclamation: string): void {
     this.clearMessages();
+
     this.reclamationService.marquerResolue(numeroReclamation).subscribe({
       next: () => {
-        this.successMessage = this.translate.instant('agent_missions.messages.resolved', { numero: numeroReclamation });
+        this.successMessage = this.translate.instant('agent_missions.messages.resolved', {
+          numero: numeroReclamation
+        });
         this.loadMissions();
       },
       error: (err) => {
         console.error('Erreur résolution:', err);
-        this.errorMessage = err.error?.message || this.translate.instant('agent_missions.messages.error_resolve');
+        this.errorMessage =
+          err?.error?.message ||
+          this.translate.instant('agent_missions.messages.error_resolve');
       }
     });
   }
 
-  clearMessages(): void {
-    this.successMessage = '';
-    this.errorMessage = '';
+  // =========================
+  // DETAILS
+  // =========================
+  openDetailsModal(mission: Reclamation): void {
+    this.selectedMissionDetails = mission;
+    this.showDetailsModal = true;
   }
 
-  getStatusClass(statut: string): string {
-    if (!statut) return 'status-pending';
-    const s = statut.toLowerCase();
-    if (s.includes('résol') || s.includes('resol') || s.includes('traitee')) return 'status-resolved';
-    if (s.includes('rejet')) return 'status-rejected';
-    if (s.includes('en cours') || s.includes('en_cours')) return 'status-progress';
-    if (s.includes('attente') || s.includes('en_attente')) return 'status-pending';
-    return 'status-pending';
+  closeDetailsModal(): void {
+    this.showDetailsModal = false;
+    this.selectedMissionDetails = null;
   }
 
-  translateStatus(statut: string | undefined): string {
-    if (!statut) return '';
-    return this.translate.instant('status.' + statut);
-  }
-
-  translateCategory(categorie: string | undefined): string {
-    if (!categorie) return '';
-    return this.translate.instant('categories.' + categorie);
-  }
-
-  getPriorityClass(priority: string): string {
-    if (!priority) return '';
-    switch (priority.toUpperCase()) {
-      case 'ELEVEE':
-      case 'HAUTE':
-      case 'URGENTE':
-        return 'priority-high';
-      case 'MOYENNE':
-        return 'priority-medium';
-      case 'FAIBLE':
-      case 'BASSE':
-        return 'priority-low';
-      default:
-        return '';
-    }
-  }
-
-  // Remark Modal Methods
+  // =========================
+  // NOTES INTERNES
+  // =========================
   openNoteModal(mission: Reclamation): void {
     if (!mission.id) return;
+
     this.selectedMissionId = mission.id;
     this.selectedMissionNumero = mission.numeroReclamation;
     this.newNoteText = '';
@@ -152,6 +261,7 @@ export class AgentMissionsComponent implements OnInit {
 
   loadNotes(reclamationId: number): void {
     this.isLoadingNotes = true;
+
     this.messageInterneService.getMessages(reclamationId).subscribe({
       next: (data) => {
         this.currentMissionNotes = data || [];
@@ -170,18 +280,233 @@ export class AgentMissionsComponent implements OnInit {
     if (!this.selectedMissionId || !this.newNoteText.trim()) return;
 
     this.isSendingNote = true;
-    this.messageInterneService.envoyerMessage(this.selectedMissionId, this.newNoteText).subscribe({
-      next: (note) => {
-        this.currentMissionNotes.push(note);
-        this.newNoteText = '';
-        this.isSendingNote = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Erreur envoi note:', err);
-        this.isSendingNote = false;
-        this.cdr.detectChanges();
-      }
-    });
+
+    this.messageInterneService
+      .envoyerMessage(this.selectedMissionId, this.newNoteText)
+      .subscribe({
+        next: (note) => {
+          this.currentMissionNotes.push(note);
+          this.newNoteText = '';
+          this.isSendingNote = false;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Erreur envoi note:', err);
+          this.isSendingNote = false;
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  // =========================
+  // HELPERS ROLE / UI
+  // =========================
+  clearMessages(): void {
+    this.successMessage = '';
+    this.errorMessage = '';
+  }
+
+  canChefAccept(mission: Reclamation): boolean {
+    const status = (mission.statut || '').toUpperCase();
+    return this.isChefEquipe && (status === 'EN_ATTENTE' || status === 'AFFECTEE');
+  }
+
+  canChefReject(mission: Reclamation): boolean {
+    const status = (mission.statut || '').toUpperCase();
+    return this.isChefEquipe && status !== 'TRAITEE' && status !== 'REJETEE';
+  }
+
+  canAgentResolve(mission: Reclamation): boolean {
+    const status = (mission.statut || '').toUpperCase();
+    return this.isAgent && (status === 'EN_COURS' || status === 'ACCEPTEE');
+  }
+
+  getStatusClass(statut?: string): string {
+    if (!statut) return 'status-pending';
+
+    const s = statut.toLowerCase();
+
+    if (s.includes('résol') || s.includes('resol') || s.includes('traitee')) {
+      return 'status-resolved';
+    }
+
+    if (s.includes('rejet')) {
+      return 'status-rejected';
+    }
+
+    if (s.includes('en cours') || s.includes('en_cours')) {
+      return 'status-progress';
+    }
+
+    if (s.includes('attente') || s.includes('en_attente')) {
+      return 'status-pending';
+    }
+
+    return 'status-pending';
+  }
+
+  translateStatus(statut: string | undefined): string {
+    if (!statut) return '';
+    return this.translate.instant('status.' + statut);
+  }
+
+  translateCategory(categorie: string | undefined): string {
+    if (!categorie) return '';
+    return this.translate.instant('categories.' + categorie);
+  }
+
+  getPriorityClass(priority?: string): string {
+    if (!priority) return '';
+
+    switch (priority.toUpperCase()) {
+      case 'ELEVEE':
+      case 'HAUTE':
+      case 'URGENTE':
+        return 'priority-high';
+      case 'MOYENNE':
+        return 'priority-medium';
+      case 'FAIBLE':
+      case 'BASSE':
+        return 'priority-low';
+      default:
+        return '';
+    }
+  }
+
+  // =========================
+  // SLA COUNTDOWN + TOAST
+  // =========================
+  startCountdownRefresh(): void {
+    this.countdownInterval = setInterval(() => {
+      this.missions = this.missions.map((mission: any) => {
+        const updatedLabel = this.computeSlaCountdownLabel(mission);
+
+        if (
+          this.isAgent &&
+          mission.numeroReclamation &&
+          updatedLabel !== 'SLA dépassé' &&
+          this.shouldWarnBeforeSla(updatedLabel) &&
+          !this.alreadyWarnedMissions.has(mission.numeroReclamation)
+        ) {
+          this.slaAlertMessage =
+            `Attention : la réclamation ${mission.numeroReclamation} approche du dépassement SLA.`;
+
+          this.alreadyWarnedMissions.add(mission.numeroReclamation);
+
+          if (this.slaToastTimeout) {
+            clearTimeout(this.slaToastTimeout);
+          }
+
+          this.slaToastTimeout = setTimeout(() => {
+            this.slaAlertMessage = '';
+            this.cdr.detectChanges();
+          }, 5000);
+        }
+
+        return {
+          ...mission,
+          slaCountdownLabel: updatedLabel
+        };
+      });
+
+      this.cdr.detectChanges();
+    }, 1000);
+  }
+
+ computeSlaCountdownLabel(mission: any): string {
+
+  const deadlineValue = mission?.slaDeadline;
+
+  if (!deadlineValue) {
+    return 'SLA indisponible';
+  }
+
+  const deadline = new Date(deadlineValue).getTime();
+  const now = Date.now();
+
+  if (isNaN(deadline)) {
+    return 'SLA indisponible';
+  }
+
+  const diff = deadline - now;
+
+  if (diff <= 0) {
+    return 'SLA dépassé';
+  }
+
+  const totalSeconds = Math.floor(diff / 1000);
+
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (days > 0) {
+    return `${days}j ${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  return `${hours}h ${minutes}m ${seconds}s`;
+}
+  extractSlaHours(mission: any): number {
+    if (mission?.slaHeures) return Number(mission.slaHeures);
+    if (mission?.slaHours) return Number(mission.slaHours);
+    if (mission?.sla?.delaiHeures) return Number(mission.sla.delaiHeures);
+    if (mission?.sla?.hours) return Number(mission.sla.hours);
+
+    const priority = (mission?.priorite || '').toUpperCase();
+
+    switch (priority) {
+      case 'URGENTE':
+      case 'ELEVEE':
+      case 'HAUTE':
+        return 4;
+      case 'MOYENNE':
+        return 8;
+      case 'FAIBLE':
+      case 'BASSE':
+        return 24;
+      default:
+        return 0;
+    }
+  }
+
+  getSlaClass(label?: string): string {
+    if (!label || label === 'SLA indisponible') return 'sla-normal';
+    if (label === 'SLA dépassé') return 'sla-expired';
+    if (label.includes('0h') || label.includes('1h')) return 'sla-warning';
+    return 'sla-normal';
+  }
+
+  shouldWarnBeforeSla(label?: string): boolean {
+    if (!label || label === 'SLA indisponible' || label === 'SLA dépassé') {
+      return false;
+    }
+
+    const dayMatch = label.match(/(\d+)j/);
+    if (dayMatch) return false;
+
+    const match = label.match(/(\d+)h\s+(\d+)m\s+(\d+)s/);
+    if (!match) return false;
+
+    const hours = parseInt(match[1], 10);
+    const minutes = parseInt(match[2], 10);
+
+    return hours === 0 && minutes <= 59;
+  }
+
+  hasSlaWarning(mission: any): boolean {
+    const label = mission.slaCountdownLabel;
+
+    if (!label || label === 'SLA indisponible' || label === 'SLA dépassé') {
+      return false;
+    }
+
+    const match = label.match(/(\d+)h\s+(\d+)m\s+(\d+)s/);
+    if (!match) return false;
+
+    const hours = parseInt(match[1], 10);
+    const minutes = parseInt(match[2], 10);
+
+    return hours < 1 || (hours === 1 && minutes === 0);
   }
 }
