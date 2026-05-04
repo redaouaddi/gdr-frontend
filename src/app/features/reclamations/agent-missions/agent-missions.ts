@@ -31,29 +31,25 @@ export class AgentMissionsComponent implements OnInit, OnDestroy {
 
   successMessage = '';
   errorMessage = '';
-
-  // toast SLA
+  agentReportFile: File | null = null;
   slaAlertMessage = '';
   alreadyWarnedMissions: Set<string> = new Set();
 
-  // rôles
   currentRole = '';
   isChefEquipe = false;
   isAgent = false;
   isClient = false;
-
-  // modal détails
+  slaNotifications: any[] = [];
   showDetailsModal = false;
   selectedMissionDetails: Reclamation | null = null;
+  agentSolutionText = '';
 
-  // modal rejet
   showRejectModal = false;
   selectedMissionToReject: Reclamation | null = null;
   motifRejet = '';
   rejectError = '';
   isRejecting = false;
 
-  // notes internes
   showNoteModal = false;
   currentMissionNotes: MessageInterne[] = [];
   newNoteText = '';
@@ -77,7 +73,16 @@ export class AgentMissionsComponent implements OnInit, OnDestroy {
     this.detectRole();
     this.loadMissions();
     this.startCountdownRefresh();
+    this.loadStoredNotifications();
+    
   }
+  loadStoredNotifications(): void {
+  const data = localStorage.getItem('slaNotifications');
+
+  if (data) {
+    this.slaNotifications = JSON.parse(data);
+  }
+}
 
   ngOnDestroy(): void {
     if (this.countdownInterval) {
@@ -112,33 +117,42 @@ export class AgentMissionsComponent implements OnInit, OnDestroy {
       role === 'ROLE_USER';
   }
 
- loadMissions(): void {
-  this.loading = true;
+  loadMissions(): void {
+    this.loading = true;
 
-  this.reclamationService.getMesMissions().subscribe({
-    next: (data) => {
+    this.reclamationService.getMesMissions().subscribe({
+      next: (data) => {
+        console.log('MISSIONS RECUES >>>', data);
 
-      console.log('MISSIONS RECUES >>>', data);
+        this.missions = (data || []).map((mission: any) => ({
+          ...mission,
+          slaCountdownLabel: this.computeSlaCountdownLabel(mission)
+        }));
 
-      this.missions = (data || []).map((mission: any) => ({
-        ...mission,
-        slaCountdownLabel: this.computeSlaCountdownLabel(mission)
-      }));
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
 
-      this.loading = false;
-      this.cdr.detectChanges();
-    },
+      error: (err) => {
+        console.error(err);
+        this.loading = false;
+      }
+    });
+  }
+  cleanResolvedNotifications(): void {
+  this.slaNotifications = this.slaNotifications.filter(notif => {
 
-    error: (err) => {
-      console.error(err);
-      this.loading = false;
-    }
+    const mission = this.missions.find(m =>
+      notif.message.includes(m.numeroReclamation)
+    );
+
+    // garder seulement si PAS traitée
+    return mission && mission.statut !== 'TRAITEE';
   });
+
+  localStorage.setItem('slaNotifications', JSON.stringify(this.slaNotifications));
 }
 
-  // =========================
-  // ACTIONS CHEF D'EQUIPE
-  // =========================
   accepter(numeroReclamation: string): void {
     this.clearMessages();
 
@@ -204,9 +218,6 @@ export class AgentMissionsComponent implements OnInit, OnDestroy {
       });
   }
 
-  // =========================
-  // ACTIONS AGENT
-  // =========================
   resoudre(numeroReclamation: string): void {
     this.clearMessages();
 
@@ -226,22 +237,72 @@ export class AgentMissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  // =========================
-  // DETAILS
-  // =========================
   openDetailsModal(mission: Reclamation): void {
     this.selectedMissionDetails = mission;
+    this.agentSolutionText = '';
     this.showDetailsModal = true;
+    this.agentReportFile = null;
   }
 
   closeDetailsModal(): void {
     this.showDetailsModal = false;
     this.selectedMissionDetails = null;
+    this.agentSolutionText = '';
+    this.agentReportFile = null;
   }
 
-  // =========================
-  // NOTES INTERNES
-  // =========================
+  saveAgentSolution(): void {
+  if (
+    !this.selectedMissionDetails?.id ||
+    !this.selectedMissionDetails?.numeroReclamation ||
+    !this.agentSolutionText.trim()
+  ) {
+    return;
+  }
+
+  this.clearMessages();
+
+  this.messageInterneService
+    .envoyerMessageAvecFichier(
+      this.selectedMissionDetails.id,
+      this.agentSolutionText.trim(),
+      this.agentReportFile
+    )
+    .subscribe({
+      next: () => {
+        this.reclamationService
+          .marquerResolue(this.selectedMissionDetails!.numeroReclamation)
+          .subscribe({
+            next: () => {
+              this.successMessage = this.translate.instant(
+                'agent_missions.messages.resolved',
+                {
+                  numero: this.selectedMissionDetails?.numeroReclamation
+                }
+              );
+
+              this.agentSolutionText = '';
+              this.agentReportFile = null;
+              this.closeDetailsModal();
+              this.loadMissions();
+            },
+            error: (err) => {
+              console.error('Erreur changement statut après compte rendu:', err);
+              this.errorMessage = this.translate.instant(
+                'agent_missions.messages.report_saved_status_error'
+              );
+            }
+          });
+      },
+      error: (err) => {
+        console.error('Erreur enregistrement compte rendu agent:', err);
+        this.errorMessage = this.translate.instant(
+          'agent_missions.messages.report_save_error'
+        );
+      }
+    });
+}
+
   openNoteModal(mission: Reclamation): void {
     if (!mission.id) return;
 
@@ -298,9 +359,6 @@ export class AgentMissionsComponent implements OnInit, OnDestroy {
       });
   }
 
-  // =========================
-  // HELPERS ROLE / UI
-  // =========================
   clearMessages(): void {
     this.successMessage = '';
     this.errorMessage = '';
@@ -347,7 +405,23 @@ export class AgentMissionsComponent implements OnInit, OnDestroy {
 
   translateStatus(statut: string | undefined): string {
     if (!statut) return '';
-    return this.translate.instant('status.' + statut);
+
+    switch (statut.toUpperCase()) {
+      case 'TRAITEE':
+        return this.translate.instant('status.TRAITEE') || 'Traitée';
+
+      case 'EN_ATTENTE':
+        return this.translate.instant('status.EN_ATTENTE_CONFIRMATION') || 'En attente de confirmation';
+
+      case 'EN_COURS':
+        return this.translate.instant('status.EN_COURS_TRAITEMENT') || 'En cours de traitement';
+
+      case 'REJETEE':
+        return this.translate.instant('status.REJETEE') || 'Rejetée';
+
+      default:
+        return this.translate.instant('status.' + statut) || statut;
+    }
   }
 
   translateCategory(categorie: string | undefined): string {
@@ -373,80 +447,75 @@ export class AgentMissionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // =========================
-  // SLA COUNTDOWN + TOAST
-  // =========================
-  startCountdownRefresh(): void {
-    this.countdownInterval = setInterval(() => {
-      this.missions = this.missions.map((mission: any) => {
-        const updatedLabel = this.computeSlaCountdownLabel(mission);
+ startCountdownRefresh(): void {
+  this.countdownInterval = setInterval(() => {
+    this.missions = this.missions.map((mission: any) => {
+      const updatedLabel = this.computeSlaCountdownLabel(mission);
 
-        if (
-          this.isAgent &&
-          mission.numeroReclamation &&
-          updatedLabel !== 'SLA dépassé' &&
-          this.shouldWarnBeforeSla(updatedLabel) &&
-          !this.alreadyWarnedMissions.has(mission.numeroReclamation)
-        ) {
-          this.slaAlertMessage =
-            `Attention : la réclamation ${mission.numeroReclamation} approche du dépassement SLA.`;
+      if (
+        this.isAgent &&
+        mission.numeroReclamation &&
+        updatedLabel !== 'SLA dépassé' &&
+        this.shouldWarnBeforeSla(updatedLabel) &&
+        !this.alreadyWarnedMissions.has(mission.numeroReclamation)
+      ) {
+        this.addSlaNotification(
+          this.translate.instant('agent_missions.sla_notifications.near_title'),
+          this.translate.instant('agent_missions.sla_notifications.near_message', {
+            numero: mission.numeroReclamation
+          }),
+          'bi-exclamation-triangle-fill',
+          'warning',
+          mission.numeroReclamation + '-near'
+        );
 
-          this.alreadyWarnedMissions.add(mission.numeroReclamation);
+        this.alreadyWarnedMissions.add(mission.numeroReclamation);
+      }
 
-          if (this.slaToastTimeout) {
-            clearTimeout(this.slaToastTimeout);
-          }
+      return {
+        ...mission,
+        slaCountdownLabel: updatedLabel
+      };
+    });
 
-          this.slaToastTimeout = setTimeout(() => {
-            this.slaAlertMessage = '';
-            this.cdr.detectChanges();
-          }, 5000);
-        }
-
-        return {
-          ...mission,
-          slaCountdownLabel: updatedLabel
-        };
-      });
-
-      this.cdr.detectChanges();
-    }, 1000);
-  }
-
- computeSlaCountdownLabel(mission: any): string {
-
-  const deadlineValue = mission?.slaDeadline;
-
-  if (!deadlineValue) {
-    return 'SLA indisponible';
-  }
-
-  const deadline = new Date(deadlineValue).getTime();
-  const now = Date.now();
-
-  if (isNaN(deadline)) {
-    return 'SLA indisponible';
-  }
-
-  const diff = deadline - now;
-
-  if (diff <= 0) {
-    return 'SLA dépassé';
-  }
-
-  const totalSeconds = Math.floor(diff / 1000);
-
-  const days = Math.floor(totalSeconds / 86400);
-  const hours = Math.floor((totalSeconds % 86400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  if (days > 0) {
-    return `${days}j ${hours}h ${minutes}m ${seconds}s`;
-  }
-
-  return `${hours}h ${minutes}m ${seconds}s`;
+    this.cdr.detectChanges();
+  }, 1000);
 }
+
+  computeSlaCountdownLabel(mission: any): string {
+    const deadlineValue = mission?.slaDeadline;
+
+    if (!deadlineValue) {
+      return 'SLA indisponible';
+    }
+
+    const deadline = new Date(deadlineValue).getTime();
+    const now = Date.now();
+
+    if (isNaN(deadline)) {
+      return 'SLA indisponible';
+    }
+
+    const diff = deadline - now;
+
+    if (diff <= 0) {
+      return 'SLA dépassé';
+    }
+
+    const totalSeconds = Math.floor(diff / 1000);
+
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (days > 0) {
+      return `${days}j ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    return `${hours}h ${minutes}m ${seconds}s`;
+  }
+
   extractSlaHours(mission: any): number {
     if (mission?.slaHeures) return Number(mission.slaHeures);
     if (mission?.slaHours) return Number(mission.slaHours);
@@ -509,4 +578,85 @@ export class AgentMissionsComponent implements OnInit, OnDestroy {
 
     return hours < 1 || (hours === 1 && minutes === 0);
   }
+
+  notifierAgentSla(mission: Reclamation): void {
+  if (!mission.id) {
+    return;
+  }
+
+  const message =
+    `Alerte SLA : la réclamation ${mission.numeroReclamation} approche du dépassement. Merci de la traiter en priorité.`;
+
+  this.messageInterneService.envoyerMessage(mission.id, message).subscribe({
+    next: () => {
+      this.successMessage =
+        `Notification SLA envoyée pour la réclamation ${mission.numeroReclamation}.`;
+    },
+    error: (err) => {
+      console.error('Erreur notification SLA:', err);
+      this.errorMessage =
+        'Erreur lors de l’envoi de la notification SLA.';
+    }
+  });
+}
+getRowSlaClass(mission: any): string {
+
+  if (!this.isAgent) return '';
+
+  if (mission.statut === 'TRAITEE') {
+    return 'row-treated';
+  }
+
+  const label = mission.slaCountdownLabel;
+
+  if (!label) return '';
+
+  if (label === 'SLA dépassé') {
+    return 'row-danger';
+  }
+
+  if (this.hasSlaWarning(mission)) {
+    return 'row-warning';
+  }
+
+  return 'row-safe';
+}
+onAgentReportFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+
+  if (input.files && input.files.length > 0) {
+    this.agentReportFile = input.files[0];
+  }
+}
+
+addSlaNotification(
+  title: string,
+  message: string,
+  icon: string,
+  type: 'success' | 'warning' | 'danger' | 'info',
+  key?: string
+): void {
+  if (key && this.slaNotifications.some(notif => notif.key === key)) {
+    return;
+  }
+
+  const notification = {
+    key,
+    title,
+    message,
+    icon,
+    type,
+    date: new Date()
+  };
+
+  this.slaNotifications.unshift(notification);
+
+  this.slaNotifications = this.slaNotifications.slice(0, 10);
+
+  localStorage.setItem(
+    'slaNotifications',
+    JSON.stringify(this.slaNotifications)
+  );
+}
+
 }

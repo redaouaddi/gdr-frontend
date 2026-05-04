@@ -74,8 +74,12 @@
     "EN_COURS": "En cours",
     "RESOLUE": "Résolue",
     "TRAITEE": "Traitée",
-    "REJETEE": "Rejetée"
-  },
+    "REJETEE": "Rejetée",
+  "EN_ATTENTE_CONFIRMATION": "En attente de confirmation",
+  "EN_COURS_TRAITEMENT": "En cours de traitement"
+ 
+  
+},
 
   "priority": {
   "FAIBLE": "Faible",
@@ -733,7 +737,24 @@
       "add_label": "Ajouter une remarque",
       "placeholder": "Écrivez votre remarque ici...",
       "add_btn": "Ajouter la remarque"
-    }
+    },
+    "details_modal": {
+    "report_attachment": "Pièce jointe du compte rendu",
+    "choose_file": "Choisir un fichier",
+    "no_file": "Aucun fichier choisi"
+  },
+   "sla_panel": {
+  "notifications_title": "Notifications SLA",
+  "notifications_subtitle": "Suivi visuel des réclamations selon leur niveau d’urgence.",
+  "no_notifications": "Aucune notification SLA pour le moment.",
+  "comfortable": "SLA confortable ou respecté",
+  "near_breach": "SLA proche du dépassement",
+  "breached": "SLA dépassé"
+},
+"sla_notifications": {
+  "near_title": "SLA proche du dépassement",
+  "near_message": "La réclamation #{{numero}} approche du dépassement SLA."
+}
   },
   "sla_settings": {
   "title": "Paramètres SLA",
@@ -762,5 +783,7 @@
     "expired": "Dépassement",
     "respected": "Respecté"
   }
+ 
+
 
 }

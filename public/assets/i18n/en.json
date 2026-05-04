@@ -82,8 +82,11 @@
   "status": {
     "EN_ATTENTE": "Pending",
     "EN_COURS": "In Progress",
+    "EN_ATTENTE_CONFIRMATION": "Awaiting confirmation",
+    "EN_COURS_TRAITEMENT": "Processing",
     "TRAITEE": "Processed",
     "REJETEE": "Rejected"
+    
   },
 
   "sla_status": {
@@ -732,6 +735,25 @@
     "error_resolve": "Unable to resolve the claim.",
     "error_reject": "Unable to reject the claim."
   },
+  "agent_missions": {
+  "details_modal": {
+    "report_attachment": "Report attachment",
+    "choose_file": "Choose file",
+    "no_file": "No file selected"
+  },
+  "sla_panel": {
+  "notifications_title": "SLA Notifications",
+  "notifications_subtitle": "Visual monitoring of claims based on urgency level.",
+  "no_notifications": "No SLA notifications at the moment.",
+  "comfortable": "Comfortable or respected SLA",
+  "near_breach": "SLA close to breach",
+  "breached": "SLA breached"
+},
+"sla_notifications": {
+  "near_title": "SLA close to breach",
+  "near_message": "Claim #{{numero}} is close to SLA breach."
+}
+},  
   "reject_modal": {
     "title": "Reject Claim",
     "text": "Please provide a reason for rejecting claim",

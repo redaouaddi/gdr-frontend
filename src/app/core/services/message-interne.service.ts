@@ -29,4 +29,23 @@ export class MessageInterneService {
   envoyerMessage(reclamationId: number, contenu: string): Observable<MessageInterne> {
     return this.http.post<MessageInterne>(this.api, { reclamationId, contenu });
   }
+
+  envoyerMessageAvecFichier(
+  reclamationId: number,
+  contenu: string,
+  file?: File | null
+) {
+  const formData = new FormData();
+
+  formData.append('contenu', contenu);
+
+  if (file) {
+    formData.append('file', file);
+  }
+
+  return this.http.post(
+    `${this.api}/${reclamationId}/avec-fichier`,
+    formData
+  );
+}
 }

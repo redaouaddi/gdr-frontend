@@ -17,25 +17,18 @@
       </div>
     </div>
 
-    <!-- SUCCESS -->
     <div class="alert-success-bar" *ngIf="successMessage">
       <i class="bi bi-check-circle-fill"></i>
       {{ successMessage }}
     </div>
 
-    <!-- ERROR -->
     <div class="alert-error-bar" *ngIf="errorMessage">
       <i class="bi bi-exclamation-triangle-fill"></i>
       {{ errorMessage }}
     </div>
 
-    <!-- SLA TOAST -->
-    <div class="alert-warning-bar" *ngIf="slaAlertMessage">
-      <i class="bi bi-bell-fill"></i>
-      {{ slaAlertMessage }}
-    </div>
+    
 
-    <!-- STATS -->
     <div class="stats-overview" *ngIf="!loading">
       <div class="stat-card">
         <div class="stat-icon">
@@ -48,8 +41,77 @@
         </div>
       </div>
     </div>
+<div class="sla-supervision-panel" *ngIf="isAgent || isChefEquipe">
 
-    <!-- TABLE -->
+  <div class="sla-notification-box">
+  <div class="panel-title">
+    <i class="bi bi-bell-fill"></i>
+    <div>
+      <h3>{{ 'agent_missions.sla_panel.notifications_title' | translate }}</h3>
+      <p>{{ 'agent_missions.sla_panel.notifications_subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="sla-real-notifications">
+    <div
+      class="sla-notification-entry"
+      *ngFor="let notif of slaNotifications">
+
+      <i class="bi" [ngClass]="notif.icon"></i>
+
+      <div class="notif-content">
+        <strong>{{ notif.title }}</strong>
+        <p>{{ notif.message }}</p>
+      </div>
+    </div>
+
+    <div
+      class="sla-empty-notification"
+      *ngIf="slaNotifications.length === 0">
+
+      <i class="bi bi-check-circle-fill me-2"></i>
+      {{ 'agent_missions.sla_panel.no_notifications' | translate }}
+    </div>
+  </div>
+
+  <div class="notification-list">
+    <div class="notification-item green">
+      <i class="bi bi-check-circle-fill"></i>
+      {{ 'agent_missions.sla_panel.comfortable' | translate }}
+    </div>
+
+    <div class="notification-item orange">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      {{ 'agent_missions.sla_panel.near_breach' | translate }}
+    </div>
+
+    <div class="notification-item red">
+      <i class="bi bi-x-octagon-fill"></i>
+      {{ 'agent_missions.sla_panel.breached' | translate }}
+    </div>
+  </div>
+</div>
+
+    <div class="sla-legend-box">
+    <h4>Légende des couleurs</h4>
+
+    <div class="legend-row">
+      <span class="legend-color green"></span>
+      <span>Ligne verte : délai SLA confortable ou réclamation traitée</span>
+    </div>
+
+    <div class="legend-row">
+      <span class="legend-color orange"></span>
+      <span>Ligne orange : réclamation proche du dépassement SLA</span>
+    </div>
+
+    <div class="legend-row">
+      <span class="legend-color red"></span>
+      <span>Ligne rouge : SLA dépassé</span>
+    </div>
+    </div>
+
+    </div>
     <div class="missions-table-container card-premium">
       <div class="table-overlay" *ngIf="loading">
         <div class="loader"></div>
@@ -58,12 +120,12 @@
       <table class="dxc-table" *ngIf="!loading && missions.length > 0">
         <thead>
           <tr>
-            <th>{{ 'agent_missions.table.id' | translate }}</th>
+            <th>Référence</th>
             <th>{{ 'agent_missions.table.subject' | translate }}</th>
             <th>{{ 'agent_missions.table.category' | translate }}</th>
             <th>{{ 'agent_missions.table.priority' | translate }}</th>
             <th>{{ 'agent_missions.table.status' | translate }}</th>
-            <th *ngIf="isAgent">SLA</th>
+            <th *ngIf="isChefEquipe">SLA</th>
             <th>{{ 'agent_missions.table.date' | translate }}</th>
             <th>{{ 'agent_missions.table.actions' | translate }}</th>
           </tr>
@@ -72,10 +134,15 @@
         <tbody>
           <tr
             *ngFor="let mission of missions"
-            [class.sla-warning-row]="hasSlaWarning(mission)">
+            [ngClass]="getRowSlaClass(mission)">
 
             <td class="id-cell">
-              #{{ mission.numeroReclamation }}
+              <button
+                type="button"
+                class="reference-link"
+                (click)="openDetailsModal(mission)">
+                #{{ mission.numeroReclamation }}
+              </button>
             </td>
 
             <td class="subject-cell">
@@ -104,17 +171,14 @@
               </span>
             </td>
 
-            <!-- SLA -->
-            <td *ngIf="isAgent">
+            <td *ngIf="isChefEquipe">
               <span
                 class="sla-badge"
                 [ngClass]="getSlaClass(mission.slaCountdownLabel)">
-                
                 <i
                   class="bi bi-bell-fill me-1"
                   *ngIf="hasSlaWarning(mission)">
                 </i>
-
                 {{ mission.slaCountdownLabel || 'SLA indisponible' }}
               </span>
             </td>
@@ -123,54 +187,43 @@
               {{ mission.dateCreation | date:'dd/MM/yyyy HH:mm' }}
             </td>
 
-            <!-- ACTIONS -->
             <td class="actions-cell">
-
-              <!-- DETAILS -->
               <button
-                class="btn-action details"
-                title="Voir les détails"
-                (click)="openDetailsModal(mission)">
-                <i class="bi bi-eye"></i>
-              </button>
-
-              <!-- CHEF EQUIPE ACCEPT -->
-              <button
-                *ngIf="canChefAccept(mission)"
-                class="btn-action accept"
-                title="Accepter"
-                (click)="accepter(mission.numeroReclamation)">
-                <i class="bi bi-check-lg"></i>
-              </button>
-
-              <!-- CHEF EQUIPE REJECT -->
-              <button
-                *ngIf="canChefReject(mission)"
-                class="btn-action reject"
-                title="Rejeter"
-                (click)="openRejectModal(mission)">
-                <i class="bi bi-x-lg"></i>
-              </button>
-
-              <!-- AGENT CONFIRM -->
-              <button
-                *ngIf="canAgentResolve(mission)"
-                class="btn-action resolve"
-                title="Confirmer traitement"
-                (click)="resoudre(mission.numeroReclamation)">
-                <i class="bi bi-check2-circle"></i>
-              </button>
-
-              <!-- INTERNAL NOTES -->
-              <button
-                *ngIf="!isClient"
+                *ngIf="isAgent"
+                type="button"
                 class="btn-action notes"
                 title="{{ 'agent_missions.actions.notes' | translate }}"
                 (click)="openNoteModal(mission)">
                 <i class="bi bi-chat-left-text"></i>
               </button>
 
-              <!-- FINAL -->
+              <button
+                *ngIf="canChefAccept(mission)"
+                type="button"
+                class="btn-action accept"
+                title="Accepter"
+                (click)="accepter(mission.numeroReclamation)">
+                <i class="bi bi-check-lg"></i>
+              </button>
+
+              <button
+                *ngIf="canChefReject(mission)"
+                type="button"
+                class="btn-action reject"
+                title="Rejeter"
+                (click)="openRejectModal(mission)">
+                <i class="bi bi-x-lg"></i>
+              </button>
+
+              <button
+                *ngIf="isChefEquipe && hasSlaWarning(mission)"
+                type="button"
+                class="btn-action warning"
+                title="Notifier l’agent"
+                (click)="notifierAgentSla(mission)">
+                <i class="bi bi-bell-fill"></i>
+              </button>
+
               <span
                 *ngIf="mission.statut === 'TRAITEE' || mission.statut === 'REJETEE'"
                 class="text-muted small final-status">
@@ -181,7 +234,6 @@
         </tbody>
       </table>
 
-      <!-- EMPTY -->
       <div class="empty-state" *ngIf="!loading && missions.length === 0">
         <div class="empty-icon">
           <i class="bi bi-inbox"></i>
@@ -193,22 +245,18 @@
   </div>
 </div>
 
-<!-- ================================================= -->
-<!-- MODAL DETAILS PREMIUM -->
-<!-- ================================================= -->
-
+<!-- MODAL DETAILS -->
 <div class="modal-backdrop premium-backdrop" *ngIf="showDetailsModal">
   <div class="modal-card modal-xl premium-details-modal">
 
     <div class="premium-modal-header">
       <div class="premium-header-left">
         <div class="premium-icon-box">
-          <i class="bi bi-eye"></i>
+          <i class="bi bi-file-earmark-text"></i>
         </div>
 
         <div>
           <h4>Détails de la réclamation</h4>
-
           <p *ngIf="selectedMissionDetails">
             Référence #{{ selectedMissionDetails.numeroReclamation }}
           </p>
@@ -221,6 +269,72 @@
     </div>
 
     <div class="premium-modal-body" *ngIf="selectedMissionDetails">
+
+      <div class="workflow-progress">
+        <div class="workflow-step completed">
+          <div class="circle"><i class="bi bi-person"></i></div>
+          <span>Création client</span>
+        </div>
+
+        <div class="workflow-line completed"></div>
+
+        <div
+          class="workflow-step"
+          [ngClass]="{
+            'active': selectedMissionDetails.statut === 'EN_ATTENTE',
+            'completed': selectedMissionDetails.statut === 'EN_COURS' || selectedMissionDetails.statut === 'TRAITEE'
+          }">
+          <div class="circle">
+            <i
+              class="bi"
+              [ngClass]="selectedMissionDetails.statut === 'EN_ATTENTE' ? 'bi-geo-alt-fill' : 'bi-person-check'">
+            </i>
+          </div>
+          <span>Confirmation</span>
+        </div>
+
+        <div
+          class="workflow-line"
+          [ngClass]="{
+            'completed': selectedMissionDetails.statut === 'EN_COURS' || selectedMissionDetails.statut === 'TRAITEE'
+          }">
+        </div>
+
+        <div
+          class="workflow-step"
+          [ngClass]="{
+            'active': selectedMissionDetails.statut === 'EN_COURS',
+            'completed': selectedMissionDetails.statut === 'TRAITEE'
+          }">
+          <div class="circle">
+            <i
+              class="bi"
+              [ngClass]="selectedMissionDetails.statut === 'EN_COURS' ? 'bi-geo-alt-fill' : 'bi-tools'">
+            </i>
+          </div>
+          <span>Traitement agent</span>
+        </div>
+
+        <div
+          class="workflow-line"
+          [ngClass]="{ 'completed': selectedMissionDetails.statut === 'TRAITEE' }">
+        </div>
+
+        <div
+          class="workflow-step"
+          [ngClass]="{
+            'active': selectedMissionDetails.statut === 'TRAITEE',
+            'completed': selectedMissionDetails.statut === 'TRAITEE'
+          }">
+          <div class="circle">
+            <i
+              class="bi"
+              [ngClass]="selectedMissionDetails.statut === 'TRAITEE' ? 'bi-geo-alt-fill' : 'bi-check-circle'">
+            </i>
+          </div>
+          <span>Clôture</span>
+        </div>
+      </div>
 
       <div class="premium-top-banner">
         <div class="banner-left">
@@ -244,14 +358,13 @@
       </div>
 
       <div class="premium-details-grid">
-
         <div class="premium-detail-card">
           <div class="detail-card-icon purple">
             <i class="bi bi-hash"></i>
           </div>
 
           <div class="detail-card-content">
-            <span class="detail-label">Numéro</span>
+            <span class="detail-label">Référence</span>
             <span class="detail-value">
               #{{ selectedMissionDetails.numeroReclamation }}
             </span>
@@ -278,7 +391,6 @@
 
           <div class="detail-card-content">
             <span class="detail-label">Catégorie</span>
-
             <span class="detail-value">
               <span class="category-badge large">
                 {{ translateCategory(selectedMissionDetails.categorie) }}
@@ -294,7 +406,6 @@
 
           <div class="detail-card-content">
             <span class="detail-label">Priorité</span>
-
             <span class="detail-value">
               <span
                 class="priority-badge large"
@@ -312,7 +423,6 @@
 
           <div class="detail-card-content">
             <span class="detail-label">Statut</span>
-
             <span class="detail-value">
               <span
                 class="status-badge large"
@@ -330,26 +440,23 @@
 
           <div class="detail-card-content">
             <span class="detail-label">Date création</span>
-
             <span class="detail-value">
               {{ selectedMissionDetails.dateCreation | date:'dd/MM/yyyy HH:mm' }}
             </span>
           </div>
         </div>
-
       </div>
 
       <div class="premium-description-card">
         <div class="description-header">
-
           <div class="description-icon">
             <i class="bi bi-file-earmark-text"></i>
           </div>
 
           <div>
-            <span class="description-title">Description</span>
+            <span class="description-title">Description client</span>
             <p class="description-subtitle">
-              Détail complet de la réclamation
+              Détail du problème déclaré
             </p>
           </div>
         </div>
@@ -358,25 +465,69 @@
           {{ selectedMissionDetails.description || 'Aucune description disponible.' }}
         </div>
       </div>
+
+      <div class="solution-card" *ngIf="isAgent">
+        <div class="description-header">
+          <div class="description-icon solution">
+            <i class="bi bi-pencil-square"></i>
+          </div>
+
+          <div>
+            <span class="description-title">Compte rendu de l’agent</span>
+            <p class="description-subtitle">
+              Indiquer la cause du problème, l’action effectuée ou la solution proposée.
+            </p>
+          </div>
+        </div>
+
+        <textarea
+          class="solution-textarea"
+          rows="5"
+          [(ngModel)]="agentSolutionText"
+          placeholder="Exemple : Cause identifiée, action réalisée, solution proposée...">
+        </textarea>
+
+        <button
+          class="btn-save-solution"
+          [disabled]="!agentSolutionText || agentSolutionText.trim() === ''"
+          (click)="saveAgentSolution()">
+          <i class="bi bi-send me-1"></i>
+          Enregistrer le compte rendu
+        </button>
+      </div>
     </div>
+    <div class="solution-file-upload">
+  <label class="modal-label">
+    {{ 'agent_missions.details_modal.report_attachment' | translate }}
+  </label>
+
+  <div class="file-upload-box">
+    <label class="file-btn">
+      {{ 'agent_missions.details_modal.choose_file' | translate }}
+
+      <input
+        type="file"
+        (change)="onAgentReportFileSelected($event)">
+    </label>
+
+    <span class="file-name">
+      {{ agentReportFile?.name || ('agent_missions.details_modal.no_file' | translate) }}
+    </span>
+  </div>
+</div>
 
     <div class="premium-modal-footer">
       <button
         class="btn-modal-cancel premium-cancel"
         (click)="closeDetailsModal()">
-
         <i class="bi bi-x-circle me-1"></i>
         Fermer
       </button>
     </div>
-
   </div>
 </div>
 
-<!-- ================================================= -->
 <!-- MODAL REJECT -->
-<!-- ================================================= -->
-
 <div class="modal-backdrop" *ngIf="showRejectModal">
   <div class="modal-card modal-large reject-modal">
 
@@ -392,10 +543,9 @@
     </div>
 
     <div class="modal-body">
-
       <div class="reject-info" *ngIf="selectedMissionToReject">
         <p>
-          <strong>Réclamation :</strong>
+          <strong>Référence :</strong>
           #{{ selectedMissionToReject.numeroReclamation }}
         </p>
 
@@ -421,7 +571,6 @@
           {{ rejectError }}
         </div>
       </div>
-
     </div>
 
     <div class="modal-footer">
@@ -436,7 +585,6 @@
         class="btn-modal-danger"
         (click)="confirmReject()"
         [disabled]="isRejecting">
-
         <span *ngIf="!isRejecting">
           Confirmer le rejet
         </span>
@@ -447,14 +595,10 @@
         </span>
       </button>
     </div>
-
   </div>
 </div>
 
-<!-- ================================================= -->
 <!-- MODAL NOTES -->
-<!-- ================================================= -->
-
 <div class="modal-backdrop" *ngIf="showNoteModal">
   <div class="modal-card modal-large notes-modal">
 
@@ -471,9 +615,7 @@
     </div>
 
     <div class="modal-body notes-container">
-
       <div class="notes-timeline">
-
         <div *ngIf="isLoadingNotes" class="text-center py-4">
           <div class="spinner-border text-primary"></div>
         </div>
@@ -481,23 +623,16 @@
         <div
           *ngIf="!isLoadingNotes && currentMissionNotes.length === 0"
           class="empty-notes">
-
           <i class="bi bi-chat-square-dots"></i>
-
-          <p>
-            {{ 'agent_missions.notes_modal.no_notes' | translate }}
-          </p>
+          <p>{{ 'agent_missions.notes_modal.no_notes' | translate }}</p>
         </div>
 
         <div *ngFor="let note of currentMissionNotes" class="timeline-item">
-
           <div class="timeline-marker"></div>
 
           <div class="timeline-content">
-
             <div class="note-meta">
               <span class="note-author">{{ note.auteurNom }}</span>
-
               <span class="note-date">
                 {{ note.dateEnvoi | date:'dd/MM/yyyy HH:mm' }}
               </span>
@@ -506,10 +641,8 @@
             <div class="note-text">
               {{ note.contenu }}
             </div>
-
           </div>
         </div>
-
       </div>
 
       <div class="note-input-section">
@@ -524,15 +657,12 @@
           [placeholder]="'agent_missions.notes_modal.placeholder' | translate">
         </textarea>
       </div>
-
     </div>
 
     <div class="modal-footer">
-
       <button
         class="btn-modal-cancel"
         (click)="closeNoteModal()">
-
         {{ 'common.close' | translate }}
       </button>
 
@@ -540,7 +670,6 @@
         class="btn-modal-confirm"
         [disabled]="!newNoteText || newNoteText.trim() === '' || isSendingNote"
         (click)="ajouterNote()">
-
         <span *ngIf="!isSendingNote">
           {{ 'agent_missions.notes_modal.add_btn' | translate }}
         </span>
@@ -549,10 +678,7 @@
           *ngIf="isSendingNote"
           class="spinner-border spinner-border-sm">
         </span>
-
       </button>
-
     </div>
-
   </div>
 </div>
