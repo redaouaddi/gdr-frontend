@@ -10,8 +10,9 @@ export interface AgentResponse {
 export interface Equipe {
   id?: number;
   nom: string;
-  chefEmail: string;
+  chefEmail?: string;
   chefEquipeNom: string;
+  chefEquipeEmail?: string;
   chefEquipeId?: number;
   agents: AgentResponse[];
 }

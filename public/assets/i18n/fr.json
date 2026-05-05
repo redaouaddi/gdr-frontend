@@ -62,7 +62,11 @@
     "ticket_info": "Informations Ticket",
     "priority": "Priorité",
     "current_status": "Statut Actuel",
+    "sla_status": "Statut SLA",
+    "sla_deadline": "Échéance SLA",
+    "remaining_time": "Temps Restant",
     "assigned_team": "Équipe Assignée",
+    "resolved_at": "Date de résolution",
     "empty": "Aucune réclamation trouvée dans le système.",
     "unassigned": "Non assignée",
     "server_error": "Le serveur met trop de temps à répondre ou est inaccessible."
@@ -311,7 +315,8 @@
     "errors": {
       "server_details": "Erreur du serveur (Détails)",
       "unknown": "Erreur inconnue lors de la création."
-    },
+    }
+  },
   "team_edit": {
     "title": "Modifier l'Équipe",
     "subtitle": "Mettez à jour le nom du service ou affectez un nouveau chef d'équipe (Service Manager).",
@@ -333,8 +338,7 @@
       "server": "Erreur du serveur",
       "unknown": "Erreur inconnue lors de la modification. (Délai dépassé ou serveur injoignable)"
     }
-  }
-},
+  },
   "team_list": {
     "title": "Liste des Équipes",
     "subtitle": "Gestion et visualisation de toutes les équipes (services).",

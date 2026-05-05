@@ -10,7 +10,7 @@ import { UserResponse } from './user.service';
 export class EquipeService {
   private apiUrl = 'http://localhost:8080/api/equipes';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllTeams(): Observable<Equipe[]> {
     return this.http.get<Equipe[]>(this.apiUrl);
@@ -36,11 +36,13 @@ export class EquipeService {
     return this.http.get<UserResponse[]>(`${this.apiUrl}/agents-libres`);
   }
 
-  recruterAgent(agentId: number): Observable<Equipe> {
-    return this.http.post<Equipe>(`${this.apiUrl}/ma-gestion/agents/${agentId}`, {});
+  // ADMIN seulement
+  recruterAgent(equipeId: number, agentId: number): Observable<Equipe> {
+    return this.http.post<Equipe>(`${this.apiUrl}/${equipeId}/agents/${agentId}`, {});
   }
 
-  retirerAgent(agentId: number): Observable<Equipe> {
-    return this.http.delete<Equipe>(`${this.apiUrl}/ma-gestion/agents/${agentId}`);
+  // ADMIN seulement
+  retirerAgent(equipeId: number, agentId: number): Observable<Equipe> {
+    return this.http.delete<Equipe>(`${this.apiUrl}/${equipeId}/agents/${agentId}`);
   }
 }
