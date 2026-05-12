@@ -616,22 +616,47 @@
     "low": "Faible"
   }
 },
+  
   "client_dashboard": {
-    "title": "Tableau de Bord",
-    "create_claim": "Créer une Réclamation",
+    "title": "Mes Réclamations",
+    "create_claim": "Créer une réclamation",
+
     "table": {
       "id": "ID",
       "subject": "Objet",
-      "type": "Type",
-      "status": "État"
+      "type": "Catégorie",
+      "status": "Statut"
     },
+
     "chat": {
-      "title": "Chatbot Support",
-      "placeholder": "Écrivez votre message...",
-      "welcome": "Bonjour !\nComment puis-je vous aider ?",
-      "auto_reply": "Merci pour votre message. Un agent vous répondra bientôt."
+      "title": "Assistant GDR",
+      "placeholder": "Posez votre question...",
+      "welcome": "Bonjour 👋 Je suis votre assistant GDR. Je peux vous aider à suivre vos réclamations.",
+      "loading": "L’assistant réfléchit...",
+      "error": "Le chatbot est momentanément indisponible."
     }
   },
+
+  "chatbot": {
+    "actions": {
+  "view_details": "Voir détails",
+  "modify_claim": "Modifier",
+  "contact_agent": "Parler à l’agent"
+},
+    "welcome": "Bonjour 👋 Je suis votre assistant GDR.",
+    "greeting": "Bonjour 👋 Comment puis-je vous aider ?",
+    "thanks": "Avec plaisir 😊",
+    "loading": "L’assistant réfléchit...",
+    "error": "Le chatbot est indisponible pour le moment.",
+
+    "no_claims": "Vous n’avez aucune réclamation.",
+    "status_answer": "Votre réclamation {{numero}} est actuellement : {{statut}}.",
+    "modify_blocked": "La réclamation {{numero}} est en cours de traitement et ne peut pas être modifiée.",
+    "modify_possible": "Vous pouvez modifier la réclamation {{numero}}.",
+    "agent_info": "Votre réclamation {{numero}} est traitée par l’équipe {{equipe}}."
+  },
+
+
    "navbar": {
     "notifications": "Notifications",
     "hello": "Bonjour",

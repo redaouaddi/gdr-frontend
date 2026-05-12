@@ -252,6 +252,7 @@ export class AgentMissionsComponent implements OnInit, OnDestroy {
   }
 
   saveAgentSolution(): void {
+
   if (
     !this.selectedMissionDetails?.id ||
     !this.selectedMissionDetails?.numeroReclamation ||
@@ -262,42 +263,65 @@ export class AgentMissionsComponent implements OnInit, OnDestroy {
 
   this.clearMessages();
 
-  this.messageInterneService
-    .envoyerMessageAvecFichier(
-      this.selectedMissionDetails.id,
-      this.agentSolutionText.trim(),
-      this.agentReportFile
-    )
+  // ✅ CAS 1 : AVEC FICHIER
+  if (this.agentReportFile) {
+
+    this.messageInterneService
+      .envoyerMessageAvecFichier(
+        this.selectedMissionDetails.id,
+        this.agentSolutionText.trim(),
+        this.agentReportFile
+      )
+      .subscribe({
+        next: () => this.finaliserResolution(),
+        error: (err) => {
+          console.error('Erreur avec fichier:', err);
+          this.errorMessage = this.translate.instant(
+            'agent_missions.messages.report_save_error'
+          );
+        }
+      });
+
+  } else {
+
+    // ✅ CAS 2 : SANS FICHIER (IMPORTANT)
+    this.messageInterneService
+      .envoyerMessage(
+        this.selectedMissionDetails.id,
+        this.agentSolutionText.trim()
+      )
+      .subscribe({
+        next: () => this.finaliserResolution(),
+        error: (err) => {
+          console.error('Erreur sans fichier:', err);
+          this.errorMessage = this.translate.instant(
+            'agent_missions.messages.report_save_error'
+          );
+        }
+      });
+  }
+}
+finaliserResolution(): void {
+  this.reclamationService
+    .marquerResolue(this.selectedMissionDetails!.numeroReclamation)
     .subscribe({
       next: () => {
-        this.reclamationService
-          .marquerResolue(this.selectedMissionDetails!.numeroReclamation)
-          .subscribe({
-            next: () => {
-              this.successMessage = this.translate.instant(
-                'agent_missions.messages.resolved',
-                {
-                  numero: this.selectedMissionDetails?.numeroReclamation
-                }
-              );
+        this.successMessage = this.translate.instant(
+          'agent_missions.messages.resolved',
+          {
+            numero: this.selectedMissionDetails?.numeroReclamation
+          }
+        );
 
-              this.agentSolutionText = '';
-              this.agentReportFile = null;
-              this.closeDetailsModal();
-              this.loadMissions();
-            },
-            error: (err) => {
-              console.error('Erreur changement statut après compte rendu:', err);
-              this.errorMessage = this.translate.instant(
-                'agent_missions.messages.report_saved_status_error'
-              );
-            }
-          });
+        this.agentSolutionText = '';
+        this.agentReportFile = null;
+        this.closeDetailsModal();
+        this.loadMissions();
       },
       error: (err) => {
-        console.error('Erreur enregistrement compte rendu agent:', err);
+        console.error('Erreur statut:', err);
         this.errorMessage = this.translate.instant(
-          'agent_missions.messages.report_save_error'
+          'agent_missions.messages.report_saved_status_error'
         );
       }
     });

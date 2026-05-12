@@ -623,21 +623,44 @@
     "low": "Low"
   }
 },
+ 
   "client_dashboard": {
-    "title": "Dashboard",
-    "create_claim": "Create a Claim",
+    "title": "My Claims",
+    "create_claim": "Create a claim",
+
     "table": {
       "id": "ID",
       "subject": "Subject",
-      "type": "Type",
+      "type": "Category",
       "status": "Status"
     },
+
     "chat": {
-      "title": "Support Chatbot",
-      "placeholder": "Write your message...",
-      "welcome": "Hello!\nHow can I help you?",
-      "auto_reply": "Thank you for your message. An agent will reply to you soon."
+      "title": "GDR Assistant",
+      "placeholder": "Ask your question...",
+      "welcome": "Hello 👋 I am your GDR assistant. I can help you track your claims.",
+      "loading": "The assistant is thinking...",
+      "error": "The chatbot is temporarily unavailable."
     }
+  },
+
+  "chatbot": {
+    "actions": {
+  "view_details": "View details",
+  "modify_claim": "Modify",
+  "contact_agent": "Talk to agent"
+},
+    "welcome": "Hello 👋 I am your GDR assistant.",
+    "greeting": "Hello 👋 How can I help you?",
+    "thanks": "You're welcome 😊",
+    "loading": "The assistant is thinking...",
+    "error": "Chatbot is currently unavailable.",
+
+    "no_claims": "You have no claims.",
+    "status_answer": "Your claim {{numero}} is currently: {{statut}}.",
+    "modify_blocked": "The claim {{numero}} is already in progress and cannot be modified.",
+    "modify_possible": "You can modify the claim {{numero}}.",
+    "agent_info": "Your claim {{numero}} is handled by team {{equipe}}."
   },
   "navbar": {
     "notifications": "Notifications",
