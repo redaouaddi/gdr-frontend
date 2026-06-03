@@ -11,6 +11,27 @@
           <h2 class="fw-bold mb-1" style="color: #4a2769;">{{ 'service_manager.title' | translate }}</h2>
           <p class="text-muted mb-0">{{ 'service_manager.subtitle' | translate }}</p>
         </div>
+
+        <div class="btn-group bg-white shadow-sm p-1" style="border-radius: 12px;">
+          <button class="btn btn-sm px-4 py-2 fw-bold" 
+                  [ngClass]="activeView === 'stats' ? 'btn-primary shadow-sm' : 'btn-light border-0 text-muted'"
+                  style="border-radius: 10px; transition: all 0.3s ease;"
+                  (click)="activeView = 'stats'">
+            <i class="bi bi-grid-fill me-2"></i>Vue d'ensemble
+          </button>
+          <button class="btn btn-sm px-4 py-2 fw-bold" 
+                  [ngClass]="activeView === 'list' ? 'btn-primary shadow-sm' : 'btn-light border-0 text-muted'"
+                  style="border-radius: 10px; transition: all 0.3s ease;"
+                  (click)="activeView = 'list'">
+            <i class="bi bi-list-task me-2"></i>Liste détaillée
+          </button>
+        </div>
+
+        <button class="btn btn-outline-primary shadow-sm px-4 py-2 fw-bold d-flex align-items-center" 
+                style="border-radius: 12px;"
+                (click)="exportReport()">
+          <i class="bi bi-file-earmark-pdf-fill me-2"></i>{{ 'service_manager.download_report' | translate }}
+        </button>
       </div>
 
       <div *ngIf="isLoading" class="text-center py-5">
@@ -25,8 +46,23 @@
 
       <div *ngIf="!isLoading && !errorMessage">
         
-        <div *ngIf="activeView === 'stats'" class="row g-4 mb-4">
-          <div class="col-12 col-md-6 col-xl-3">
+        <div *ngIf="activeView === 'stats'" class="row row-cols-1 row-cols-md-2 row-cols-xl-5 g-4 mb-4">
+          <!-- Total Volume Card -->
+          <div class="col">
+            <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 5px solid #6f42c1 !important;">
+              <div class="card-body p-4 d-flex align-items-center">
+                <div class="rounded-circle bg-purple bg-opacity-10 text-purple d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; font-size: 1.5rem; color: #6f42c1; background-color: rgba(111, 66, 193, 0.1);">
+                  <i class="bi bi-bar-chart-fill"></i>
+                </div>
+                <div>
+                  <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">Volume Total</h6>
+                  <h3 class="mb-0 fw-bold">{{ stats.total }}</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
             <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 5px solid #ffc107 !important;">
               <div class="card-body p-4 d-flex align-items-center">
                 <div class="rounded-circle bg-warning bg-opacity-10 text-warning d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
@@ -40,7 +76,7 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-6 col-xl-3">
+          <div class="col">
             <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 5px solid #0d6efd !important;">
               <div class="card-body p-4 d-flex align-items-center">
                 <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
@@ -54,7 +90,7 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-6 col-xl-3">
+          <div class="col">
             <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 5px solid #198754 !important;">
               <div class="card-body p-4 d-flex align-items-center">
                 <div class="rounded-circle bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
@@ -68,7 +104,7 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-6 col-xl-3">
+          <div class="col">
             <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 5px solid #dc3545 !important;">
               <div class="card-body p-4 d-flex align-items-center">
                 <div class="rounded-circle bg-danger bg-opacity-10 text-danger d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
@@ -83,9 +119,126 @@
           </div>
         </div>
 
+        <!-- Section Graphiques -->
+        <div *ngIf="activeView === 'stats'">
+          <!-- Ligne 1 : Statuts et SLA -->
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-xl-6">
+              <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                  <h5 class="fw-bold mb-4" style="color: #4a2769;">
+                    <i class="bi bi-pie-chart-fill me-2"></i>Répartition des Statuts
+                  </h5>
+                  <div style="height: 300px;">
+                    <canvas baseChart
+                      [data]="statusChartData"
+                      [options]="statusChartOptions"
+                      [type]="statusChartType">
+                    </canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-12 col-xl-6">
+              <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                  <h5 class="fw-bold mb-4" style="color: #4a2769;">
+                    <i class="bi bi-shield-check me-2"></i>Performance SLA
+                  </h5>
+                  <div style="height: 300px;">
+                    <canvas baseChart
+                      [data]="slaChartData"
+                      [options]="slaChartOptions"
+                      [type]="slaChartType">
+                    </canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ligne 2 : Équipes et Priorités -->
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-xl-7">
+              <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                  <h5 class="fw-bold mb-4" style="color: #4a2769;">
+                    <i class="bi bi-people-fill me-2"></i>Charge de travail par Équipe
+                  </h5>
+                  <div style="height: 300px;">
+                    <canvas baseChart
+                      [data]="teamChartData"
+                      [options]="teamChartOptions"
+                      [type]="teamChartType">
+                    </canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-xl-5">
+              <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                  <h5 class="fw-bold mb-4" style="color: #4a2769;">
+                    <i class="bi bi-exclamation-octagon-fill me-2"></i>Volume par Priorité
+                  </h5>
+                  <div style="height: 300px;">
+                    <canvas baseChart
+                      [data]="priorityChartData"
+                      [options]="priorityChartOptions"
+                      [type]="priorityChartType">
+                    </canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div *ngIf="activeView === 'list'" class="card border-0 shadow-sm rounded-4">
           <div class="card-body p-0">
             
+            <!-- Barre de Filtres Statut -->
+            <div class="p-3 border-bottom bg-white d-flex align-items-center justify-content-between flex-wrap gap-3" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+              <div class="d-flex align-items-center gap-2 overflow-auto pb-1" style="max-width: 100%;">
+                <button class="btn btn-sm rounded-pill px-3 py-2 fw-bold text-nowrap transition-all"
+                        [ngClass]="selectedStatusFilter === '' ? 'btn-primary shadow-sm' : 'btn-light text-muted'"
+                        (click)="setStatusFilter('')">
+                  {{ 'common.all' | translate }}
+                </button>
+                <button class="btn btn-sm rounded-pill px-3 py-2 fw-bold text-nowrap transition-all"
+                        [ngClass]="selectedStatusFilter === 'EN_ATTENTE' ? 'btn-warning shadow-sm' : 'btn-light text-muted'"
+                        (click)="setStatusFilter('EN_ATTENTE')">
+                  <i class="bi bi-hourglass-split me-1"></i>{{ 'status.EN_ATTENTE' | translate }}
+                </button>
+                <button class="btn btn-sm rounded-pill px-3 py-2 fw-bold text-nowrap transition-all"
+                        [ngClass]="selectedStatusFilter === 'EN_COURS' ? 'btn-primary shadow-sm' : 'btn-light text-muted'"
+                        (click)="setStatusFilter('EN_COURS')">
+                  <i class="bi bi-play-circle me-1"></i>{{ 'status.EN_COURS' | translate }}
+                </button>
+                <button class="btn btn-sm rounded-pill px-3 py-2 fw-bold text-nowrap transition-all"
+                        [ngClass]="selectedStatusFilter === 'TRAITEE' ? 'btn-success shadow-sm' : 'btn-light text-muted'"
+                        (click)="setStatusFilter('TRAITEE')">
+                  <i class="bi bi-check-circle me-1"></i>{{ 'status.TRAITEE' | translate }}
+                </button>
+                <button class="btn btn-sm rounded-pill px-3 py-2 fw-bold text-nowrap transition-all"
+                        [ngClass]="selectedStatusFilter === 'REJETEE' ? 'btn-danger shadow-sm' : 'btn-light text-muted'"
+                        (click)="setStatusFilter('REJETEE')">
+                  <i class="bi bi-x-circle me-1"></i>{{ 'status.REJETEE' | translate }}
+                </button>
+                <button class="btn btn-sm rounded-pill px-3 py-2 fw-bold text-nowrap transition-all"
+                        [ngClass]="selectedStatusFilter === 'REOUVERTE' ? 'btn-info shadow-sm' : 'btn-light text-muted'"
+                        (click)="setStatusFilter('REOUVERTE')">
+                  <i class="bi bi-arrow-counterclockwise me-1"></i>{{ 'status.REOUVERTE' | translate }}
+                </button>
+              </div>
+
+              <div class="small text-muted">
+                {{ totalElements }} réclamation(s) trouvée(s)
+              </div>
+            </div>
+
             <div class="table-responsive">
               <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
@@ -120,7 +273,8 @@
                           'bg-warning': rec.statut === 'EN_ATTENTE',
                           'bg-primary': rec.statut === 'EN_COURS',
                           'bg-success': rec.statut === 'TRAITEE',
-                          'bg-danger': rec.statut === 'REJETEE'
+                          'bg-danger': rec.statut === 'REJETEE',
+                          'bg-info': rec.statut === 'REOUVERTE'
                         }">{{ translateStatus(rec.statut) }}</span>
                       </td>
                       <td>
@@ -145,14 +299,21 @@
                       </td>
                       <td class="pe-4">
                         <div class="d-flex gap-2">
-                          <button *ngIf="rec.statut !== 'TRAITEE'"
+                          <button *ngIf="(rec.statut === 'EN_ATTENTE' && !rec.equipeAssignee) || rec.statut === 'REJETEE' || rec.statut === 'REOUVERTE'"
                                   class="btn btn-sm rounded-pill px-3 shadow-sm d-inline-flex align-items-center"
-                                  [ngClass]="{'btn-primary': rec.statut === 'EN_ATTENTE', 'btn-outline-primary': rec.statut !== 'EN_ATTENTE'}"
+                                  [ngClass]="{'btn-primary': rec.statut === 'EN_ATTENTE', 'btn-outline-primary': rec.statut === 'REJETEE' || rec.statut === 'REOUVERTE'}"
                                   (click)="openAssignModal(rec)">
                             <i class="bi bi-box-arrow-in-right me-2"></i>
                             {{ rec.statut === 'EN_ATTENTE' ? ('service_manager.assign' | translate) : ('service_manager.reassign' | translate) }}
                           </button>
                           
+                          <!-- Bouton Voir Détails -->
+                          <button class="btn btn-sm btn-outline-primary rounded-pill px-3 d-inline-flex align-items-center"
+                                  title="Détails"
+                                  (click)="openDetailsModal(rec)">
+                            <i class="bi bi-eye-fill"></i>
+                          </button>
+
                           <!-- Bouton Remarques Internes -->
                           <button class="btn btn-sm btn-outline-info rounded-pill px-3 d-inline-flex align-items-center"
                                   [title]="'agent_missions.actions.notes' | translate"
@@ -165,6 +326,32 @@
                   </ng-container>
                 </tbody>
               </table>
+            </div>
+
+            <!-- PAGINATION RECLAMATIONS -->
+            <div class="d-flex justify-content-between align-items-center p-3 border-top text-muted" *ngIf="totalElements > 0">
+              <div class="d-flex align-items-center gap-2">
+                <span class="small">{{ 'common.show' | translate }}</span>
+                <select class="form-select form-select-sm" style="width: auto;" [(ngModel)]="pageSize" (change)="currentPage = 0; loadData()">
+                  <option [value]="10">10</option>
+                  <option [value]="20">20</option>
+                  <option [value]="50">50</option>
+                </select>
+              </div>
+
+              <div class="d-flex align-items-center gap-3">
+                <span class="small">
+                  {{ (currentPage * pageSize) + 1 }} - {{ (currentPage * pageSize) + reclamations.length }} sur {{ totalElements }}
+                </span>
+                <div class="pagination-buttons d-flex gap-1">
+                  <button class="btn btn-sm btn-outline-secondary" [disabled]="currentPage === 0" (click)="previousPage()">
+                    <i class="bi bi-chevron-left"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-secondary" [disabled]="currentPage >= totalPages - 1" (click)="nextPage()">
+                    <i class="bi bi-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
             </div>
 
           </div>
@@ -207,6 +394,17 @@
             <div class="note-text">{{ note.contenu }}</div>
           </div>
         </div>
+      </div>
+
+      <!-- PAGINATION NOTES -->
+      <div class="d-flex justify-content-center mt-3 gap-2" *ngIf="notesTotalPages > 1">
+        <button class="btn btn-sm btn-link" [disabled]="notesCurrentPage === 0" (click)="onNotesPageChange(notesCurrentPage - 1)">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <span class="align-self-center small">{{ notesCurrentPage + 1 }} / {{ notesTotalPages }}</span>
+        <button class="btn btn-sm btn-link" [disabled]="notesCurrentPage >= notesTotalPages - 1" (click)="onNotesPageChange(notesCurrentPage + 1)">
+          <i class="bi bi-chevron-right"></i>
+        </button>
       </div>
 
       <!-- Formulaire pour ajouter une note -->
@@ -316,6 +514,151 @@
           <span *ngIf="isAssigning" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         </button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Détails -->
+<div class="modal-backdrop premium-backdrop" *ngIf="showDetailsModal" (click)="closeDetailsModal()">
+  <div class="modal-card modal-xl premium-details-modal" (click)="$event.stopPropagation()">
+    <div class="premium-modal-header">
+      <div class="premium-header-left">
+        <div class="premium-icon-box">
+          <i class="bi bi-file-earmark-text"></i>
+        </div>
+        <div>
+          <h4>Détails de la réclamation</h4>
+          <p *ngIf="selectedDetails">Référence #{{ selectedDetails.numeroReclamation }}</p>
+        </div>
+      </div>
+      <button class="premium-close-btn" (click)="closeDetailsModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="premium-modal-body" *ngIf="selectedDetails">
+      <div class="premium-top-banner">
+        <div class="banner-left">
+          <h2 class="banner-title">{{ selectedDetails.titre }}</h2>
+          <div class="banner-subtitle">
+            <i class="bi bi-calendar3 me-2"></i>Créée le {{ selectedDetails.dateCreation | date:'dd/MM/yyyy à HH:mm' }}
+          </div>
+        </div>
+        <div class="banner-right">
+          <span class="status-badge-premium" [ngClass]="{
+            'status-attente': selectedDetails.statut === 'EN_ATTENTE',
+            'status-encours': selectedDetails.statut === 'EN_COURS',
+            'status-traitee': selectedDetails.statut === 'TRAITEE',
+            'status-rejetee': selectedDetails.statut === 'REJETEE',
+            'status-reouverte': selectedDetails.statut === 'REOUVERTE'
+          }">
+            <i class="bi bi-circle-fill me-2 small"></i>
+            {{ translateStatus(selectedDetails.statut) }}
+          </span>
+        </div>
+      </div>
+
+      <div class="row g-4 mt-2">
+        <div class="col-md-8">
+          <div class="card border-0 bg-light rounded-4 p-4 mb-4">
+            <h6 class="fw-bold text-primary mb-3"><i class="bi bi-card-text me-2"></i>Description Client</h6>
+            <div class="description-content p-3 bg-white rounded-3 border">
+              {{ selectedDetails.description || 'Aucune description disponible.' }}
+            </div>
+          </div>
+
+          <!-- Rapport Agent (si disponible) -->
+          <div class="card border-0 shadow-sm rounded-4 p-4" *ngIf="selectedDetails.statut === 'TRAITEE'">
+            <h6 class="fw-bold text-success mb-3"><i class="bi bi-check-circle-fill me-2"></i>Compte rendu de résolution</h6>
+            
+            <div class="report-section mb-3">
+              <label class="small fw-bold text-muted text-uppercase mb-1">Cause Identifiée</label>
+              <div class="p-3 bg-light rounded-3 border-start border-success border-4">
+                {{ selectedDetails.causeIdentifiee || 'Non renseignée.' }}
+              </div>
+            </div>
+
+            <div class="report-section mb-3">
+              <label class="small fw-bold text-muted text-uppercase mb-1">Action Réalisée</label>
+              <div class="p-3 bg-light rounded-3 border-start border-success border-4">
+                {{ selectedDetails.actionRealisee || 'Non renseignée.' }}
+              </div>
+            </div>
+
+            <div class="report-section mb-0">
+              <label class="small fw-bold text-muted text-uppercase mb-1">Solution Proposée</label>
+              <div class="p-3 bg-light rounded-3 border-start border-success border-4">
+                {{ selectedDetails.solutionProposee || 'Non renseignée.' }}
+              </div>
+            </div>
+
+            <div class="mt-3 text-muted small" *ngIf="selectedDetails.dateResolution">
+              <i class="bi bi-clock-history me-1"></i> Résolue le {{ selectedDetails.dateResolution | date:'dd/MM/yyyy à HH:mm' }}
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm rounded-4 p-4" *ngIf="selectedDetails.statut === 'REJETEE'">
+            <h6 class="fw-bold text-danger mb-3"><i class="bi bi-x-octagon-fill me-2"></i>Motif du Rejet</h6>
+            <div class="p-3 bg-light rounded-3 border-start border-danger border-4">
+              {{ selectedDetails.motifRefus || 'Aucun motif renseigné.' }}
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm rounded-4 p-4 mt-4" *ngIf="selectedDetails.motifReouverture">
+            <h6 class="fw-bold text-info mb-3"><i class="bi bi-arrow-counterclockwise me-2"></i>Motif de réouverture (Client)</h6>
+            <div class="p-3 bg-light rounded-3 border-start border-info border-4 mb-3">
+              {{ selectedDetails.motifReouverture }}
+            </div>
+            <div class="p-3 bg-light rounded-3 border-start border-warning border-4 d-flex align-items-center justify-content-between" 
+                 *ngIf="selectedDetails.reouvertureAttachmentName"
+                 style="cursor: pointer; transition: all 0.2s;"
+                 (click)="downloadReouvertureFile(selectedDetails)"
+                 title="Cliquer pour télécharger la pièce jointe">
+              <div>
+                <i class="bi bi-file-earmark-arrow-down-fill text-warning me-2 fs-5"></i>
+                <span class="fw-semibold text-dark text-decoration-underline">{{ selectedDetails.reouvertureAttachmentName }}</span>
+              </div>
+              <span class="badge bg-warning text-dark px-3 py-2 rounded-pill small">
+                <i class="bi bi-download me-1"></i> Télécharger
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+            <h6 class="fw-bold mb-3">Informations Clés</h6>
+            <ul class="list-unstyled mb-0">
+              <li class="mb-3 d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Priorité</span>
+                <span class="badge" [ngClass]="{
+                  'bg-danger': selectedDetails.priorite === 'ELEVEE',
+                  'bg-warning text-dark': selectedDetails.priorite === 'MOYENNE',
+                  'bg-info text-dark': selectedDetails.priorite === 'FAIBLE'
+                }">{{ translatePriority(selectedDetails.priorite) }}</span>
+              </li>
+              <li class="mb-3 d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Catégorie</span>
+                <span class="fw-bold">{{ translateCategory(selectedDetails.categorie) }}</span>
+              </li>
+              <li class="mb-3 d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Équipe</span>
+                <span class="fw-bold text-primary">{{ selectedDetails.equipeAssignee || 'Non assignée' }}</span>
+              </li>
+              <li class="mb-0 d-flex justify-content-between align-items-center" *ngIf="selectedDetails.slaDeadline">
+                <span class="text-muted small">Échéance SLA</span>
+                <span class="fw-bold" [class.text-danger]="selectedDetails.slaStatus === 'DEPASSE'">
+                  {{ selectedDetails.slaDeadline | date:'dd/MM/yyyy HH:mm' }}
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="premium-modal-footer">
+      <button class="btn btn-secondary rounded-pill px-4" (click)="closeDetailsModal()">Fermer</button>
     </div>
   </div>
 </div>

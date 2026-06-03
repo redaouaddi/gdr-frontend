@@ -26,6 +26,12 @@ export class Roles implements OnInit {
     permissions: []
   };
 
+  // Pagination
+  currentPage = 0;
+  pageSize = 10;
+  totalElements = 0;
+  totalPages = 0;
+
   constructor(
     private accessService: AccessService,
     private cdr: ChangeDetectorRef,
@@ -37,15 +43,36 @@ export class Roles implements OnInit {
   }
 
   loadRoles(): void {
-    this.accessService.getAll().subscribe({
-      next: (data) => {
-        this.roles = data;
+    this.accessService.getAll(this.currentPage, this.pageSize).subscribe({
+      next: (response) => {
+        this.roles = response.content;
+        this.totalElements = response.totalElements;
+        this.totalPages = response.totalPages;
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('ERREUR API ROLES =', err);
       }
     });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadRoles();
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.loadRoles();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.loadRoles();
+    }
   }
 
   selectRole(role: Access): void {

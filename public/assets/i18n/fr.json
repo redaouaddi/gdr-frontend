@@ -51,7 +51,8 @@
     "loading": "Chargement...",
     "cancel": "Annuler",
     "select": "Sélectionner...",
-    "close": "Fermer"
+    "close": "Fermer",
+    "actions": "Actions"
   },
 
 
@@ -79,10 +80,9 @@
     "RESOLUE": "Résolue",
     "TRAITEE": "Traitée",
     "REJETEE": "Rejetée",
-  "EN_ATTENTE_CONFIRMATION": "En attente de confirmation",
-  "EN_COURS_TRAITEMENT": "En cours de traitement"
- 
-  
+    "REOUVERTE": "Réouverte",
+    "EN_ATTENTE_CONFIRMATION": "En attente de confirmation",
+    "EN_COURS_TRAITEMENT": "En cours de traitement"
 },
 
   "priority": {
@@ -193,6 +193,7 @@
     "undefined_priority": "NON DÉFINIE",
     "unassigned": "Non assigné",
     "rejected": "Rejeté",
+    "download_report": "Télécharger rapport",
     "assign": "Assigner",
     "reassign": "Ré-assigner",
     "stats": {
@@ -224,6 +225,30 @@
     "errors": {
       "server_error": "Le serveur met trop de temps à répondre ou est inaccessible.",
       "assign_failed": "Impossible d'assigner l'équipe. Veuillez réessayer."
+    },
+    "report": {
+      "title": "Rapport d'Activité - Gestion des Réclamations",
+      "generated_by": "Document généré par le Service Manager le {{date}}",
+      "summary_title": "1. Résumé des Indicateurs",
+      "indicator": "Indicateur",
+      "value": "Valeur",
+      "stats": {
+        "total": "Volume Total de tickets",
+        "pending": "En attente d'assignation",
+        "in_progress": "En cours de traitement",
+        "resolved": "Tickets résolus",
+        "rejected": "Tickets rejetés"
+      },
+      "details_title": "2. Liste détaillée des réclamations",
+      "table": {
+        "number": "N° Ticket",
+        "subject": "Objet",
+        "status": "Statut",
+        "priority": "Priorité",
+        "team": "Équipe",
+        "date": "Date Création"
+      },
+      "footer": "Page {{page}} sur {{total}} - GDR DXC Technology"
     }
   },
   
@@ -355,8 +380,11 @@
       "actions": "Actions"
     },
     "errors": {
-      "load_failed": "Impossible de charger la liste des équipes. Le serveur met trop de temps à répondre ou est inaccessible."
-    }
+      "load_failed": "Impossible de charger la liste des équipes. Le serveur met trop de temps à répondre ou est inaccessible.",
+      "delete_failed": "Erreur lors de la suppression de l'équipe. Vérifiez si elle est assignée à des réclamations actives."
+    },
+    "delete": "Supprimer",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette équipe ? Les agents seront déliés."
   },
   "user_create": {
     "title": "Ajouter un utilisateur",
@@ -466,6 +494,7 @@
   "title": "Centre de supervision administrateur",
   "subtitle": "Dashboard global orienté agent pour le pilotage de l’application",
   "multi_agent_active": "Système multi-agents actif",
+  "download_report": "Télécharger rapport",
 
   "cards": {
     "users": "Utilisateurs",
@@ -614,7 +643,37 @@
     "high": "Élevée",
     "medium": "Moyenne",
     "low": "Faible"
-  }
+    },
+    "report": {
+      "title": "Rapport de Supervision - Administrateur",
+      "subtitle": "Document de supervision globale généré le {{date}}",
+      "kpi_title": "1. Indicateurs Clés de Performance (KPI)",
+      "kpi_table": {
+        "label": "Indicateur",
+        "value": "Valeur Actuelle",
+        "users": "Utilisateurs enregistrés",
+        "claims": "Total des réclamations",
+        "in_progress": "Réclamations en cours",
+        "sla": "Taux de respect SLA"
+      },
+      "workload_title": "2. Charge de travail des Agents",
+      "workload_table": {
+        "agent": "Agent",
+        "tickets": "Tickets actifs",
+        "level": "Niveau de charge",
+        "recommendation": "Recommandation"
+      },
+      "sla_title": "3. Alertes et Dépassements SLA",
+      "sla_table": {
+        "number": "N° Ticket",
+        "priority": "Priorité",
+        "agent": "Agent",
+        "deadline": "Échéance",
+        "delay": "Retard",
+        "action": "Action requise"
+      },
+      "footer": "Page {{page}} sur {{total}} - Centre de Supervision GDR"
+    }
 },
   
   "client_dashboard": {

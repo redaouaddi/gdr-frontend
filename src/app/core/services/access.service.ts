@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Access } from '../models/access.model';
+import { Page } from '../models/pagination.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,8 @@ export class AccessService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Access[]> {
-    return this.http.get<Access[]>(this.apiUrl);
+  getAll(page: number = 0, size: number = 10): Observable<Page<Access>> {
+    return this.http.get<Page<Access>>(`${this.apiUrl}?page=${page}&size=${size}`);
   }
 
   create(access: Access): Observable<Access> {

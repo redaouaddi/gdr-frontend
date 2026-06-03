@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Page } from '../models/pagination.model';
 
 export interface UserResponse {
   id: number;
@@ -32,8 +33,8 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  getAllUsers(): Observable<UserResponse[]> {
-    return this.http.get<UserResponse[]>(this.apiUrl);
+  getAllUsers(page: number = 0, size: number = 10): Observable<Page<UserResponse>> {
+    return this.http.get<Page<UserResponse>>(`${this.apiUrl}?page=${page}&size=${size}`);
   }
   
 
@@ -42,13 +43,7 @@ export class UserService {
   }
 
   getUserById(id: number): Observable<UserResponse> {
-    return this.getAllUsers().pipe(
-      map(users => {
-        const user = users.find(u => u.id == id);
-        if (!user) throw new Error('Utilisateur non trouvé');
-        return user;
-      })
-    );
+    return this.http.get<UserResponse>(`${this.apiUrl}/${id}`);
   }
 
   updateUser(id: number, data: any): Observable<UserResponse> {

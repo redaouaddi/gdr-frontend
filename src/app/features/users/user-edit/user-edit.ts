@@ -51,9 +51,10 @@ export class UserEdit implements OnInit {
   }
 
   loadRoles(): void {
-    this.accessService.getAll().subscribe({
-      next: (data) => {
-        this.roles = data.filter(r => !r.deleted);
+    // Fetch with large size for selection
+    this.accessService.getAll(0, 1000).subscribe({
+      next: (response) => {
+        this.roles = (response.content || []).filter((r: Access) => !r.deleted);
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Error loading roles', err)

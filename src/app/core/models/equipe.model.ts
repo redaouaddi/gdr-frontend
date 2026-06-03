@@ -14,5 +14,7 @@ export interface Equipe {
   chefEquipeNom: string;
   chefEquipeEmail?: string;
   chefEquipeId?: number;
+  nombreAgents?: number;
+  nombreReclamations?: number;
   agents: AgentResponse[];
 }

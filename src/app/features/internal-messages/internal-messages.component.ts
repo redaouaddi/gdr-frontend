@@ -21,9 +21,15 @@ export class InternalMessagesComponent implements OnInit {
   selectedReclamationId?: number;
   currentMessages: MessageInterne[] = [];
   newMessage = '';
+  sending = false;
   loadingReclamations = false;
   loadingMessages = false;
-  sending = false;
+
+  // Pagination for messages
+  currentPage = 0;
+  pageSize = 10;
+  totalMessages = 0;
+  totalMessagePages = 0;
 
   constructor(
     private authService: AuthService,
@@ -72,14 +78,15 @@ export class InternalMessagesComponent implements OnInit {
     this.loadingReclamations = true;
 
     const source$ = roles.includes('ADMIN') || roles.includes('SERVICE_MANAGER')
-      ? this.reclamationService.getAllReclamations()
+      ? this.reclamationService.getAllReclamations(0, 1000)
       : roles.includes('CHEF_EQUIPE') || roles.includes('AGENT')
-        ? this.reclamationService.getMesMissions()
-        : this.reclamationService.getMyReclamations();
+        ? this.reclamationService.getMesMissions(0, 1000)
+        : this.reclamationService.getMyReclamations(0, 1000);
 
     source$.subscribe({
-      next: (data) => {
-        this.reclamations = data || [];
+      next: (response: any) => {
+        // Handling both Page and array for safety, although service was updated to Page
+        this.reclamations = response.content || response || [];
         this.loadingReclamations = false;
         this.cdr.detectChanges();
       },
@@ -93,9 +100,11 @@ export class InternalMessagesComponent implements OnInit {
 
   private loadMessages(reclamationId: number): void {
     this.loadingMessages = true;
-    this.messageInterneService.getMessages(reclamationId).subscribe({
-      next: (data) => {
-        this.currentMessages = data || [];
+    this.messageInterneService.getMessages(reclamationId, this.currentPage, this.pageSize).subscribe({
+      next: (response) => {
+        this.currentMessages = response.content || [];
+        this.totalMessages = response.totalElements;
+        this.totalMessagePages = response.totalPages;
         this.loadingMessages = false;
         this.cdr.detectChanges();
       },
@@ -105,5 +114,26 @@ export class InternalMessagesComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    if (this.selectedReclamationId) {
+      this.loadMessages(this.selectedReclamationId);
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalMessagePages - 1) {
+      this.currentPage++;
+      if (this.selectedReclamationId) this.loadMessages(this.selectedReclamationId);
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      if (this.selectedReclamationId) this.loadMessages(this.selectedReclamationId);
+    }
   }
 }

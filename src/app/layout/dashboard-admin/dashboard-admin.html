@@ -14,6 +14,134 @@
           <p>{{ 'admin_dashboard.subtitle' | translate }}</p>
         </div>
 
+        <div class="header-actions">
+          <div class="report-dropdown-wrapper">
+            <button class="export-btn" (click)="toggleReportMenu()">
+              <i class="bi bi-download me-2"></i>Exporter un rapport
+              <i class="bi bi-chevron-down ms-2" [style.transform]="reportMenuOpen ? 'rotate(180deg)' : 'rotate(0)'" style="transition: transform 0.3s;"></i>
+            </button>
+
+            <div class="report-dropdown-menu" *ngIf="reportMenuOpen">
+              <div class="report-menu-header">
+                <i class="bi bi-bar-chart-fill"></i>
+                <span>Centre de Reporting</span>
+              </div>
+
+              <div class="report-menu-grid">
+                <div class="report-menu-item" (click)="selectReport('hors_sla')">
+                  <div class="report-menu-item-info">
+                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                    <span>Réclamations Hors SLA</span>
+                  </div>
+                  <div class="report-format-btns">
+                    <button class="fmt-btn pdf" (click)="exportSelectedReport('hors_sla', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
+                    <button class="fmt-btn excel" (click)="exportSelectedReport('hors_sla', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
+                    <button class="fmt-btn csv" (click)="exportSelectedReport('hors_sla', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
+                  </div>
+                </div>
+
+                <div class="report-menu-item" (click)="selectReport('par_projet')">
+                  <div class="report-menu-item-info">
+                    <i class="bi bi-folder-fill text-primary"></i>
+                    <span>Nombre réclamations par Projet</span>
+                  </div>
+                  <div class="report-format-btns">
+                    <button class="fmt-btn pdf" (click)="exportSelectedReport('par_projet', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
+                    <button class="fmt-btn excel" (click)="exportSelectedReport('par_projet', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
+                    <button class="fmt-btn csv" (click)="exportSelectedReport('par_projet', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
+                  </div>
+                </div>
+
+                <div class="report-menu-item" (click)="selectReport('maintenance')">
+                  <div class="report-menu-item-info">
+                    <i class="bi bi-wrench-adjustable-circle-fill text-warning"></i>
+                    <span>Réclamations projet Maintenance</span>
+                  </div>
+                  <div class="report-format-btns">
+                    <button class="fmt-btn pdf" (click)="exportSelectedReport('maintenance', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
+                    <button class="fmt-btn excel" (click)="exportSelectedReport('maintenance', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
+                    <button class="fmt-btn csv" (click)="exportSelectedReport('maintenance', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
+                  </div>
+                </div>
+
+                <div class="report-menu-item" (click)="selectReport('extraction')">
+                  <div class="report-menu-item-info">
+                    <i class="bi bi-database-fill-down text-info"></i>
+                    <span>Extraction des réclamations</span>
+                  </div>
+                  <div class="report-format-btns">
+                    <button class="fmt-btn pdf" (click)="exportSelectedReport('extraction', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
+                    <button class="fmt-btn excel" (click)="exportSelectedReport('extraction', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
+                    <button class="fmt-btn csv" (click)="exportSelectedReport('extraction', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
+                  </div>
+                </div>
+
+                <div class="report-menu-item" (click)="selectReport('par_statut')">
+                  <div class="report-menu-item-info">
+                    <i class="bi bi-pie-chart-fill text-success"></i>
+                    <span>Réclamations par Statut</span>
+                  </div>
+                  <div class="report-format-btns">
+                    <button class="fmt-btn pdf" (click)="exportSelectedReport('par_statut', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
+                    <button class="fmt-btn excel" (click)="exportSelectedReport('par_statut', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
+                    <button class="fmt-btn csv" (click)="exportSelectedReport('par_statut', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
+                  </div>
+                </div>
+
+                <div class="report-menu-item" (click)="selectReport('par_equipe')">
+                  <div class="report-menu-item-info">
+                    <i class="bi bi-people-fill text-purple"></i>
+                    <span>Réclamations par Équipe</span>
+                  </div>
+                  <div class="report-format-btns">
+                    <button class="fmt-btn pdf" (click)="exportSelectedReport('par_equipe', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
+                    <button class="fmt-btn excel" (click)="exportSelectedReport('par_equipe', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
+                    <button class="fmt-btn csv" (click)="exportSelectedReport('par_equipe', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
+                  </div>
+                </div>
+
+                <div class="report-menu-item" (click)="selectReport('reouvertes')">
+                  <div class="report-menu-item-info">
+                    <i class="bi bi-arrow-repeat text-orange"></i>
+                    <span>Réclamations Réouvertes</span>
+                  </div>
+                  <div class="report-format-btns">
+                    <button class="fmt-btn pdf" (click)="exportSelectedReport('reouvertes', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
+                    <button class="fmt-btn excel" (click)="exportSelectedReport('reouvertes', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
+                    <button class="fmt-btn csv" (click)="exportSelectedReport('reouvertes', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
+                  </div>
+                </div>
+
+                <div class="report-menu-item" (click)="selectReport('depassement_sla')">
+                  <div class="report-menu-item-info">
+                    <i class="bi bi-clock-history text-danger"></i>
+                    <span>Dépassement SLA</span>
+                  </div>
+                  <div class="report-format-btns">
+                    <button class="fmt-btn pdf" (click)="exportSelectedReport('depassement_sla', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
+                    <button class="fmt-btn excel" (click)="exportSelectedReport('depassement_sla', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
+                    <button class="fmt-btn csv" (click)="exportSelectedReport('depassement_sla', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="report-menu-divider"></div>
+
+              <div class="report-menu-item report-menu-item-full" (click)="exportFullReport('pdf')">
+                <div class="report-menu-item-info">
+                  <i class="bi bi-file-earmark-zip-fill text-primary"></i>
+                  <span><strong>Rapport complet (toutes sections)</strong></span>
+                </div>
+                <div class="report-format-btns">
+                  <button class="fmt-btn pdf" (click)="exportFullReport('pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
+                  <button class="fmt-btn excel" (click)="exportFullReport('excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
+                  <button class="fmt-btn csv" (click)="exportFullReport('csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="agent-badge">
           {{ 'admin_dashboard.multi_agent_active' | translate }}
         </div>
@@ -111,7 +239,7 @@
             <p>{{ 'admin_dashboard.agents.workflow.description' | translate }}</p>
 
             <div class="agent-result">
-              {{ workflowStatus }}
+              {{ workflowStatus | translate }}
             </div>
           </div>
         </div>
@@ -141,7 +269,7 @@
 
               <td>
                 <span class="tag" [ngClass]="item.priorityClass">
-                  {{ item.priorite }}
+                  {{ item.priorite | translate }}
                 </span>
               </td>
 
@@ -154,7 +282,7 @@
                 </span>
               </td>
 
-              <td>{{ item.action }}</td>
+              <td>{{ item.action | translate }}</td>
             </tr>
           </tbody>
         </table>
@@ -183,11 +311,11 @@
 
               <td>
                 <span class="tag" [ngClass]="agent.levelClass">
-                  {{ agent.level }}
+                  {{ agent.level | translate }}
                 </span>
               </td>
 
-              <td>{{ agent.recommendation }}</td>
+              <td>{{ agent.recommendation | translate }}</td>
             </tr>
           </tbody>
         </table>

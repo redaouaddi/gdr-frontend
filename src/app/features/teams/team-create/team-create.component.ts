@@ -57,10 +57,13 @@ export class TeamCreateComponent implements OnInit {
 
   loadChefsEquipe(): void {
     forkJoin({
-      users: this.userService.getAllUsers(),
-      equipes: this.equipeService.getAllTeams()
+      usersPage: this.userService.getAllUsers(0, 1000),
+      equipesPage: this.equipeService.getAllTeams(0, 1000)
     }).subscribe({
-      next: ({ users, equipes }) => {
+      next: ({ usersPage, equipesPage }) => {
+        const users = usersPage.content || [];
+        const equipes = equipesPage.content || [];
+
         // Emails des chefs déjà assignés à une équipe
         const chefsDejaAssignes = new Set(
           equipes
@@ -68,7 +71,15 @@ export class TeamCreateComponent implements OnInit {
             .map(e => e.chefEquipeEmail!)
         );
 
-        // Garder uniquement les chefs/managers sans équipe
+        // Emails des agents déjà assignés à une équipe
+        const agentsAssignes = new Set<string>();
+        equipes.forEach(e => {
+          if (e.agents) {
+            e.agents.forEach(a => agentsAssignes.add(a.email));
+          }
+        });
+
+        // Garder uniquement les chefs/managers qui ne sont ni chefs d'une autre équipe, ni agents
         this.users = users.filter(user =>
           user.roles &&
           (
@@ -77,7 +88,8 @@ export class TeamCreateComponent implements OnInit {
             user.roles.includes('ROLE_CHEF_EQUIPE') ||
             user.roles.includes('ROLE_SERVICE_MANAGER')
           ) &&
-          !chefsDejaAssignes.has(user.email)
+          !chefsDejaAssignes.has(user.email) &&
+          !agentsAssignes.has(user.email)
         );
       },
       error: (err) => {
@@ -134,9 +146,9 @@ export class TeamCreateComponent implements OnInit {
   }
 
   loadFreeAgents(): void {
-    this.equipeService.getFreeAgents().subscribe({
-      next: (agents) => {
-        this.freeAgents = agents;
+    this.equipeService.getFreeAgents(0, 1000).subscribe({
+      next: (response) => {
+        this.freeAgents = response.content || [];
         this.cdr.detectChanges();
       },
       error: (err) => {

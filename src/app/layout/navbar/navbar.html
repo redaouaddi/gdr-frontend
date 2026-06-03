@@ -5,13 +5,48 @@
 
   <div class="user-profile">
 
-    <div class="notification-icon" [title]="'navbar.notifications' | translate">
-      <i class="fa fa-bell"></i>
-      <span class="badge"></span>
+    <div class="notification-icon" *ngIf="user" (click)="toggleNotifications(); $event.stopPropagation()" [title]="'navbar.notifications' | translate" style="cursor: pointer; position: relative;">
+      <i class="bi bi-bell-fill" style="font-size: 1.25rem;"></i>
+      <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+    </div>
+
+    <!-- NOTIFICATION POPOVER DROPDOWN -->
+    <div class="notification-popover" *ngIf="showNotifications && user" (click)="$event.stopPropagation()">
+      <div class="notification-header">
+        <h5>Notifications</h5>
+        <button class="mark-read-btn" *ngIf="unreadCount > 0" (click)="markAllAsRead()">Tout marquer comme lu</button>
+      </div>
+
+      <div class="notification-list">
+        <div class="notification-empty" *ngIf="notifications.length === 0">
+          <i class="bi bi-bell-slash"></i>
+          <p>Aucune notification pour le moment.</p>
+        </div>
+
+        <div class="notification-item" 
+             *ngFor="let notif of notifications" 
+             [class.unread]="notif.unread"
+             (click)="onNotificationClick(notif)">
+          <div class="notification-item-icon" [ngClass]="notif.type">
+            <i class="bi" 
+               [ngClass]="{
+                 'bi-info-circle-fill': notif.type === 'info',
+                 'bi-exclamation-triangle-fill': notif.type === 'warning',
+                 'bi-exclamation-octagon-fill': notif.type === 'danger',
+                 'bi-check-circle-fill': notif.type === 'success'
+               }"></i>
+          </div>
+          <div class="notification-item-content">
+            <div class="notification-item-title">{{ notif.title }}</div>
+            <div class="notification-item-desc">{{ notif.message }}</div>
+            <div class="notification-item-time">{{ formatNotificationTime(notif.date) }}</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="avatar">
-      <i class="fa fa-user"></i>
+      <i class="bi bi-person-fill"></i>
     </div>
 
     <div class="user-menu">

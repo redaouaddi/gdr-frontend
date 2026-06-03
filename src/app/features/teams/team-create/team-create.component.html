@@ -61,7 +61,7 @@
             <div class="card-body p-4">
               <h5 class="fw-bold mb-3 border-bottom pb-2" style="color: #4a2769;">
                 <i class="bi bi-people-fill me-2"></i>Membres de l'équipe
-                <span class="badge bg-primary rounded-pill ms-2 fs-6">{{ createdTeam.agents?.length || 0 }}</span>
+                <span class="badge bg-primary rounded-pill ms-2 fs-6">{{ createdTeam.agents.length || 0 }}</span>
               </h5>
 
               <div *ngIf="!createdTeam.agents || createdTeam.agents.length === 0" class="text-center py-3 text-muted">
@@ -191,7 +191,7 @@
                          style="cursor: pointer; transition: all 0.2s;">
                       <div class="card-body p-3 d-flex justify-content-between align-items-center">
                         <div>
-                          <div class="fw-semibold">{{ agent.firstName || agent.prenom }} {{ agent.lastName || agent.nom }}</div>
+                          <div class="fw-semibold">{{ agent.firstName }} {{ agent.lastName }}</div>
                           <small class="text-muted">{{ agent.email }}</small>
                         </div>
                         <div class="form-check m-0">

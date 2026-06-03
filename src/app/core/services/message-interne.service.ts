@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Page } from '../models/pagination.model';
 
 export interface MessageInterne {
   id: number;
@@ -20,9 +21,9 @@ export class MessageInterneService {
 
   constructor(private http: HttpClient) {}
 
-  getMessages(reclamationId: number): Observable<MessageInterne[]> {
-    return this.http.get<MessageInterne[]>(
-      `${this.api}/reclamation/${reclamationId}`
+  getMessages(reclamationId: number, page: number = 0, size: number = 10): Observable<Page<MessageInterne>> {
+    return this.http.get<Page<MessageInterne>>(
+      `${this.api}/reclamation/${reclamationId}?page=${page}&size=${size}`
     );
   }
 

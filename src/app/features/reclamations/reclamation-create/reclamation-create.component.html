@@ -77,7 +77,7 @@
                   </option>
                 </select>
 
-                <div class="sla-preview">
+                <div class="sla-preview" *ngIf="reclamation.categorie === 'MAINTENANCE'">
                   <div class="sla-line">
                     ⏱ SLA estimé :
                     <strong>{{ getSlaHours() }} h</strong>

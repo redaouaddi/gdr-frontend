@@ -23,6 +23,12 @@ export class SlaSettingsComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
 
+  // Pagination
+  currentPage = 0;
+  pageSize = 10;
+  totalElements = 0;
+  totalPages = 0;
+
   constructor(
     private slaConfigService: SlaConfigService,
     private cdr: ChangeDetectorRef,
@@ -38,16 +44,18 @@ export class SlaSettingsComponent implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.slaConfigService.getAll()
+    this.slaConfigService.getAll(this.currentPage, this.pageSize)
       .pipe(finalize(() => {
         this.isLoading = false;
         this.cdr.detectChanges();
       }))
       .subscribe({
-        next: (data) => {
-          this.slaConfigurations = [...data];
+        next: (response) => {
+          this.slaConfigurations = response.content || [];
+          this.totalElements = response.totalElements;
+          this.totalPages = response.totalPages;
 
-          if (this.slaConfigurations.length === 0) {
+          if (this.slaConfigurations.length === 0 && this.currentPage === 0) {
             this.slaConfigurations = [
               { priorite: 'FAIBLE', delaiHeures: 48 },
               { priorite: 'MOYENNE', delaiHeures: 24 },
@@ -62,6 +70,25 @@ export class SlaSettingsComponent implements OnInit {
           this.errorMessage = this.translate.instant('sla_settings.errors.load_failed');
         }
       });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadConfigurations();
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.loadConfigurations();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.loadConfigurations();
+    }
   }
 
   saveAll(): void {

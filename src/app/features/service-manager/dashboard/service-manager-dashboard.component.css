@@ -278,6 +278,221 @@
 }
 
 .empty-notes i {
-  font-size: 3rem;
+  size: 3rem;
   margin-bottom: 1rem;
+}
+
+/* --- Premium Details Modal Overhaul --- */
+.premium-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+.premium-details-modal.modal-card {
+  width: 95% !important;
+  max-width: 1100px !important;
+  height: 85vh;
+  background: #f8fafc;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.premium-modal-header {
+  padding: 1.25rem 2rem;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.premium-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.premium-icon-box {
+  width: 52px;
+  height: 52px;
+  background: #f1f5f9;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4f46e5;
+  font-size: 1.6rem;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.premium-header-left h4 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1e293b;
+  letter-spacing: -0.02em;
+}
+
+.premium-header-left p {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.premium-close-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-close-btn:hover {
+  background: #fef2f2;
+  color: #ef4444;
+  border-color: #fecaca;
+  transform: rotate(90deg) scale(1.1);
+}
+
+.premium-modal-body {
+  padding: 2.5rem;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.premium-top-banner {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+}
+
+.banner-left {
+  flex: 1;
+}
+
+.banner-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.banner-subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+}
+
+.status-badge-premium {
+  padding: 0.6rem 1.4rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.status-attente { background: #fef3c7; color: #92400e; }
+.status-encours { background: #dbeafe; color: #1e40af; }
+.status-traitee { background: #dcfce7; color: #166534; }
+.status-rejetee { background: #fee2e2; color: #991b1b; }
+
+.description-content {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #334155;
+  background: white;
+}
+
+.report-section label {
+  display: block;
+  font-weight: 800;
+  color: #475569;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+}
+
+.premium-modal-footer {
+  padding: 1.5rem 2.5rem;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.btn-secondary.rounded-pill {
+  padding: 0.75rem 2rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.btn-secondary.rounded-pill:hover {
+  background: #1e293b;
+  border-color: #1e293b;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 992px) {
+  .premium-details-modal.modal-card {
+    width: 100% !important;
+    height: 100vh;
+    border-radius: 0;
+  }
+  
+  .premium-top-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  
+  .banner-right {
+    width: 100%;
+  }
+  
+  .status-badge-premium {
+    justify-content: center;
+  }
 }

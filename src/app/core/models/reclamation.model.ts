@@ -24,7 +24,13 @@ export interface Reclamation {
   dateResolution?: string;
   clientNom?: string;
 
+  causeIdentifiee?: string;
+  actionRealisee?: string;
+  solutionProposee?: string;
+
   slaCountdownLabel?: string;
+  motifReouverture?: string;
+  reouvertureAttachmentName?: string;
 }
 
 export interface CreateReclamationRequest {

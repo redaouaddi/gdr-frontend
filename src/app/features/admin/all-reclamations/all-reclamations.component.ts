@@ -6,6 +6,7 @@ import { Navbar } from '../../../layout/navbar/navbar';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { finalize, timeout } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-all-reclamations',
@@ -14,7 +15,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     CommonModule,
     Navbar,
     Sidebar,
-    TranslateModule
+    TranslateModule,
+    FormsModule
   ],
   templateUrl: './all-reclamations.component.html'
 })
@@ -23,6 +25,15 @@ export class AllReclamationsComponent implements OnInit {
   reclamations: Reclamation[] = [];
   isLoading = true;
   errorMessage = '';
+  selectedDetails: Reclamation | null = null;
+  showDetailsModal = false;
+
+
+  // Pagination
+  currentPage = 0;
+  pageSize = 10;
+  totalElements = 0;
+  totalPages = 0;
 
   constructor(
     private reclamationService: ReclamationService,
@@ -39,7 +50,7 @@ export class AllReclamationsComponent implements OnInit {
     this.errorMessage = '';
     this.cdr.detectChanges();
 
-    this.reclamationService.getAllReclamations()
+    this.reclamationService.getAllReclamations(this.currentPage, this.pageSize)
       .pipe(
         timeout(15000),
         finalize(() => {
@@ -48,14 +59,35 @@ export class AllReclamationsComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (data) => {
-          this.reclamations = data;
+        next: (response) => {
+          this.reclamations = response.content;
+          this.totalElements = response.totalElements;
+          this.totalPages = response.totalPages;
         },
         error: (err) => {
           console.error('Erreur lors du chargement des réclamations', err);
           this.errorMessage = this.translate.instant('reclamations_all.server_error');
         }
       });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadReclamations();
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.loadReclamations();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.loadReclamations();
+    }
   }
 
   translateStatus(statut: string): string {
@@ -176,4 +208,33 @@ export class AllReclamationsComponent implements OnInit {
 
     return `${minutes} min`;
   }
-}
+
+  openDetailsModal(rec: Reclamation): void {
+    this.selectedDetails = rec;
+    this.showDetailsModal = true;
+  }
+
+  closeDetailsModal(): void {
+    this.selectedDetails = null;
+    this.showDetailsModal = false;
+  }
+
+  downloadReouvertureFile(rec: Reclamation): void {
+    if (!rec || !rec.reouvertureAttachmentName) return;
+    this.reclamationService.downloadReouvertureAttachment(rec.numeroReclamation).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = rec.reouvertureAttachmentName || 'piece-jointe-reouverture';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Erreur lors du téléchargement de la pièce jointe', err);
+      }
+    });
+  }
+}

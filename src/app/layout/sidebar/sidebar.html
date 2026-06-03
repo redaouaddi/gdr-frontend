@@ -63,18 +63,13 @@
     <ng-container *ngIf="isServiceManager">
       <h6 class="menu-heading">{{ 'sidebar.manager_panel' | translate }}</h6>
       
-      <div class="menu-accordion" [class.open]="serviceMenuOpen">
-        <button class="menu-link menu-toggle" (click)="toggleServiceMenu()" [attr.aria-expanded]="serviceMenuOpen">
-          <div class="menu-toggle-content">
-            <i class="bi bi-grid"></i> {{ 'sidebar.dashboard' | translate }}
-          </div>
-          <i class="bi bi-chevron-down chevron"></i>
-        </button>
-        <div class="submenu" *ngIf="serviceMenuOpen">
-          <a routerLink="/dashboard/service-manager" [queryParams]="{view: 'stats'}" routerLinkActive="active" class="submenu-link">{{ 'sidebar.statistics' | translate }}</a>
-          <a routerLink="/dashboard/service-manager" [queryParams]="{view: 'list'}" routerLinkActive="active" class="submenu-link">{{ 'sidebar.claims_list' | translate }}</a>
-        </div>
-      </div>
+      <a routerLink="/dashboard/service-manager" [queryParams]="{view: 'stats'}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="menu-link">
+        <i class="bi bi-pie-chart"></i> {{ 'sidebar.statistics' | translate }}
+      </a>
+
+      <a routerLink="/dashboard/service-manager" [queryParams]="{view: 'list'}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="menu-link">
+        <i class="bi bi-card-list"></i> {{ 'sidebar.claims_list' | translate }}
+      </a>
     </ng-container>
 
     <!-- CHEF EQUIPE MENU -->

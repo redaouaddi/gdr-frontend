@@ -27,7 +27,7 @@
       {{ errorMessage }}
     </div>
 
-    
+
 
     <div class="stats-overview" *ngIf="!loading">
       <div class="stat-card">
@@ -41,76 +41,38 @@
         </div>
       </div>
     </div>
-<div class="sla-supervision-panel" *ngIf="isAgent || isChefEquipe">
+    <div class="sla-supervision-panel" *ngIf="isAgent || isChefEquipe" style="display: block; margin-bottom: 22px; padding: 0 2.5rem;">
+      <div class="sla-legend-card card border-0 shadow-sm rounded-4 p-4" style="background: #ffffff; border: 1px solid #eef2f7; border-radius: 20px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);">
+        <div class="panel-title d-flex align-items-center mb-3">
+          <div class="panel-icon text-purple me-3" style="width: 42px; height: 42px; border-radius: 14px; background: #ede9fe; color: #7c3aed; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
+            <i class="bi bi-info-circle-fill"></i>
+          </div>
+          <div>
+            <h3 class="m-0 fw-bold text-dark fs-5" style="font-size: 1.15rem; font-weight: 700; color: #1f2937;">Notifications SLA</h3>
+            <p class="m-0 text-muted small" style="margin-top: 4px; color: #6b7280; font-size: 0.88rem;">Suivi visuel des réclamations selon leur niveau d'urgence.</p>
+          </div>
+        </div>
 
-  <div class="sla-notification-box">
-  <div class="panel-title">
-    <i class="bi bi-bell-fill"></i>
-    <div>
-      <h3>{{ 'agent_missions.sla_panel.notifications_title' | translate }}</h3>
-      <p>{{ 'agent_missions.sla_panel.notifications_subtitle' | translate }}</p>
-    </div>
-  </div>
+        <div class="notification-list d-flex flex-wrap gap-3 mt-3" style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <div class="notification-item green px-3 py-2 rounded-pill" 
+               style="background: #d1e7dd; color: #0f5132; font-weight: 600; display: flex; align-items: center; gap: 8px; font-size: 0.88rem; padding: 8px 16px; border-radius: 50px;">
+            <i class="bi bi-check-circle-fill"></i>
+            SLA confortable ou respecté
+          </div>
 
-  <div class="sla-real-notifications">
-    <div
-      class="sla-notification-entry"
-      *ngFor="let notif of slaNotifications">
+          <div class="notification-item orange px-3 py-2 rounded-pill" 
+               style="background: #fff3cd; color: #664d03; font-weight: 600; display: flex; align-items: center; gap: 8px; font-size: 0.88rem; padding: 8px 16px; border-radius: 50px;">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            SLA proche du dépassement
+          </div>
 
-      <i class="bi" [ngClass]="notif.icon"></i>
-
-      <div class="notif-content">
-        <strong>{{ notif.title }}</strong>
-        <p>{{ notif.message }}</p>
+          <div class="notification-item red px-3 py-2 rounded-pill" 
+               style="background: #f8d7da; color: #842029; font-weight: 600; display: flex; align-items: center; gap: 8px; font-size: 0.88rem; padding: 8px 16px; border-radius: 50px;">
+            <i class="bi bi-x-circle-fill"></i>
+            SLA dépassé
+          </div>
+        </div>
       </div>
-    </div>
-
-    <div
-      class="sla-empty-notification"
-      *ngIf="slaNotifications.length === 0">
-
-      <i class="bi bi-check-circle-fill me-2"></i>
-      {{ 'agent_missions.sla_panel.no_notifications' | translate }}
-    </div>
-  </div>
-
-  <div class="notification-list">
-    <div class="notification-item green">
-      <i class="bi bi-check-circle-fill"></i>
-      {{ 'agent_missions.sla_panel.comfortable' | translate }}
-    </div>
-
-    <div class="notification-item orange">
-      <i class="bi bi-exclamation-triangle-fill"></i>
-      {{ 'agent_missions.sla_panel.near_breach' | translate }}
-    </div>
-
-    <div class="notification-item red">
-      <i class="bi bi-x-octagon-fill"></i>
-      {{ 'agent_missions.sla_panel.breached' | translate }}
-    </div>
-  </div>
-</div>
-
-    <div class="sla-legend-box">
-    <h4>Légende des couleurs</h4>
-
-    <div class="legend-row">
-      <span class="legend-color green"></span>
-      <span>Ligne verte : délai SLA confortable ou réclamation traitée</span>
-    </div>
-
-    <div class="legend-row">
-      <span class="legend-color orange"></span>
-      <span>Ligne orange : réclamation proche du dépassement SLA</span>
-    </div>
-
-    <div class="legend-row">
-      <span class="legend-color red"></span>
-      <span>Ligne rouge : SLA dépassé</span>
-    </div>
-    </div>
-
     </div>
     <div class="missions-table-container card-premium">
       <div class="table-overlay" *ngIf="loading">
@@ -132,15 +94,10 @@
         </thead>
 
         <tbody>
-          <tr
-            *ngFor="let mission of missions"
-            [ngClass]="getRowSlaClass(mission)">
+          <tr *ngFor="let mission of missions" [ngClass]="getRowSlaClass(mission)">
 
-            <td class="id-cell">
-              <button
-                type="button"
-                class="reference-link"
-                (click)="openDetailsModal(mission)">
+            <td class="id-cell" (click)="openDetailsModal(mission)" role="button" tabindex="0" (keydown.enter)="openDetailsModal(mission)">
+              <button type="button" class="reference-link" (click)="openDetailsModal(mission); $event.stopPropagation()">
                 #{{ mission.numeroReclamation }}
               </button>
             </td>
@@ -156,28 +113,20 @@
             </td>
 
             <td>
-              <span
-                class="priority-badge"
-                [ngClass]="getPriorityClass(mission.priorite)">
+              <span class="priority-badge" [ngClass]="getPriorityClass(mission.priorite)">
                 {{ 'priority.' + mission.priorite | translate }}
               </span>
             </td>
 
             <td>
-              <span
-                class="status-badge"
-                [ngClass]="getStatusClass(mission.statut)">
+              <span class="status-badge" [ngClass]="getStatusClass(mission.statut)">
                 {{ translateStatus(mission.statut) }}
               </span>
             </td>
 
             <td *ngIf="isChefEquipe">
-              <span
-                class="sla-badge"
-                [ngClass]="getSlaClass(mission.slaCountdownLabel)">
-                <i
-                  class="bi bi-bell-fill me-1"
-                  *ngIf="hasSlaWarning(mission)">
+              <span class="sla-badge" [ngClass]="getSlaClass(mission.slaCountdownLabel)">
+                <i class="bi bi-bell-fill me-1" *ngIf="hasSlaWarning(mission)">
                 </i>
                 {{ mission.slaCountdownLabel || 'SLA indisponible' }}
               </span>
@@ -188,44 +137,27 @@
             </td>
 
             <td class="actions-cell">
-              <button
-                *ngIf="isAgent"
-                type="button"
-                class="btn-action notes"
-                title="{{ 'agent_missions.actions.notes' | translate }}"
-                (click)="openNoteModal(mission)">
+              <button *ngIf="isAgent" type="button" class="btn-action chat"
+                title="{{ 'agent_missions.actions.notes' | translate }}" (click)="openNoteModal(mission); $event.stopPropagation()">
                 <i class="bi bi-chat-left-text"></i>
               </button>
 
-              <button
-                *ngIf="canChefAccept(mission)"
-                type="button"
-                class="btn-action accept"
-                title="Accepter"
+              <button *ngIf="canChefAccept(mission)" type="button" class="btn-action accept" title="Accepter"
                 (click)="accepter(mission.numeroReclamation)">
                 <i class="bi bi-check-lg"></i>
               </button>
 
-              <button
-                *ngIf="canChefReject(mission)"
-                type="button"
-                class="btn-action reject"
-                title="Rejeter"
+              <button *ngIf="canChefReject(mission)" type="button" class="btn-action reject" title="Rejeter"
                 (click)="openRejectModal(mission)">
                 <i class="bi bi-x-lg"></i>
               </button>
 
-              <button
-                *ngIf="isChefEquipe && hasSlaWarning(mission)"
-                type="button"
-                class="btn-action warning"
-                title="Notifier l’agent"
-                (click)="notifierAgentSla(mission)">
+              <button *ngIf="isChefEquipe && hasSlaWarning(mission)" type="button" class="btn-action warning"
+                title="Notifier l’agent" (click)="notifierAgentSla(mission)">
                 <i class="bi bi-bell-fill"></i>
               </button>
 
-              <span
-                *ngIf="mission.statut === 'TRAITEE' || mission.statut === 'REJETEE'"
+              <span *ngIf="mission.statut === 'TRAITEE' || mission.statut === 'REJETEE'"
                 class="text-muted small final-status">
                 —
               </span>
@@ -233,6 +165,36 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- PAGINATION MISSIONS -->
+      <div class="d-flex justify-content-between align-items-center p-3 border-top text-muted"
+        *ngIf="totalElements > 0">
+        <div class="d-flex align-items-center gap-2">
+          <span class="small">{{ 'common.show' | translate }}</span>
+          <select class="form-select form-select-sm" style="width: auto;" [(ngModel)]="pageSize"
+            (change)="currentPage = 0; loadMissions()">
+            <option [value]="10">10</option>
+            <option [value]="20">20</option>
+            <option [value]="50">50</option>
+          </select>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+          <span class="small">
+            {{ (currentPage * pageSize) + 1 }} - {{ (currentPage * pageSize) + missions.length }} sur {{ totalElements
+            }}
+          </span>
+          <div class="pagination-buttons d-flex gap-1">
+            <button class="btn btn-sm btn-outline-secondary" [disabled]="currentPage === 0" (click)="previousPage()">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary" [disabled]="currentPage >= totalPages - 1"
+              (click)="nextPage()">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div class="empty-state" *ngIf="!loading && missions.length === 0">
         <div class="empty-icon">
@@ -246,8 +208,8 @@
 </div>
 
 <!-- MODAL DETAILS -->
-<div class="modal-backdrop premium-backdrop" *ngIf="showDetailsModal">
-  <div class="modal-card modal-xl premium-details-modal">
+<div class="modal-backdrop premium-backdrop details-backdrop" *ngIf="showDetailsModal">
+  <div class="modal-card modal-xl premium-details-modal details-modal-card">
 
     <div class="premium-modal-header">
       <div class="premium-header-left">
@@ -278,62 +240,87 @@
 
         <div class="workflow-line completed"></div>
 
-        <div
-          class="workflow-step"
-          [ngClass]="{
+        <div class="workflow-step" [ngClass]="{
             'active': selectedMissionDetails.statut === 'EN_ATTENTE',
             'completed': selectedMissionDetails.statut === 'EN_COURS' || selectedMissionDetails.statut === 'TRAITEE'
           }">
           <div class="circle">
-            <i
-              class="bi"
-              [ngClass]="selectedMissionDetails.statut === 'EN_ATTENTE' ? 'bi-geo-alt-fill' : 'bi-person-check'">
+            <i class="bi"
+              [ngClass]="selectedMissionDetails.statut === 'EN_ATTENTE' ? 'bi-geo-alt-fill' : 'bi-check-circle'">
             </i>
           </div>
           <span>Confirmation</span>
         </div>
 
-        <div
-          class="workflow-line"
-          [ngClass]="{
+        <div class="workflow-line" [ngClass]="{
             'completed': selectedMissionDetails.statut === 'EN_COURS' || selectedMissionDetails.statut === 'TRAITEE'
           }">
         </div>
 
-        <div
-          class="workflow-step"
-          [ngClass]="{
-            'active': selectedMissionDetails.statut === 'EN_COURS',
-            'completed': selectedMissionDetails.statut === 'TRAITEE'
+        <div class="workflow-step" [ngClass]="{
+            'active': selectedMissionDetails.statut === 'EN_COURS' && !selectedMissionDetails.motifReouverture,
+            'completed': selectedMissionDetails.statut === 'TRAITEE' || selectedMissionDetails.motifReouverture || selectedMissionDetails.statut === 'REOUVERTE'
           }">
           <div class="circle">
-            <i
-              class="bi"
-              [ngClass]="selectedMissionDetails.statut === 'EN_COURS' ? 'bi-geo-alt-fill' : 'bi-tools'">
+            <i class="bi"
+              [ngClass]="(selectedMissionDetails.statut === 'EN_COURS' && !selectedMissionDetails.motifReouverture) ? 'bi-geo-alt-fill' : ((selectedMissionDetails.statut === 'TRAITEE' || selectedMissionDetails.motifReouverture || selectedMissionDetails.statut === 'REOUVERTE') ? 'bi-check-circle' : 'bi-tools')">
             </i>
           </div>
           <span>Traitement agent</span>
         </div>
 
-        <div
-          class="workflow-line"
-          [ngClass]="{ 'completed': selectedMissionDetails.statut === 'TRAITEE' }">
-        </div>
-
-        <div
-          class="workflow-step"
-          [ngClass]="{
-            'active': selectedMissionDetails.statut === 'TRAITEE',
-            'completed': selectedMissionDetails.statut === 'TRAITEE'
-          }">
-          <div class="circle">
-            <i
-              class="bi"
-              [ngClass]="selectedMissionDetails.statut === 'TRAITEE' ? 'bi-geo-alt-fill' : 'bi-check-circle'">
-            </i>
+        <!-- Cas standard (Non réouverte) -->
+        <ng-container *ngIf="!selectedMissionDetails.motifReouverture && selectedMissionDetails.statut !== 'REOUVERTE'">
+          <div class="workflow-line" [ngClass]="{ 'completed': selectedMissionDetails.statut === 'TRAITEE' }"></div>
+          <div class="workflow-step" [ngClass]="{ 'completed': selectedMissionDetails.statut === 'TRAITEE' }">
+            <div class="circle">
+              <i class="bi" [ngClass]="selectedMissionDetails.statut === 'TRAITEE' ? 'bi-check-circle-fill' : 'bi-flag'"></i>
+            </div>
+            <span>Clôture</span>
           </div>
-          <span>Clôture</span>
-        </div>
+        </ng-container>
+
+        <!-- Cas Réouverte (Client a réouvert) -->
+        <ng-container *ngIf="selectedMissionDetails.motifReouverture || selectedMissionDetails.statut === 'REOUVERTE'">
+          
+          <div class="workflow-line completed"></div>
+          <div class="workflow-step completed">
+            <div class="circle">
+              <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <span>Clôture Initiale</span>
+          </div>
+
+          <div class="workflow-line completed"></div>
+          <div class="workflow-step" [ngClass]="{
+              'active': selectedMissionDetails.statut === 'REOUVERTE',
+              'completed': selectedMissionDetails.statut === 'EN_COURS' || selectedMissionDetails.statut === 'TRAITEE'
+            }">
+            <div class="circle">
+              <i class="bi" [ngClass]="selectedMissionDetails.statut === 'REOUVERTE' ? 'bi-geo-alt-fill' : 'bi-arrow-repeat'"></i>
+            </div>
+            <span>Réouverte</span>
+          </div>
+
+          <div class="workflow-line" [ngClass]="{ 'completed': selectedMissionDetails.statut === 'EN_COURS' || selectedMissionDetails.statut === 'TRAITEE' }"></div>
+          <div class="workflow-step" [ngClass]="{
+              'active': selectedMissionDetails.statut === 'EN_COURS',
+              'completed': selectedMissionDetails.statut === 'TRAITEE'
+            }">
+            <div class="circle">
+              <i class="bi" [ngClass]="selectedMissionDetails.statut === 'EN_COURS' ? 'bi-geo-alt-fill' : (selectedMissionDetails.statut === 'TRAITEE' ? 'bi-check-circle' : 'bi-tools')"></i>
+            </div>
+            <span>En cours (Suite)</span>
+          </div>
+
+          <div class="workflow-line" [ngClass]="{ 'completed': selectedMissionDetails.statut === 'TRAITEE' }"></div>
+          <div class="workflow-step" [ngClass]="{ 'completed': selectedMissionDetails.statut === 'TRAITEE' }">
+            <div class="circle">
+              <i class="bi" [ngClass]="selectedMissionDetails.statut === 'TRAITEE' ? 'bi-check-circle-fill' : 'bi-flag'"></i>
+            </div>
+            <span>Clôture Définitive</span>
+          </div>
+        </ng-container>
       </div>
 
       <div class="premium-top-banner">
@@ -349,9 +336,7 @@
         </div>
 
         <div class="banner-right">
-          <span
-            class="status-badge large"
-            [ngClass]="getStatusClass(selectedMissionDetails.statut)">
+          <span class="status-badge large" [ngClass]="getStatusClass(selectedMissionDetails.statut)">
             {{ translateStatus(selectedMissionDetails.statut) }}
           </span>
         </div>
@@ -407,9 +392,7 @@
           <div class="detail-card-content">
             <span class="detail-label">Priorité</span>
             <span class="detail-value">
-              <span
-                class="priority-badge large"
-                [ngClass]="getPriorityClass(selectedMissionDetails.priorite)">
+              <span class="priority-badge large" [ngClass]="getPriorityClass(selectedMissionDetails.priorite)">
                 {{ 'priority.' + selectedMissionDetails.priorite | translate }}
               </span>
             </span>
@@ -424,9 +407,7 @@
           <div class="detail-card-content">
             <span class="detail-label">Statut</span>
             <span class="detail-value">
-              <span
-                class="status-badge large"
-                [ngClass]="getStatusClass(selectedMissionDetails.statut)">
+              <span class="status-badge large" [ngClass]="getStatusClass(selectedMissionDetails.statut)">
                 {{ translateStatus(selectedMissionDetails.statut) }}
               </span>
             </span>
@@ -458,73 +439,148 @@
             <p class="description-subtitle">
               Détail du problème déclaré
             </p>
-          </div>
-        </div>
+</div>
 
         <div class="description-content">
           {{ selectedMissionDetails.description || 'Aucune description disponible.' }}
         </div>
       </div>
 
+      <!-- Motif de Réouverture (Agent / Chef) -->
+      <div class="premium-description-card mt-4 border-info" 
+           *ngIf="selectedMissionDetails.motifReouverture"
+           style="border-left: 5px solid #0dcaf0; margin-top: 1.5rem;">
+        <div class="description-header d-flex align-items-center mb-3">
+          <div class="description-icon text-info me-3" style="background-color: rgba(13, 202, 240, 0.1); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+            <i class="bi bi-arrow-counterclockwise text-info fs-5"></i>
+          </div>
+          <div>
+            <span class="description-title text-info fw-bold d-block">Motif de réouverture (Client)</span>
+            <span class="description-subtitle text-muted small">Justificatif fourni par le client pour la réouverture</span>
+          </div>
+        </div>
+
+        <div class="description-content p-3 bg-light rounded mb-3 text-dark border-start border-info border-3">
+          {{ selectedMissionDetails.motifReouverture }}
+        </div>
+
+        <div class="p-3 bg-light rounded d-flex align-items-center justify-content-between border-start border-warning border-3"
+             *ngIf="selectedMissionDetails.reouvertureAttachmentName"
+             style="cursor: pointer; transition: all 0.2s;"
+             (click)="downloadReouvertureFile(selectedMissionDetails)"
+             title="Cliquer pour télécharger la pièce jointe">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-file-earmark-arrow-down-fill text-warning me-2 fs-5"></i>
+            <span class="fw-semibold text-dark text-decoration-underline">{{ selectedMissionDetails.reouvertureAttachmentName }}</span>
+          </div>
+          <span class="badge bg-warning text-dark px-3 py-2 rounded-pill small">
+            <i class="bi bi-download me-1"></i> Télécharger
+          </span>
+        </div>
+      </div>
+
       <div class="solution-card" *ngIf="isAgent">
         <div class="description-header">
           <div class="description-icon solution">
-            <i class="bi bi-pencil-square"></i>
+            <i class="bi"
+               [ngClass]="selectedMissionDetails.statut === 'TRAITEE' ? 'bi-check-circle-fill text-success' : 'bi-pencil-square'">
+            </i>
           </div>
 
           <div>
-            <span class="description-title">Compte rendu de l’agent</span>
-            <p class="description-subtitle">
-              Indiquer la cause du problème, l’action effectuée ou la solution proposée.
+            <span class="description-title">Compte rendu de l'agent</span>
+            <p class="description-subtitle" *ngIf="selectedMissionDetails.statut !== 'TRAITEE'">
+              Veuillez renseigner obligatoirement les trois champs et joindre un fichier pour clôturer la réclamation.
+            </p>
+            <p class="description-subtitle text-success fw-semibold" *ngIf="selectedMissionDetails.statut === 'TRAITEE'">
+              <i class="bi bi-lock-fill me-1"></i> Réclamation clôturée — compte rendu en lecture seule.
             </p>
           </div>
         </div>
 
-        <textarea
-          class="solution-textarea"
-          rows="5"
-          [(ngModel)]="agentSolutionText"
-          placeholder="Exemple : Cause identifiée, action réalisée, solution proposée...">
-        </textarea>
+        <div class="report-fields" [class.report-fields-readonly]="selectedMissionDetails.statut === 'TRAITEE'">
 
+          <div class="report-field">
+            <label class="field-label">
+              Cause identifiée
+              <span class="text-danger" *ngIf="selectedMissionDetails.statut !== 'TRAITEE'">*</span>
+            </label>
+            <textarea class="solution-textarea" rows="2" [(ngModel)]="causeIdentifiee"
+              [class.textarea-readonly]="selectedMissionDetails.statut === 'TRAITEE'"
+              [disabled]="selectedMissionDetails.statut === 'TRAITEE'"
+              placeholder="Décrivez la cause du problème...">
+            </textarea>
+          </div>
+
+          <div class="report-field">
+            <label class="field-label">
+              Action réalisée
+              <span class="text-danger" *ngIf="selectedMissionDetails.statut !== 'TRAITEE'">*</span>
+            </label>
+            <textarea class="solution-textarea" rows="2" [(ngModel)]="actionRealisee"
+              [class.textarea-readonly]="selectedMissionDetails.statut === 'TRAITEE'"
+              [disabled]="selectedMissionDetails.statut === 'TRAITEE'"
+              placeholder="Décrivez l'action que vous avez effectuée...">
+            </textarea>
+          </div>
+
+          <div class="report-field">
+            <label class="field-label">
+              Solution proposée
+              <span class="text-danger" *ngIf="selectedMissionDetails.statut !== 'TRAITEE'">*</span>
+            </label>
+            <textarea class="solution-textarea" rows="2" [(ngModel)]="solutionProposee"
+              [class.textarea-readonly]="selectedMissionDetails.statut === 'TRAITEE'"
+              [disabled]="selectedMissionDetails.statut === 'TRAITEE'"
+              placeholder="Décrivez la solution finale ou préconisation...">
+            </textarea>
+          </div>
+
+          <!-- Pièce jointe : visible uniquement si non clôturée -->
+          <div class="report-field mt-3" *ngIf="selectedMissionDetails.statut !== 'TRAITEE'">
+            <label class="field-label">Pièce jointe justificative (PDF, Image, etc.)
+              <span class="text-danger">*</span>
+            </label>
+            <div class="custom-file-upload">
+              <input type="file" id="agentFile" (change)="onAgentReportFileSelected($event)" hidden #fileInput>
+              <div class="file-drop-area" (click)="fileInput.click()">
+                <i class="bi bi-cloud-arrow-up" *ngIf="!agentReportFile"></i>
+                <i class="bi bi-file-earmark-check text-success" *ngIf="agentReportFile"></i>
+                <span class="ms-2">{{ agentReportFile ? agentReportFile.name : 'Cliquez pour sélectionner un fichier' }}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Badge date/heure de résolution — affiché en bas à droite après clôture -->
+        <div class="resolution-timestamp"
+             *ngIf="selectedMissionDetails.statut === 'TRAITEE' && selectedMissionDetails.dateResolution">
+          <i class="bi bi-calendar2-check-fill me-1"></i>
+          Clôturée le {{ selectedMissionDetails.dateResolution | date:'dd/MM/yyyy à HH:mm' }}
+        </div>
+
+        <!-- Bouton visible uniquement si en cours de traitement -->
         <button
+          *ngIf="selectedMissionDetails.statut === 'EN_COURS'"
           class="btn-save-solution"
-          [disabled]="!agentSolutionText || agentSolutionText.trim() === ''"
+          [disabled]="!causeIdentifiee.trim() || !actionRealisee.trim() || !solutionProposee.trim() || !agentReportFile"
           (click)="saveAgentSolution()">
           <i class="bi bi-send me-1"></i>
-          Enregistrer le compte rendu
+          Enregistrer le compte rendu &amp; Clôturer
         </button>
+
       </div>
     </div>
-    <div class="solution-file-upload">
-  <label class="modal-label">
-    {{ 'agent_missions.details_modal.report_attachment' | translate }}
-  </label>
-
-  <div class="file-upload-box">
-    <label class="file-btn">
-      {{ 'agent_missions.details_modal.choose_file' | translate }}
-
-      <input
-        type="file"
-        (change)="onAgentReportFileSelected($event)">
-    </label>
-
-    <span class="file-name">
-      {{ agentReportFile?.name || ('agent_missions.details_modal.no_file' | translate) }}
-    </span>
-  </div>
-</div>
 
     <div class="premium-modal-footer">
-      <button
-        class="btn-modal-cancel premium-cancel"
-        (click)="closeDetailsModal()">
+      <button class="btn-modal-cancel premium-cancel" (click)="closeDetailsModal()">
         <i class="bi bi-x-circle me-1"></i>
         Fermer
       </button>
     </div>
   </div>
+</div>
 </div>
 
 <!-- MODAL REJECT -->
@@ -560,10 +616,7 @@
           Motif du refus <span class="text-danger">*</span>
         </label>
 
-        <textarea
-          class="form-control premium-content"
-          rows="4"
-          [(ngModel)]="motifRejet"
+        <textarea class="form-control premium-content" rows="4" [(ngModel)]="motifRejet"
           placeholder="Saisir le motif de rejet...">
         </textarea>
 
@@ -574,24 +627,16 @@
     </div>
 
     <div class="modal-footer">
-      <button
-        class="btn-modal-cancel"
-        (click)="closeRejectModal()"
-        [disabled]="isRejecting">
+      <button class="btn-modal-cancel" (click)="closeRejectModal()" [disabled]="isRejecting">
         Annuler
       </button>
 
-      <button
-        class="btn-modal-danger"
-        (click)="confirmReject()"
-        [disabled]="isRejecting">
+      <button class="btn-modal-danger" (click)="confirmReject()" [disabled]="isRejecting">
         <span *ngIf="!isRejecting">
           Confirmer le rejet
         </span>
 
-        <span
-          *ngIf="isRejecting"
-          class="spinner-border spinner-border-sm">
+        <span *ngIf="isRejecting" class="spinner-border spinner-border-sm">
         </span>
       </button>
     </div>
@@ -599,8 +644,8 @@
 </div>
 
 <!-- MODAL NOTES -->
-<div class="modal-backdrop" *ngIf="showNoteModal">
-  <div class="modal-card modal-large notes-modal">
+<div class="modal-backdrop notes-backdrop" *ngIf="showNoteModal" (click)="closeNoteModal()">
+  <div class="modal-card modal-large notes-modal notes-modal-card" (click)="$event.stopPropagation()">
 
     <div class="modal-header">
       <h5>
@@ -620,9 +665,7 @@
           <div class="spinner-border text-primary"></div>
         </div>
 
-        <div
-          *ngIf="!isLoadingNotes && currentMissionNotes.length === 0"
-          class="empty-notes">
+        <div *ngIf="!isLoadingNotes && currentMissionNotes.length === 0" class="empty-notes">
           <i class="bi bi-chat-square-dots"></i>
           <p>{{ 'agent_missions.notes_modal.no_notes' | translate }}</p>
         </div>
@@ -645,38 +688,42 @@
         </div>
       </div>
 
+      <!-- PAGINATION NOTES -->
+      <div class="d-flex justify-content-center mt-3 gap-2" *ngIf="notesTotalPages > 1">
+        <button class="btn btn-sm btn-link" [disabled]="notesCurrentPage === 0"
+          (click)="onNotesPageChange(notesCurrentPage - 1)">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <span class="align-self-center small">{{ notesCurrentPage + 1 }} / {{ notesTotalPages }}</span>
+        <button class="btn btn-sm btn-link" [disabled]="notesCurrentPage >= notesTotalPages - 1"
+          (click)="onNotesPageChange(notesCurrentPage + 1)">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+
       <div class="note-input-section">
         <label class="modal-label">
           {{ 'agent_missions.notes_modal.add_label' | translate }}
         </label>
 
-        <textarea
-          class="form-control premium-content"
-          rows="3"
-          [(ngModel)]="newNoteText"
+        <textarea class="form-control premium-content" rows="3" [(ngModel)]="newNoteText"
           [placeholder]="'agent_missions.notes_modal.placeholder' | translate">
         </textarea>
       </div>
     </div>
 
     <div class="modal-footer">
-      <button
-        class="btn-modal-cancel"
-        (click)="closeNoteModal()">
+      <button class="btn-modal-cancel" (click)="closeNoteModal()">
         {{ 'common.close' | translate }}
       </button>
 
-      <button
-        class="btn-modal-confirm"
-        [disabled]="!newNoteText || newNoteText.trim() === '' || isSendingNote"
+      <button class="btn-modal-confirm" [disabled]="!newNoteText || newNoteText.trim() === '' || isSendingNote"
         (click)="ajouterNote()">
         <span *ngIf="!isSendingNote">
           {{ 'agent_missions.notes_modal.add_btn' | translate }}
         </span>
 
-        <span
-          *ngIf="isSendingNote"
-          class="spinner-border spinner-border-sm">
+        <span *ngIf="isSendingNote" class="spinner-border spinner-border-sm">
         </span>
       </button>
     </div>

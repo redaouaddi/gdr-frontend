@@ -5,11 +5,12 @@ import { Navbar } from '../../../layout/navbar/navbar';
 import { RouterLink, Router } from '@angular/router';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, Navbar, RouterLink, Sidebar, TranslateModule],
+  imports: [CommonModule, Navbar, RouterLink, Sidebar, TranslateModule, FormsModule],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css']
 })
@@ -18,6 +19,12 @@ export class UserListComponent implements OnInit {
   users: UserResponse[] = [];
   errorMessage = '';
   selectedUser: UserResponse | null = null;
+
+  // Pagination
+  currentPage = 0;
+  pageSize = 10;
+  totalElements = 0;
+  totalPages = 0;
 
   constructor(
     private userService: UserService,
@@ -31,9 +38,11 @@ export class UserListComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.userService.getAllUsers().subscribe({
-      next: (data) => {
-        this.users = data;
+    this.userService.getAllUsers(this.currentPage, this.pageSize).subscribe({
+      next: (response) => {
+        this.users = response.content;
+        this.totalElements = response.totalElements;
+        this.totalPages = response.totalPages;
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -43,6 +52,25 @@ export class UserListComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadUsers();
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.loadUsers();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.loadUsers();
+    }
   }
 
   editUser(userId: number): void {

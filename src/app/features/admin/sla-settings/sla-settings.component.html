@@ -70,6 +70,30 @@
             </table>
           </div>
 
+          <div class="d-flex justify-content-between align-items-center mt-3 text-muted" *ngIf="totalElements > 10">
+            <div class="d-flex align-items-center gap-2 small">
+              <span>{{ 'common.show' | translate }}</span>
+              <select class="form-select form-select-sm" style="width: auto;" [(ngModel)]="pageSize" (change)="currentPage = 0; loadConfigurations()">
+                <option [value]="10">10</option>
+                <option [value]="20">20</option>
+              </select>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+              <span class="small">
+                {{ (currentPage * pageSize) + 1 }} - {{ (currentPage * pageSize) + slaConfigurations.length }} sur {{ totalElements }}
+              </span>
+              <div class="d-flex gap-1">
+                <button class="btn btn-sm btn-outline-secondary" [disabled]="currentPage === 0" (click)="previousPage()">
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" [disabled]="currentPage >= totalPages - 1" (click)="nextPage()">
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div class="d-flex justify-content-end mt-4">
             <button
               class="btn btn-primary px-4 rounded-pill"

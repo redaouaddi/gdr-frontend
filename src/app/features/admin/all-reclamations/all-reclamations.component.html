@@ -53,7 +53,7 @@
                   </td>
                 </tr>
 
-                <tr *ngFor="let rec of reclamations">
+                <tr *ngFor="let rec of reclamations" (click)="openDetailsModal(rec)" style="cursor: pointer;">
                   <td class="ps-4 py-3">
                     <div class="fw-bold text-primary mb-1">#{{ rec.numeroReclamation }}</div>
                     <div class="small text-muted">
@@ -130,8 +130,165 @@
             </table>
           </div>
 
+          <div class="d-flex justify-content-between align-items-center p-3 border-top text-muted" *ngIf="totalElements > 0">
+            <div class="d-flex align-items-center gap-2">
+              <span class="small">{{ 'common.show' | translate }}</span>
+              <select class="form-select form-select-sm" style="width: auto;" [(ngModel)]="pageSize" (change)="currentPage = 0; loadReclamations()">
+                <option [value]="10">10</option>
+                <option [value]="20">20</option>
+                <option [value]="50">50</option>
+              </select>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+              <span class="small">
+                {{ (currentPage * pageSize) + 1 }} - {{ (currentPage * pageSize) + reclamations.length }} sur {{ totalElements }}
+              </span>
+              <div class="pagination-buttons d-flex gap-1">
+                <button class="btn btn-sm btn-outline-secondary" [disabled]="currentPage === 0" (click)="previousPage()">
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+                
+                <ng-container *ngFor="let p of [].constructor(totalPages); let i = index">
+                  <button *ngIf="i < 5 || i > totalPages - 3 || (i >= currentPage - 1 && i <= currentPage + 1)"
+                          class="btn btn-sm" 
+                          [ngClass]="{'btn-primary': i === currentPage, 'btn-outline-secondary': i !== currentPage}"
+                          (click)="onPageChange(i)">
+                    {{ i + 1 }}
+                  </button>
+                  <span *ngIf="i === 5 && totalPages > 10" class="px-1 text-muted">...</span>
+                </ng-container>
+
+                <button class="btn btn-sm btn-outline-secondary" [disabled]="currentPage >= totalPages - 1" (click)="nextPage()">
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- MODAL DETAILS RECLAMATION POUR L'ADMIN -->
+<div class="modal fade show d-block" tabindex="-1" *ngIf="showDetailsModal" style="background: rgba(0,0,0,0.5); z-index: 1050;">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header bg-light border-bottom-0 py-3">
+        <h5 class="modal-title fw-bold text-dark">
+          <i class="bi bi-file-earmark-text text-primary me-2"></i>
+          Détails de la Réclamation #{{ selectedDetails?.numeroReclamation }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeDetailsModal()"></button>
+      </div>
+
+      <div class="modal-body p-4" *ngIf="selectedDetails">
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded-3">
+              <span class="text-muted d-block small text-uppercase fw-semibold">Objet</span>
+              <span class="fw-semibold text-dark text-truncate d-block">{{ selectedDetails.titre }}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded-3">
+              <span class="text-muted d-block small text-uppercase fw-semibold">Catégorie</span>
+              <span class="fw-semibold text-dark">{{ selectedDetails.categorie }}</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded-3">
+              <span class="text-muted d-block small text-uppercase fw-semibold">Statut</span>
+              <span class="badge rounded-pill mt-1" [ngClass]="getBadgeClass(selectedDetails.statut)">
+                {{ translateStatus(selectedDetails.statut) }}
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded-3">
+              <span class="text-muted d-block small text-uppercase fw-semibold">Priorité</span>
+              <span class="badge rounded-pill mt-1" [ngClass]="getPriorityClass(selectedDetails.priorite)">
+                {{ translatePriority(selectedDetails.priorite) }}
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded-3">
+              <span class="text-muted d-block small text-uppercase fw-semibold">Équipe Assignée</span>
+              <span class="fw-semibold text-dark d-block mt-1">
+                {{ selectedDetails.equipeAssignee || 'Non assignée' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <h6 class="fw-bold text-dark mb-2">Description Client</h6>
+          <div class="p-3 bg-light rounded-3 text-secondary" style="white-space: pre-line;">
+            {{ selectedDetails.description || 'Aucune description fournie.' }}
+          </div>
+        </div>
+
+        <!-- Section Motif de Réouverture (Client) -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 mt-4" 
+             *ngIf="selectedDetails.motifReouverture"
+             style="border-left: 5px solid #0dcaf0; background-color: #f4fdff;">
+          <h6 class="fw-bold text-info mb-3"><i class="bi bi-arrow-counterclockwise me-2"></i>Motif de réouverture (Client)</h6>
+          <div class="p-3 bg-white rounded-3 border mb-3 text-dark">
+            {{ selectedDetails.motifReouverture }}
+          </div>
+          <div class="p-3 bg-white rounded-3 border d-flex align-items-center justify-content-between" 
+               *ngIf="selectedDetails.reouvertureAttachmentName"
+               style="cursor: pointer; transition: all 0.2s;"
+               (click)="downloadReouvertureFile(selectedDetails)"
+               title="Cliquer pour télécharger la pièce jointe">
+            <div>
+              <i class="bi bi-file-earmark-arrow-down-fill text-warning me-2 fs-5"></i>
+              <span class="fw-semibold text-dark text-decoration-underline">{{ selectedDetails.reouvertureAttachmentName }}</span>
+            </div>
+            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill small">
+              <i class="bi bi-download me-1"></i> Télécharger
+            </span>
+          </div>
+        </div>
+
+        <!-- Section Motif du Refus (Rejetée) -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 mt-4" 
+             *ngIf="selectedDetails.statut === 'REJETEE' && selectedDetails.motifRefus"
+             style="border-left: 5px solid #dc3545; background-color: #fff9f9;">
+          <h6 class="fw-bold text-danger mb-3"><i class="bi bi-x-octagon-fill me-2"></i>Motif du Rejet</h6>
+          <div class="p-3 bg-white rounded-3 border text-dark">
+            {{ selectedDetails.motifRefus }}
+          </div>
+        </div>
+
+        <!-- Section Comptes Rendus Résolution (Tritée) -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 mt-4" 
+             *ngIf="selectedDetails.statut === 'TRAITEE'"
+             style="border-left: 5px solid #198754; background-color: #f7fffb;">
+          <h6 class="fw-bold text-success mb-3"><i class="bi bi-check-circle-fill me-2"></i>Rapport de Résolution</h6>
+          
+          <div class="mb-3">
+            <span class="small text-muted fw-semibold">Cause Identifiée</span>
+            <p class="text-dark mb-0">{{ selectedDetails.causeIdentifiee || 'N/A' }}</p>
+          </div>
+
+          <div class="mb-3">
+            <span class="small text-muted fw-semibold">Action Réalisée</span>
+            <p class="text-dark mb-0">{{ selectedDetails.actionRealisee || 'N/A' }}</p>
+          </div>
+
+          <div class="mb-3">
+            <span class="small text-muted fw-semibold">Solution Proposée</span>
+            <p class="text-dark mb-0">{{ selectedDetails.solutionProposee || 'N/A' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer border-top-0 py-3 bg-light rounded-bottom-4">
+        <button type="button" class="btn btn-secondary rounded-pill px-4" (click)="closeDetailsModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>

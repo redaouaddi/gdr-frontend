@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Equipe } from '../models/equipe.model';
 import { UserResponse } from './user.service';
+import { Page } from '../models/pagination.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,8 @@ export class EquipeService {
 
   constructor(private http: HttpClient) { }
 
-  getAllTeams(): Observable<Equipe[]> {
-    return this.http.get<Equipe[]>(this.apiUrl);
+  getAllTeams(page: number = 0, size: number = 10): Observable<Page<Equipe>> {
+    return this.http.get<Page<Equipe>>(`${this.apiUrl}?page=${page}&size=${size}`);
   }
 
   createTeam(equipe: { nom: string, chefEmail: string }): Observable<Equipe> {
@@ -32,8 +33,8 @@ export class EquipeService {
     return this.http.get<Equipe>(`${this.apiUrl}/ma-gestion`);
   }
 
-  getFreeAgents(): Observable<UserResponse[]> {
-    return this.http.get<UserResponse[]>(`${this.apiUrl}/agents-libres`);
+  getFreeAgents(page: number = 0, size: number = 10): Observable<Page<UserResponse>> {
+    return this.http.get<Page<UserResponse>>(`${this.apiUrl}/agents-libres?page=${page}&size=${size}`);
   }
 
   // ADMIN seulement
@@ -44,5 +45,13 @@ export class EquipeService {
   // ADMIN seulement
   retirerAgent(equipeId: number, agentId: number): Observable<Equipe> {
     return this.http.delete<Equipe>(`${this.apiUrl}/${equipeId}/agents/${agentId}`);
+  }
+
+  deleteTeam(id: number, targetTeamId?: number): Observable<void> {
+    let params = new HttpParams();
+    if (targetTeamId) {
+      params = params.set('targetTeamId', targetTeamId.toString());
+    }
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { params });
   }
 }

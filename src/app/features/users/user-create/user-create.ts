@@ -44,10 +44,11 @@ export class UserCreateComponent implements OnInit {
   }
 
   loadRoles(): void {
-    this.accessService.getAll().subscribe({
-      next: (data) => {
-        this.roles = data.filter(r => !r.deleted);
-        if (this.roles.length > 0) {
+    // Fetch with large size for selection
+    this.accessService.getAll(0, 1000).subscribe({
+      next: (response) => {
+        this.roles = (response.content || []).filter((r: Access) => !r.deleted);
+        if (this.roles.length > 0 && this.selectedRoles.length === 0) {
           this.selectedRoles = [this.roles[0].name];
         }
       },

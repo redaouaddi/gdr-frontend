@@ -57,9 +57,10 @@ export class ReclamationCreateComponent implements OnInit {
   }
 
   loadSlaConfigurations(): void {
-    this.slaConfigService.getAll().subscribe({
-      next: (data) => {
-        this.slaConfigurations = data;
+    // Fetch with large size for selection
+    this.slaConfigService.getAll(0, 1000).subscribe({
+      next: (response) => {
+        this.slaConfigurations = response.content || [];
       },
       error: (err) => {
         console.error('Erreur chargement SLA', err);

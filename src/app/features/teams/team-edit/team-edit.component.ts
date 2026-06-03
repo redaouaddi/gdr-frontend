@@ -67,16 +67,20 @@ export class TeamEditComponent implements OnInit {
     this.isFetching = true;
 
     forkJoin({
-      users: this.userService.getAllUsers(),
-      equipes: this.equipeService.getAllTeams(),
-      freeAgents: this.equipeService.getFreeAgents()
+      usersPage: this.userService.getAllUsers(0, 1000),
+      equipesPage: this.equipeService.getAllTeams(0, 1000),
+      freeAgentsPage: this.equipeService.getFreeAgents(0, 1000)
     }).pipe(
       finalize(() => {
         this.isFetching = false;
         this.cdr.detectChanges();
       })
     ).subscribe({
-      next: ({ users, equipes, freeAgents }) => {
+      next: ({ usersPage, equipesPage, freeAgentsPage }) => {
+        const users = usersPage.content || [];
+        const equipes = equipesPage.content || [];
+        const freeAgents = freeAgentsPage.content || [];
+
         const equipe = equipes.find(eq => eq.id === this.teamId);
 
         if (!equipe) {
@@ -95,6 +99,14 @@ export class TeamEditComponent implements OnInit {
             .map(e => e.chefEquipeId)
         );
 
+        // Agents déjà assignés à une équipe (n'importe laquelle)
+        const agentsAssignes = new Set<number>();
+        equipes.forEach(e => {
+          if (e.agents) {
+            e.agents.forEach(a => agentsAssignes.add(a.id));
+          }
+        });
+
         this.users = users.filter(user =>
           user.roles &&
           (
@@ -103,7 +115,8 @@ export class TeamEditComponent implements OnInit {
             user.roles.includes('SERVICE_MANAGER') ||
             user.roles.includes('ROLE_SERVICE_MANAGER')
           ) &&
-          !chefsDejaAssignes.has(user.id)
+          !chefsDejaAssignes.has(user.id) &&
+          !agentsAssignes.has(user.id)
         );
 
         this.teamForm.patchValue({

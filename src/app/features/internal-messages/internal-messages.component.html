@@ -38,6 +38,16 @@
               </div>
               <div class="msg-body">{{ msg.contenu }}</div>
             </div>
+
+            <div class="d-flex justify-content-center mt-3 gap-2" *ngIf="totalMessagePages > 1">
+              <button class="btn btn-sm btn-link" [disabled]="currentPage === 0" (click)="previousPage()">
+                <i class="bi bi-chevron-left"></i> {{ 'common.previous' | translate }}
+              </button>
+              <span class="align-self-center small">{{ currentPage + 1 }} / {{ totalMessagePages }}</span>
+              <button class="btn btn-sm btn-link" [disabled]="currentPage >= totalMessagePages - 1" (click)="nextPage()">
+                {{ 'common.next' | translate }} <i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
           </div>
 
           <ng-template #loadingTpl>
