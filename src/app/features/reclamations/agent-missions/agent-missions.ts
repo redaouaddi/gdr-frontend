@@ -7,6 +7,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ReclamationService } from '../../../core/services/reclamation.service';
 import { Reclamation } from '../../../core/models/reclamation.model';
 import { MessageInterneService, MessageInterne } from '../../../core/services/message-interne.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { Navbar } from '../../../layout/navbar/navbar';
@@ -81,6 +82,7 @@ export class AgentMissionsComponent implements OnInit, OnDestroy {
   constructor(
     private reclamationService: ReclamationService,
     private messageInterneService: MessageInterneService,
+    private authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef,
     private translate: TranslateService
@@ -112,26 +114,20 @@ export class AgentMissionsComponent implements OnInit, OnDestroy {
   }
 
   detectRole(): void {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const role = user?.role || user?.roles?.[0] || '';
+    const user = this.authService.getUser();
+    const roles = this.authService.getNormalizedRoles(user);
 
-    this.currentRole = role;
+    this.currentRole = this.authService.getPrimaryRole(user);
 
     this.isChefEquipe =
-      role === 'CHEF_EQUIPE' ||
-      role === 'ROLE_CHEF_EQUIPE' ||
-      role === 'SERVICE_MANAGER' ||
-      role === 'ROLE_SERVICE_MANAGER';
+      roles.includes('CHEF_EQUIPE') ||
+      roles.includes('SERVICE_MANAGER');
 
-    this.isAgent =
-      role === 'AGENT' ||
-      role === 'ROLE_AGENT';
+    this.isAgent = roles.includes('AGENT');
 
     this.isClient =
-      role === 'CLIENT' ||
-      role === 'ROLE_CLIENT' ||
-      role === 'USER' ||
-      role === 'ROLE_USER';
+      roles.includes('CLIENT') ||
+      roles.includes('USER');
   }
 
   loadMissions(): void {

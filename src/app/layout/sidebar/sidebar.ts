@@ -46,11 +46,13 @@ export class Sidebar implements OnInit {
 
   ngOnInit() {
     const user = this.authService.getUser();
-    if (user && user.roles) {
-      this.isAdmin = user.roles.includes('ADMIN');
-      this.isServiceManager = user.roles.includes('SERVICE_MANAGER');
-      this.isChefEquipe = user.roles.includes('CHEF_EQUIPE') || user.roles.includes('AGENT');
-      this.isClient = user.roles.includes('CLIENT') || user.roles.includes('USER');
+    const roles = this.authService.getNormalizedRoles(user);
+
+    if (roles.length) {
+      this.isAdmin = roles.includes('ADMIN');
+      this.isServiceManager = roles.includes('SERVICE_MANAGER');
+      this.isChefEquipe = roles.includes('CHEF_EQUIPE') || roles.includes('AGENT');
+      this.isClient = roles.includes('CLIENT') || roles.includes('USER');
     }
   }
 
@@ -207,4 +209,5 @@ export class Sidebar implements OnInit {
       this.faceCaptureError = this.translate.instant('sidebar.errors.face_save');
     }
   }
+
 }

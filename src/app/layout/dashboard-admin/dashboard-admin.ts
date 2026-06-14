@@ -5,6 +5,8 @@ import { Chart, registerables } from 'chart.js';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ReclamationService } from '../../core/services/reclamation.service';
 import { Reclamation } from '../../core/models/reclamation.model';
+import { EquipeService } from '../../core/services/equipe.service';
+import { Equipe } from '../../core/models/equipe.model';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
@@ -59,6 +61,20 @@ export class DashboardAdminComponent implements OnInit {
   enCoursCount = 0;
   slaRespecte = 0;
 
+  showChartDetails = false;
+  showSlaDetails = false;
+  showWorkloadDetails = false;
+  showWorkflowDetails = false;
+
+  /* ================= FILTRES ================= */
+  selectedYear: number | undefined = undefined;
+  selectedMonth: number | undefined = undefined;
+  selectedPriorite: string | undefined = undefined;
+  selectedTeamId: number | undefined = undefined;
+
+  teams: Equipe[] = [];
+  years: number[] = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
+
   /* ================= CHART ================= */
 
   selectedDataset: 'status' | 'priority' | 'month' | 'categorie' = 'status';
@@ -100,6 +116,7 @@ export class DashboardAdminComponent implements OnInit {
     private dashboardService: DashboardService,
     private translate: TranslateService,
     private reclamationService: ReclamationService,
+    private equipeService: EquipeService,
     private elRef: ElementRef
   ) {}
 
@@ -113,11 +130,9 @@ export class DashboardAdminComponent implements OnInit {
   /* ================================================= */
 
   ngOnInit(): void {
-
+    this.loadTeams();
     this.loadStats();
-
     this.initializeAgentsData();
-
     this.loadSelectedChartData();
 
     this.translate.onLangChange.subscribe(() => {
@@ -131,7 +146,7 @@ export class DashboardAdminComponent implements OnInit {
 
   loadStats(): void {
 
-    this.dashboardService.getDashboardStats().subscribe({
+    this.dashboardService.getDashboardStats(this.selectedYear, this.selectedMonth, this.selectedPriorite, this.selectedTeamId).subscribe({
       next: (data: DashboardStats) => {
         this.usersCount = data.usersCount;
         this.reclamationsCount = data.reclamationsCount;
@@ -143,6 +158,27 @@ export class DashboardAdminComponent implements OnInit {
         console.error('Erreur chargement KPI dashboard :', err);
       }
     });
+  }
+
+  loadTeams(): void {
+    this.equipeService.getAllTeams(0, 1000).subscribe({
+      next: (data) => {
+        this.teams = data.content;
+      }
+    });
+  }
+
+  applyFilters(): void {
+    this.loadStats();
+    this.loadSelectedChartData();
+  }
+
+  resetFilters(): void {
+    this.selectedYear = undefined;
+    this.selectedMonth = undefined;
+    this.selectedPriorite = undefined;
+    this.selectedTeamId = undefined;
+    this.applyFilters();
   }
 
   /* ================= INIT AGENTS ================= */
@@ -248,7 +284,7 @@ export class DashboardAdminComponent implements OnInit {
 
     if (this.selectedDataset === 'status') {
 
-      this.dashboardService.getStatusChart().subscribe({
+      this.dashboardService.getStatusChart(this.selectedYear, this.selectedMonth, this.selectedPriorite, this.selectedTeamId).subscribe({
         next: (data) => {
           this.chartData = data;
           this.applySmartVisualizationAgent();
@@ -259,7 +295,7 @@ export class DashboardAdminComponent implements OnInit {
 
     else if (this.selectedDataset === 'priority') {
 
-      this.dashboardService.getPrioriteChart().subscribe({
+      this.dashboardService.getPrioriteChart(this.selectedYear, this.selectedMonth, this.selectedPriorite, this.selectedTeamId).subscribe({
         next: (data) => {
           this.chartData = data;
           this.applySmartVisualizationAgent();
@@ -270,7 +306,7 @@ export class DashboardAdminComponent implements OnInit {
 
     else if (this.selectedDataset === 'month') {
 
-      this.dashboardService.getMonthChart().subscribe({
+      this.dashboardService.getMonthChart(this.selectedYear, this.selectedMonth, this.selectedPriorite, this.selectedTeamId).subscribe({
         next: (data) => {
           this.chartData = data;
           this.applySmartVisualizationAgent();
@@ -281,7 +317,7 @@ export class DashboardAdminComponent implements OnInit {
 
     else if (this.selectedDataset === 'categorie') {
 
-      this.dashboardService.getCategorieChart().subscribe({
+      this.dashboardService.getCategorieChart(this.selectedYear, this.selectedMonth, this.selectedPriorite, this.selectedTeamId).subscribe({
         next: (data) => {
           this.chartData = data;
           this.applySmartVisualizationAgent();

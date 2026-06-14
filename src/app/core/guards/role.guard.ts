@@ -1,18 +1,21 @@
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
 export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const router = inject(Router);
+  const authService = inject(AuthService);
 
-  const userString = localStorage.getItem('user');
-  if (!userString) {
+  const user = authService.getUser();
+  if (!user) {
     router.navigate(['/login']);
     return false;
   }
 
-  const user = JSON.parse(userString);
-  const userRoles: string[] = user.roles || [];
-  const expectedRoles: string[] = route.data['roles'] || [];
+  const userRoles = authService.getNormalizedRoles(user);
+  const expectedRoles: string[] = (route.data['roles'] || []).map((role: string) =>
+    authService.normalizeRole(role)
+  );
 
   const hasAccess = expectedRoles.some(role => userRoles.includes(role));
 
@@ -20,15 +23,19 @@ export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     return true;
   }
 
-  if (userRoles.includes('ADMIN')) {
+  const primaryRole = authService.getPrimaryRole(user);
+
+  if (primaryRole === 'ADMIN') {
     router.navigate(['/dashboard/admin']);
-  } else if (userRoles.includes('CLIENT')) {
+  } else if (primaryRole === 'CONSULTER_RAPPORTS') {
+    router.navigate(['/admin/reclamations']);
+  } else if (primaryRole === 'CLIENT' || primaryRole === 'USER') {
     router.navigate(['/dashboard/client']);
-  } else if (userRoles.includes('AGENT')) {
+  } else if (primaryRole === 'AGENT') {
     router.navigate(['/agent/missions']);
-  } else if (userRoles.includes('MANAGER')) {
+  } else if (primaryRole === 'MANAGER') {
     router.navigate(['/dashboard/manager']);
-  } else if (userRoles.includes('SERVICE_MANAGER')) {
+  } else if (primaryRole === 'SERVICE_MANAGER') {
     router.navigate(['/dashboard/service-manager']);
   } else {
     router.navigate(['/login']);

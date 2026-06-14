@@ -7,6 +7,7 @@ import { UserService, UserResponse } from '../../../core/services/user.service';
 import { AgentResponse, Equipe } from '../../../core/models/equipe.model';
 import { Navbar } from '../../../layout/navbar/navbar';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
+import { AuthService } from '../../../core/services/auth.service';
 import { finalize, timeout } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -41,6 +42,7 @@ export class TeamEditComponent implements OnInit {
     private fb: FormBuilder,
     private equipeService: EquipeService,
     private userService: UserService,
+    private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
@@ -108,12 +110,8 @@ export class TeamEditComponent implements OnInit {
         });
 
         this.users = users.filter(user =>
-          user.roles &&
-          (
-            user.roles.includes('CHEF_EQUIPE') ||
-            user.roles.includes('ROLE_CHEF_EQUIPE') ||
-            user.roles.includes('SERVICE_MANAGER') ||
-            user.roles.includes('ROLE_SERVICE_MANAGER')
+          this.authService.getNormalizedRoles(user).some(role =>
+            role === 'CHEF_EQUIPE' || role === 'SERVICE_MANAGER'
           ) &&
           !chefsDejaAssignes.has(user.id) &&
           !agentsAssignes.has(user.id)

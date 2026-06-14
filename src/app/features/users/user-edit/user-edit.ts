@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, FormGroup, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Navbar } from '../../../layout/navbar/navbar';
 import { Sidebar} from '../../../layout/sidebar/sidebar';
@@ -8,6 +8,22 @@ import { UserService } from '../../../core/services/user.service';
 import { AccessService } from '../../../core/services/access.service';
 import { Access } from '../../../core/models/access.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+export function passwordRobustnessValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) {
+      return null;
+    }
+    const hasLength = value.length >= 8;
+    const hasUppercase = /[A-Z]/.test(value);
+    const hasLowercase = /[a-z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+    
+    const isRobust = hasLength && hasUppercase && hasLowercase && hasNumber;
+    return isRobust ? null : { passwordWeak: true };
+  };
+}
 
 @Component({
   selector: 'app-user-edit',
@@ -23,6 +39,14 @@ export class UserEdit implements OnInit {
   successMessage = '';
   roles: Access[] = [];
   selectedRoles: string[] = [];
+
+  passwordStrength = {
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    score: 0
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -41,7 +65,12 @@ export class UserEdit implements OnInit {
       firstName: [{ value: '', disabled: false }, Validators.required],
       lastName: [{ value: '', disabled: false }, Validators.required],
       email: [{ value: '', disabled: false }, [Validators.required, Validators.email]],
+      password: ['', [passwordRobustnessValidator()]],
       gender: ['', Validators.required]
+    });
+
+    this.userForm.get('password')?.valueChanges.subscribe(val => {
+      this.checkPasswordStrength(val || '');
     });
 
     if (this.userId) {
@@ -92,6 +121,32 @@ export class UserEdit implements OnInit {
     return this.selectedRoles.includes(roleName);
   }
 
+  checkPasswordStrength(val: string): void {
+    if (!val) {
+      this.passwordStrength = {
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        score: 0
+      };
+      return;
+    }
+    this.passwordStrength.length = val.length >= 8;
+    this.passwordStrength.uppercase = /[A-Z]/.test(val);
+    this.passwordStrength.lowercase = /[a-z]/.test(val);
+    this.passwordStrength.number = /[0-9]/.test(val);
+
+    let score = 0;
+    if (this.passwordStrength.length) score++;
+    if (this.passwordStrength.uppercase) score++;
+    if (this.passwordStrength.lowercase) score++;
+    if (this.passwordStrength.number) score++;
+    
+    this.passwordStrength.score = score;
+    this.cdr.detectChanges();
+  }
+
   onSubmit(): void {
     if (this.userForm.invalid) {
       return;
@@ -99,13 +154,19 @@ export class UserEdit implements OnInit {
 
     const formValue = this.userForm.getRawValue();
 
-    this.userService.updateUser(this.userId, {
+    const updatePayload: any = {
       firstName: formValue.firstName,
       lastName: formValue.lastName,
       email: formValue.email,
       gender: formValue.gender,
       roles: this.selectedRoles
-    }).subscribe({
+    };
+
+    if (formValue.password) {
+      updatePayload.password = formValue.password;
+    }
+
+    this.userService.updateUser(this.userId, updatePayload).subscribe({
       next: () => {
         this.successMessage = this.translate.instant('user_edit.messages.success');
         setTimeout(() => {

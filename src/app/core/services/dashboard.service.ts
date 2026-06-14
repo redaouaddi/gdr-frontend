@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface ChartData {
@@ -23,23 +23,37 @@ export class DashboardService {
 
   constructor(private http: HttpClient) {}
 
-  getDashboardStats(): Observable<DashboardStats> {
-    return this.http.get<DashboardStats>(`${this.api}/stats`);
+  private buildParams(year?: number, month?: number, priorite?: string, equipeId?: number): HttpParams {
+    let params = new HttpParams();
+    if (year) params = params.set('year', year.toString());
+    if (month) params = params.set('month', month.toString());
+    if (priorite) params = params.set('priorite', priorite);
+    if (equipeId) params = params.set('equipeId', equipeId.toString());
+    return params;
   }
 
-  getStatusChart(): Observable<ChartData[]> {
-    return this.http.get<ChartData[]>(`${this.api}/reclamations-status`);
+  getDashboardStats(year?: number, month?: number, priorite?: string, equipeId?: number): Observable<DashboardStats> {
+    const params = this.buildParams(year, month, priorite, equipeId);
+    return this.http.get<DashboardStats>(`${this.api}/stats`, { params });
   }
 
-  getPrioriteChart(): Observable<ChartData[]> {
-    return this.http.get<ChartData[]>(`${this.api}/reclamations-priorite`);
+  getStatusChart(year?: number, month?: number, priorite?: string, equipeId?: number): Observable<ChartData[]> {
+    const params = this.buildParams(year, month, priorite, equipeId);
+    return this.http.get<ChartData[]>(`${this.api}/reclamations-status`, { params });
   }
 
-  getMonthChart(): Observable<ChartData[]> {
-    return this.http.get<ChartData[]>(`${this.api}/reclamations-month`);
+  getPrioriteChart(year?: number, month?: number, priorite?: string, equipeId?: number): Observable<ChartData[]> {
+    const params = this.buildParams(year, month, priorite, equipeId);
+    return this.http.get<ChartData[]>(`${this.api}/reclamations-priorite`, { params });
   }
 
-  getCategorieChart(): Observable<ChartData[]> {
-    return this.http.get<ChartData[]>(`${this.api}/reclamations-categorie`);
+  getMonthChart(year?: number, month?: number, priorite?: string, equipeId?: number): Observable<ChartData[]> {
+    const params = this.buildParams(year, month, priorite, equipeId);
+    return this.http.get<ChartData[]>(`${this.api}/reclamations-month`, { params });
+  }
+
+  getCategorieChart(year?: number, month?: number, priorite?: string, equipeId?: number): Observable<ChartData[]> {
+    const params = this.buildParams(year, month, priorite, equipeId);
+    return this.http.get<ChartData[]>(`${this.api}/reclamations-categorie`, { params });
   }
 }

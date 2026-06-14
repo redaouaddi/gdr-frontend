@@ -15,135 +15,62 @@
         </div>
 
         <div class="header-actions">
-          <div class="report-dropdown-wrapper">
-            <button class="export-btn" (click)="toggleReportMenu()">
-              <i class="bi bi-download me-2"></i>Exporter un rapport
-              <i class="bi bi-chevron-down ms-2" [style.transform]="reportMenuOpen ? 'rotate(180deg)' : 'rotate(0)'" style="transition: transform 0.3s;"></i>
-            </button>
-
-            <div class="report-dropdown-menu" *ngIf="reportMenuOpen">
-              <div class="report-menu-header">
-                <i class="bi bi-bar-chart-fill"></i>
-                <span>Centre de Reporting</span>
-              </div>
-
-              <div class="report-menu-grid">
-                <div class="report-menu-item" (click)="selectReport('hors_sla')">
-                  <div class="report-menu-item-info">
-                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
-                    <span>Réclamations Hors SLA</span>
-                  </div>
-                  <div class="report-format-btns">
-                    <button class="fmt-btn pdf" (click)="exportSelectedReport('hors_sla', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
-                    <button class="fmt-btn excel" (click)="exportSelectedReport('hors_sla', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
-                    <button class="fmt-btn csv" (click)="exportSelectedReport('hors_sla', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
-                  </div>
-                </div>
-
-                <div class="report-menu-item" (click)="selectReport('par_projet')">
-                  <div class="report-menu-item-info">
-                    <i class="bi bi-folder-fill text-primary"></i>
-                    <span>Nombre réclamations par Projet</span>
-                  </div>
-                  <div class="report-format-btns">
-                    <button class="fmt-btn pdf" (click)="exportSelectedReport('par_projet', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
-                    <button class="fmt-btn excel" (click)="exportSelectedReport('par_projet', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
-                    <button class="fmt-btn csv" (click)="exportSelectedReport('par_projet', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
-                  </div>
-                </div>
-
-                <div class="report-menu-item" (click)="selectReport('maintenance')">
-                  <div class="report-menu-item-info">
-                    <i class="bi bi-wrench-adjustable-circle-fill text-warning"></i>
-                    <span>Réclamations projet Maintenance</span>
-                  </div>
-                  <div class="report-format-btns">
-                    <button class="fmt-btn pdf" (click)="exportSelectedReport('maintenance', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
-                    <button class="fmt-btn excel" (click)="exportSelectedReport('maintenance', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
-                    <button class="fmt-btn csv" (click)="exportSelectedReport('maintenance', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
-                  </div>
-                </div>
-
-                <div class="report-menu-item" (click)="selectReport('extraction')">
-                  <div class="report-menu-item-info">
-                    <i class="bi bi-database-fill-down text-info"></i>
-                    <span>Extraction des réclamations</span>
-                  </div>
-                  <div class="report-format-btns">
-                    <button class="fmt-btn pdf" (click)="exportSelectedReport('extraction', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
-                    <button class="fmt-btn excel" (click)="exportSelectedReport('extraction', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
-                    <button class="fmt-btn csv" (click)="exportSelectedReport('extraction', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
-                  </div>
-                </div>
-
-                <div class="report-menu-item" (click)="selectReport('par_statut')">
-                  <div class="report-menu-item-info">
-                    <i class="bi bi-pie-chart-fill text-success"></i>
-                    <span>Réclamations par Statut</span>
-                  </div>
-                  <div class="report-format-btns">
-                    <button class="fmt-btn pdf" (click)="exportSelectedReport('par_statut', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
-                    <button class="fmt-btn excel" (click)="exportSelectedReport('par_statut', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
-                    <button class="fmt-btn csv" (click)="exportSelectedReport('par_statut', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
-                  </div>
-                </div>
-
-                <div class="report-menu-item" (click)="selectReport('par_equipe')">
-                  <div class="report-menu-item-info">
-                    <i class="bi bi-people-fill text-purple"></i>
-                    <span>Réclamations par Équipe</span>
-                  </div>
-                  <div class="report-format-btns">
-                    <button class="fmt-btn pdf" (click)="exportSelectedReport('par_equipe', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
-                    <button class="fmt-btn excel" (click)="exportSelectedReport('par_equipe', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
-                    <button class="fmt-btn csv" (click)="exportSelectedReport('par_equipe', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
-                  </div>
-                </div>
-
-                <div class="report-menu-item" (click)="selectReport('reouvertes')">
-                  <div class="report-menu-item-info">
-                    <i class="bi bi-arrow-repeat text-orange"></i>
-                    <span>Réclamations Réouvertes</span>
-                  </div>
-                  <div class="report-format-btns">
-                    <button class="fmt-btn pdf" (click)="exportSelectedReport('reouvertes', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
-                    <button class="fmt-btn excel" (click)="exportSelectedReport('reouvertes', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
-                    <button class="fmt-btn csv" (click)="exportSelectedReport('reouvertes', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
-                  </div>
-                </div>
-
-                <div class="report-menu-item" (click)="selectReport('depassement_sla')">
-                  <div class="report-menu-item-info">
-                    <i class="bi bi-clock-history text-danger"></i>
-                    <span>Dépassement SLA</span>
-                  </div>
-                  <div class="report-format-btns">
-                    <button class="fmt-btn pdf" (click)="exportSelectedReport('depassement_sla', 'pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
-                    <button class="fmt-btn excel" (click)="exportSelectedReport('depassement_sla', 'excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
-                    <button class="fmt-btn csv" (click)="exportSelectedReport('depassement_sla', 'csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="report-menu-divider"></div>
-
-              <div class="report-menu-item report-menu-item-full" (click)="exportFullReport('pdf')">
-                <div class="report-menu-item-info">
-                  <i class="bi bi-file-earmark-zip-fill text-primary"></i>
-                  <span><strong>Rapport complet (toutes sections)</strong></span>
-                </div>
-                <div class="report-format-btns">
-                  <button class="fmt-btn pdf" (click)="exportFullReport('pdf'); $event.stopPropagation()"><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>
-                  <button class="fmt-btn excel" (click)="exportFullReport('excel'); $event.stopPropagation()"><i class="bi bi-file-earmark-excel-fill"></i> Excel</button>
-                  <button class="fmt-btn csv" (click)="exportFullReport('csv'); $event.stopPropagation()"><i class="bi bi-filetype-csv"></i> CSV</button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div class="agent-badge">
           {{ 'admin_dashboard.multi_agent_active' | translate }}
+        </div>
+      </div>
+
+      <div class="filters-section" style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-end; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <div class="filter-group" style="display: flex; flex-direction: column; gap: 5px;">
+          <label style="font-size: 0.85rem; font-weight: 500; color: #4b5563;">Année</label>
+          <select [(ngModel)]="selectedYear" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; min-width: 100px;">
+            <option [ngValue]="undefined">Toutes</option>
+            <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group" style="display: flex; flex-direction: column; gap: 5px;">
+          <label style="font-size: 0.85rem; font-weight: 500; color: #4b5563;">Mois</label>
+          <select [(ngModel)]="selectedMonth" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; min-width: 120px;">
+            <option [ngValue]="undefined">Tous</option>
+            <option value="1">Janvier</option>
+            <option value="2">Février</option>
+            <option value="3">Mars</option>
+            <option value="4">Avril</option>
+            <option value="5">Mai</option>
+            <option value="6">Juin</option>
+            <option value="7">Juillet</option>
+            <option value="8">Août</option>
+            <option value="9">Septembre</option>
+            <option value="10">Octobre</option>
+            <option value="11">Novembre</option>
+            <option value="12">Décembre</option>
+          </select>
+        </div>
+
+        <div class="filter-group" style="display: flex; flex-direction: column; gap: 5px;">
+          <label style="font-size: 0.85rem; font-weight: 500; color: #4b5563;">Priorité</label>
+          <select [(ngModel)]="selectedPriorite" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; min-width: 120px;">
+            <option [ngValue]="undefined">Toutes</option>
+            <option value="FAIBLE">Faible</option>
+            <option value="MOYENNE">Moyenne</option>
+            <option value="ELEVEE">Élevée</option>
+          </select>
+        </div>
+
+        <div class="filter-group" style="display: flex; flex-direction: column; gap: 5px;">
+          <label style="font-size: 0.85rem; font-weight: 500; color: #4b5563;">Équipe</label>
+          <select [(ngModel)]="selectedTeamId" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; min-width: 150px;">
+            <option [ngValue]="undefined">Toutes</option>
+            <option *ngFor="let team of teams" [value]="team.id">{{ team.nom }}</option>
+          </select>
+        </div>
+
+        <div class="filter-actions" style="display: flex; gap: 10px; margin-left: auto;">
+          <button (click)="applyFilters()" style="padding: 8px 16px; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">Filtrer</button>
+          <button (click)="resetFilters()" style="padding: 8px 16px; background-color: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; font-weight: 500;">Réinitialiser</button>
         </div>
       </div>
 
@@ -194,6 +121,9 @@
               {{ 'admin_dashboard.agents.visualization.selected_type' | translate }} :
               <strong>{{ chartType }}</strong>
             </div>
+            <button style="margin-top: 15px; padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 0.85rem;" (click)="showChartDetails = !showChartDetails">
+              {{ showChartDetails ? 'Masquer les détails' : 'Détails' }}
+            </button>
           </div>
 
           <div class="agent-card sla">
@@ -210,6 +140,9 @@
               {{ slaBreaches.length }}
               {{ 'admin_dashboard.agents.sla.breaches_detected' | translate }}
             </div>
+            <button style="margin-top: 15px; padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 0.85rem;" (click)="showSlaDetails = !showSlaDetails">
+              {{ showSlaDetails ? 'Masquer les détails' : 'Détails' }}
+            </button>
           </div>
 
           <div class="agent-card charge">
@@ -226,6 +159,9 @@
               {{ 'admin_dashboard.agents.workload.most_loaded' | translate }} :
               <strong>{{ mostLoadedAgent.name }}</strong>
             </div>
+            <button style="margin-top: 15px; padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 0.85rem;" (click)="showWorkloadDetails = !showWorkloadDetails">
+              {{ showWorkloadDetails ? 'Masquer les détails' : 'Détails' }}
+            </button>
           </div>
 
           <div class="agent-card workflow-agent">
@@ -241,11 +177,14 @@
             <div class="agent-result">
               {{ workflowStatus | translate }}
             </div>
+            <button style="margin-top: 15px; padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 0.85rem;" (click)="showWorkflowDetails = !showWorkflowDetails">
+              {{ showWorkflowDetails ? 'Masquer les détails' : 'Détails' }}
+            </button>
           </div>
         </div>
       </div>
 
-      <div class="sla-details-card">
+      <div class="sla-details-card" *ngIf="showSlaDetails">
         <div class="section-title">
           <h3>{{ 'admin_dashboard.sla_details.title' | translate }}</h3>
           <p>{{ 'admin_dashboard.sla_details.subtitle' | translate }}</p>
@@ -288,7 +227,7 @@
         </table>
       </div>
 
-      <div class="workload-card">
+      <div class="workload-card" *ngIf="showWorkloadDetails">
         <div class="section-title">
           <h3>{{ 'admin_dashboard.workload.title' | translate }}</h3>
           <p>{{ 'admin_dashboard.workload.subtitle' | translate }}</p>
@@ -321,7 +260,7 @@
         </table>
       </div>
 
-      <div class="workflow-card">
+      <div class="workflow-card" *ngIf="showWorkflowDetails">
         <div class="section-title">
           <h3>{{ 'admin_dashboard.workflow.title' | translate }}</h3>
           <p>{{ 'admin_dashboard.workflow.subtitle' | translate }}</p>
@@ -363,7 +302,7 @@
         </div>
       </div>
 
-      <div class="chart-card">
+      <div class="chart-card" *ngIf="showChartDetails">
         <div class="chart-header">
           <div>
             <h3>{{ 'admin_dashboard.chart.title' | translate }}</h3>
@@ -396,62 +335,7 @@
       </div>
 
       <div class="bottom-grid">
-        <div class="activity-card">
-          <div class="section-title">
-            <h3>{{ 'admin_dashboard.recent_activity.title' | translate }}</h3>
-            <p>{{ 'admin_dashboard.recent_activity.subtitle' | translate }}</p>
-          </div>
 
-          <table>
-            <thead>
-              <tr>
-                <th>{{ 'admin_dashboard.recent_activity.id' | translate }}</th>
-                <th>{{ 'admin_dashboard.recent_activity.user' | translate }}</th>
-                <th>{{ 'admin_dashboard.recent_activity.role' | translate }}</th>
-                <th>{{ 'admin_dashboard.recent_activity.action' | translate }}</th>
-                <th>{{ 'admin_dashboard.recent_activity.impact' | translate }}</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>admin</td>
-                <td>ADMIN</td>
-                <td>{{ 'admin_dashboard.recent_activity.user_created' | translate }}</td>
-                <td>
-                  <span class="tag info">
-                    {{ 'admin_dashboard.recent_activity.access_management' | translate }}
-                  </span>
-                </td>
-              </tr>
-
-              <tr>
-                <td>2</td>
-                <td>client1</td>
-                <td>CLIENT</td>
-                <td>{{ 'admin_dashboard.recent_activity.new_claim' | translate }}</td>
-                <td>
-                  <span class="tag warning">
-                    {{ 'admin_dashboard.recent_activity.to_assign' | translate }}
-                  </span>
-                </td>
-              </tr>
-
-              <tr>
-                <td>3</td>
-                <td>agent1</td>
-                <td>AGENT</td>
-                <td>{{ 'admin_dashboard.recent_activity.claim_processing' | translate }}</td>
-                <td>
-                  <span class="tag success">
-                    {{ 'admin_dashboard.recent_activity.productivity' | translate }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
 
         <div class="recommendation-card">
           <div class="section-title">

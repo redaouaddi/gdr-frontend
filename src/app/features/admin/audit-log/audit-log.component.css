@@ -1,0 +1,226 @@
+.audit-layout {
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+.audit-page {
+  padding: 28px 30px;
+}
+
+/* ── HEADER ─────────────────────────────────────────────── */
+.audit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.audit-header h1 {
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #4a2769;
+  margin: 0 0 4px;
+}
+
+.audit-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.audit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #ede9fe, #dbeafe);
+  color: #5b21b6;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #ddd6fe;
+}
+
+/* ── FILTRES ──────────────────────────────────────────────── */
+.audit-filters {
+  padding: 18px 20px;
+  border-radius: 14px;
+  margin-bottom: 18px;
+}
+
+/* ── LOADING ─────────────────────────────────────────────── */
+.audit-loading {
+  text-align: center;
+  padding: 48px;
+  color: #6b7280;
+}
+
+/* ── TABLE CARD ──────────────────────────────────────────── */
+.audit-table-card {
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.audit-table thead {
+  background: #f8fafc;
+}
+
+.audit-table th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  font-weight: 600;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.audit-table td {
+  padding: 13px 16px;
+  vertical-align: middle;
+}
+
+/* Ligne avec action en échec : fond légèrement rosé */
+.audit-row--error td {
+  background-color: #fff8f8;
+}
+
+.audit-row--error:hover td {
+  background-color: #fff0f0 !important;
+}
+
+/* ── AVATAR ACTEUR ───────────────────────────────────────── */
+.audit-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ede9fe, #c4b5fd);
+  color: #5b21b6;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* ── BADGE ACTION SUCCÈS / ÉCHEC ─────────────────────────── */
+.audit-action-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.audit-action-badge--success {
+  background-color: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+.audit-action-badge--success .bi {
+  color: #22c55e;
+}
+
+.audit-action-badge--error {
+  background-color: #fff1f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.audit-action-badge--error .bi {
+  color: #ef4444;
+}
+
+/* ── CELLULE DÉTAILS ─────────────────────────────────────── */
+.audit-details-cell {
+  max-width: 300px;
+}
+
+.audit-details-text {
+  display: block;
+  color: #374151;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+/* ── ENTITÉ ──────────────────────────────────────────────── */
+.audit-entity-type {
+  display: inline-block;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.03em;
+}
+
+/* ── DATE ────────────────────────────────────────────────── */
+.audit-date {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: #334155;
+  font-size: 0.85rem;
+}
+
+/* ── PAGINATION ──────────────────────────────────────────── */
+.audit-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* ── EXPORTS BUTTONS ─────────────────────────────────────── */
+.btn-export-excel {
+  background: #107c41; /* Microsoft Excel Green */
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #0b592e;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-export-excel:hover {
+  background: #0b592e;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(16, 124, 65, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-export-pdf {
+  background: #dc2626; /* PDF Red */
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #b91c1c;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-export-pdf:hover {
+  background: #b91c1c;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-export-excel:disabled,
+.btn-export-pdf:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}

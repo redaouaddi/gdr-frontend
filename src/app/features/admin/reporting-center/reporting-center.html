@@ -1,0 +1,211 @@
+<div class="app-layout">
+  <div class="sidebar-container">
+    <app-sidebar></app-sidebar>
+  </div>
+
+  <div class="main-content">
+    <app-navbar></app-navbar>
+
+    <div class="dashboard">
+
+      <!-- Page Header -->
+      <div class="rc-page-header">
+        <div class="rc-page-header-left">
+          <h1><i class="bi bi-bar-chart-line-fill"></i> Centre de Reporting</h1>
+          <p>Prévisualisez, filtrez et exportez vos données de réclamations en temps réel.</p>
+        </div>
+        <div class="rc-badge">
+          <i class="bi bi-shield-check"></i>
+          Espace Administrateur
+        </div>
+      </div>
+
+      <!-- ===== TOOLBAR ROW 1 — Report type + format + actions ===== -->
+      <div class="rc-toolbar">
+
+        <div class="rc-toolbar-group">
+          <label class="rc-toolbar-label">
+            <i class="bi bi-file-earmark-bar-graph"></i> Type de rapport
+          </label>
+          <select class="rc-toolbar-select" [(ngModel)]="selectedReportType" (change)="resetPreview()">
+            <option *ngFor="let rt of reportTypes" [value]="rt.value">{{ rt.label }}</option>
+          </select>
+        </div>
+
+        <div class="rc-toolbar-divider"></div>
+
+        <div class="rc-toolbar-group">
+          <label class="rc-toolbar-label">
+            <i class="bi bi-file-earmark-arrow-down"></i> Format d'export
+          </label>
+          <div class="rc-format-pills">
+            <button class="rc-format-pill"
+                    [class.active]="selectedFormat === 'pdf'"
+                    (click)="selectedFormat = 'pdf'">
+              <i class="bi bi-filetype-pdf"></i> PDF
+            </button>
+            <button class="rc-format-pill"
+                    [class.active]="selectedFormat === 'excel'"
+                    (click)="selectedFormat = 'excel'">
+              <i class="bi bi-filetype-xlsx"></i> Excel
+            </button>
+            <button class="rc-format-pill"
+                    [class.active]="selectedFormat === 'csv'"
+                    (click)="selectedFormat = 'csv'">
+              <i class="bi bi-filetype-csv"></i> CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="rc-toolbar-divider"></div>
+
+        <div class="rc-toolbar-actions">
+          <button class="rc-btn rc-btn-primary" (click)="generatePreview()" [disabled]="isLoading">
+            <i class="bi" [class.bi-eye-fill]="!isLoading" [class.bi-hourglass-split]="isLoading"></i>
+            {{ isLoading ? 'Chargement...' : 'Prévisualiser' }}
+          </button>
+          <button class="rc-btn rc-btn-success" (click)="exportData()" [disabled]="displayedData.length === 0 || isLoading">
+            <i class="bi bi-download"></i> Exporter
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ===== TOOLBAR ROW 2 — Data filters ===== -->
+      <div class="rc-filter-bar">
+
+        <!-- Année -->
+        <div class="rc-filter-group">
+          <label class="rc-filter-label">
+            <i class="bi bi-calendar3"></i> Année
+          </label>
+          <select class="rc-filter-select" [(ngModel)]="selectedYear" (change)="onFilterChange()">
+            <option value="">Toutes</option>
+            <option *ngFor="let y of availableYears" [value]="y">{{ y }}</option>
+          </select>
+        </div>
+
+        <!-- Mois -->
+        <div class="rc-filter-group">
+          <label class="rc-filter-label">
+            <i class="bi bi-calendar-month"></i> Mois
+          </label>
+          <select class="rc-filter-select" [(ngModel)]="selectedMonth" (change)="onFilterChange()">
+            <option value="">Tous</option>
+            <option *ngFor="let m of months" [value]="m.value">{{ m.label }}</option>
+          </select>
+        </div>
+
+        <!-- Catégorie -->
+        <div class="rc-filter-group">
+          <label class="rc-filter-label">
+            <i class="bi bi-tags"></i> Catégorie
+          </label>
+          <select class="rc-filter-select" [(ngModel)]="selectedCategorie" (change)="onFilterChange()">
+            <option value="">Toutes</option>
+            <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+          </select>
+        </div>
+
+        <!-- Statut -->
+        <div class="rc-filter-group">
+          <label class="rc-filter-label">
+            <i class="bi bi-activity"></i> Statut
+          </label>
+          <select class="rc-filter-select" [(ngModel)]="selectedStatut" (change)="onFilterChange()">
+            <option value="">Tous</option>
+            <option *ngFor="let s of statuts" [value]="s">{{ s }}</option>
+          </select>
+        </div>
+
+        <!-- Équipe -->
+        <div class="rc-filter-group">
+          <label class="rc-filter-label">
+            <i class="bi bi-people"></i> Équipe
+          </label>
+          <select class="rc-filter-select" [(ngModel)]="selectedEquipe" (change)="onFilterChange()">
+            <option value="">Toutes</option>
+            <option *ngFor="let e of availableEquipes" [value]="e">{{ e }}</option>
+          </select>
+        </div>
+
+        <!-- Reset filters -->
+        <button class="rc-filter-reset"
+                (click)="selectedYear=''; selectedMonth=''; selectedCategorie=''; selectedStatut=''; selectedEquipe=''; onFilterChange()"
+                title="Réinitialiser les filtres">
+          <i class="bi bi-x-circle"></i> Réinitialiser
+        </button>
+
+      </div>
+
+      <!-- Loading State -->
+      <div class="rc-loading-wrapper" *ngIf="isLoading">
+        <div class="rc-spinner"></div>
+        <p class="rc-loading-text">Chargement des données...</p>
+        <p class="rc-loading-sub">Récupération des réclamations depuis le serveur</p>
+      </div>
+
+      <!-- Error State -->
+      <div class="rc-empty-state rc-error-state" *ngIf="hasError && !isLoading">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <p>Erreur lors du chargement</p>
+        <span>{{ errorMessage }}</span>
+        <button class="rc-btn rc-btn-outline" (click)="generatePreview()" style="margin-top: 12px;">
+          <i class="bi bi-arrow-clockwise"></i> Réessayer
+        </button>
+      </div>
+
+      <!-- Results Table -->
+      <div class="rc-results-card" *ngIf="!isLoading && !hasError && displayedData.length > 0">
+        <div class="rc-results-header">
+          <div class="rc-results-title">
+            <i class="bi bi-table"></i>
+            <h3>{{ reportTitle }}</h3>
+            <span class="rc-count-badge">{{ displayedData.length }} résultat(s)</span>
+          </div>
+          <button class="rc-btn rc-btn-outline rc-btn-sm" (click)="exportData()">
+            <i class="bi bi-filetype-pdf" *ngIf="selectedFormat === 'pdf'"></i>
+            <i class="bi bi-filetype-xlsx" *ngIf="selectedFormat === 'excel'"></i>
+            <i class="bi bi-filetype-csv" *ngIf="selectedFormat === 'csv'"></i>
+            Exporter en {{ selectedFormat.toUpperCase() }}
+          </button>
+        </div>
+
+        <div class="rc-table-wrapper">
+          <table class="rc-table">
+            <thead>
+              <tr>
+                <th *ngFor="let header of tableHeaders">{{ header }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of displayedData">
+                <td *ngFor="let cell of row">{{ cell }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="rc-table-footer">
+          <span><i class="bi bi-clock"></i> Généré le {{ generatedAt }}</span>
+          <span>GDR System — DXC Technology</span>
+        </div>
+      </div>
+
+      <!-- Empty (no data) -->
+      <div class="rc-empty-state" *ngIf="!isLoading && !hasError && tableHeaders.length > 0 && displayedData.length === 0">
+        <i class="bi bi-inbox"></i>
+        <p>Aucune donnée trouvée</p>
+        <span>Aucune réclamation ne correspond au rapport sélectionné.</span>
+      </div>
+
+      <!-- Initial State -->
+      <div class="rc-empty-state" *ngIf="!isLoading && !hasError && tableHeaders.length === 0">
+        <i class="bi bi-bar-chart-steps"></i>
+        <p>Sélectionnez un type de rapport</p>
+        <span>Configurez vos filtres puis cliquez sur « Prévisualiser ».</span>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,250 @@
+<div class="app-layout">
+  <div class="sidebar-container">
+    <app-sidebar></app-sidebar>
+  </div>
+
+  <div class="main-content audit-layout">
+    <app-navbar></app-navbar>
+
+    <div class="audit-page">
+
+      <!-- ── HEADER ─────────────────────────────────────────────── -->
+      <div class="audit-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+          <h1><i class="bi bi-journal-text"></i> {{ 'audit_log.title' | translate }}</h1>
+          <p>{{ 'audit_log.subtitle' | translate }}</p>
+        </div>
+        <div class="d-flex align-items-center flex-wrap gap-2">
+          <button class="btn btn-export-excel d-flex align-items-center gap-2" (click)="exportExcel()" [disabled]="isLoading">
+            <i class="bi bi-file-earmark-excel-fill"></i>
+            <span>{{ 'audit_log.export_excel' | translate }}</span>
+          </button>
+          <button class="btn btn-export-pdf d-flex align-items-center gap-2" (click)="exportPdf()" [disabled]="isLoading">
+            <i class="bi bi-file-earmark-pdf-fill"></i>
+            <span>{{ 'audit_log.export_pdf' | translate }}</span>
+          </button>
+          <span class="audit-badge">
+            <i class="bi bi-shield-check"></i>
+            {{ 'audit_log.badge' | translate }}
+          </span>
+        </div>
+      </div>
+
+      <!-- ── FILTRES ─────────────────────────────────────────────── -->
+      <div class="audit-filters card border-0 shadow-sm p-4 mb-4">
+        <div class="row g-3 align-items-end">
+
+          <!-- Utilisateur -->
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label small fw-semibold text-muted">
+              {{ 'audit_log.filter_user' | translate }}
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="filterUser"
+              [placeholder]="'audit_log.user_placeholder' | translate"
+              (keyup.enter)="applyFilters()"
+            />
+          </div>
+
+          <!-- Rôle -->
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label small fw-semibold text-muted">
+              {{ 'audit_log.filter_role' | translate }}
+            </label>
+            <select class="form-select" [(ngModel)]="filterRole" (change)="applyFilters()">
+              <option value="">{{ 'audit_log.all_roles' | translate }}</option>
+              <option *ngFor="let r of roleOptions" [value]="r">{{ translateRole(r) }}</option>
+            </select>
+          </div>
+
+          <!-- Action -->
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label small fw-semibold text-muted">
+              {{ 'audit_log.filter_action' | translate }}
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="filterAction"
+              [placeholder]="'audit_log.action_placeholder' | translate"
+              (keyup.enter)="applyFilters()"
+            />
+          </div>
+
+          <!-- Recherche générale -->
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label small fw-semibold text-muted">
+              {{ 'audit_log.filter_search' | translate }}
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="filterSearch"
+              [placeholder]="'audit_log.search_placeholder' | translate"
+              (keyup.enter)="applyFilters()"
+            />
+          </div>
+
+          <!-- Date Début -->
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label small fw-semibold text-muted">
+              {{ 'audit_log.filter_start_date' | translate }}
+            </label>
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="filterStartDate"
+              (change)="applyFilters()"
+            />
+          </div>
+
+          <!-- Date Fin -->
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label small fw-semibold text-muted">
+              {{ 'audit_log.filter_end_date' | translate }}
+            </label>
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="filterEndDate"
+              (change)="applyFilters()"
+            />
+          </div>
+
+          <!-- Hide Consultations -->
+          <div class="col-md-3 col-sm-6">
+            <div class="form-check pb-2">
+              <input
+                id="hideConsultations"
+                class="form-check-input"
+                type="checkbox"
+                [(ngModel)]="hideConsultations"
+                (change)="applyFilters()"
+              />
+              <label class="form-check-label small fw-semibold text-muted" for="hideConsultations">
+                {{ 'audit_log.hide_consultations' | translate }}
+              </label>
+            </div>
+          </div>
+
+          <!-- Actions boutons -->
+          <div class="col-md-3 col-sm-6 d-flex gap-2">
+            <button class="btn btn-primary flex-fill" (click)="applyFilters()" [disabled]="isLoading">
+              <i class="bi bi-funnel"></i> {{ 'audit_log.apply' | translate }}
+            </button>
+            <button class="btn btn-outline-secondary" (click)="clearFilters()" [disabled]="isLoading">
+              <i class="bi bi-x-circle"></i> {{ 'audit_log.reset' | translate }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── LOADING ─────────────────────────────────────────────── -->
+      <div *ngIf="isLoading" class="audit-loading">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p>{{ 'common.loading' | translate }}</p>
+      </div>
+
+      <!-- ── ERREUR ──────────────────────────────────────────────── -->
+      <div *ngIf="errorMessage && !isLoading" class="alert alert-danger rounded-3">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ errorMessage }}
+        <button class="btn btn-sm btn-outline-danger ms-3" (click)="loadLogs()">
+          {{ 'audit_log.retry' | translate }}
+        </button>
+      </div>
+
+      <!-- ── TABLE ───────────────────────────────────────────────── -->
+      <div *ngIf="!isLoading && !errorMessage" class="card border-0 shadow-sm audit-table-card">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0 audit-table">
+            <thead>
+              <tr>
+                <th>{{ 'audit_log.col_actor' | translate }}</th>
+                <th>{{ 'audit_log.col_role' | translate }}</th>
+                <th>{{ 'audit_log.col_action' | translate }}</th>
+                <th>{{ 'audit_log.col_details' | translate }}</th>
+                <th>{{ 'audit_log.col_date' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- Ligne vide -->
+              <tr *ngIf="logs.length === 0">
+                <td colspan="5" class="text-center py-5 text-muted">
+                  <i class="bi bi-inbox fs-3 d-block mb-2 opacity-50"></i>
+                  {{ 'audit_log.empty' | translate }}
+                </td>
+              </tr>
+
+              <!-- Ligne de log -->
+              <tr *ngFor="let log of logs" [class.audit-row--error]="isFailedAction(log.action)">
+
+                <!-- Acteur -->
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="audit-avatar">{{ (log.actorName || log.actorEmail || '?').charAt(0).toUpperCase() }}</span>
+                    <div>
+                      <div class="fw-semibold lh-sm">{{ log.actorName || log.actorEmail }}</div>
+                      <div class="small text-muted" *ngIf="log.actorEmail && log.actorName && log.actorName !== log.actorEmail">
+                        {{ log.actorEmail }}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Rôle -->
+                <td>
+                  <span class="badge rounded-pill" [ngClass]="getRoleBadgeClass(log.role)">
+                    {{ translateRole(log.role) }}
+                  </span>
+                </td>
+
+                <!-- Action : code technique visible, stylé success/erreur -->
+                <td>
+                  <span [ngClass]="getActionBadgeClass(log.action)">
+                    <i class="bi" [ngClass]="isFailedAction(log.action) ? 'bi-x-circle-fill' : 'bi-check-circle-fill'"></i>
+                    {{ getActionLabel(log.action) }}
+                  </span>
+                </td>
+
+                <!-- Détails métier (fournis par le backend, lisibles) -->
+                <td class="audit-details-cell">
+                  <span class="audit-details-text">{{ sanitizeDetails(log) }}</span>
+                </td>
+
+                <!-- Date -->
+                <td class="audit-date">
+                  <i class="bi bi-clock me-1"></i>{{ formatDateTime(log.timestamp) }}
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── PAGINATION ──────────────────────────────────────── -->
+        <div class="audit-pagination" *ngIf="totalPages > 1">
+          <span class="text-muted small">
+            {{ 'audit_log.page_info' | translate:{ current: currentPage + 1, total: totalPages, count: totalElements } }}
+          </span>
+          <div class="btn-group">
+            <button class="btn btn-sm btn-outline-primary" (click)="prevPage()" [disabled]="currentPage === 0">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <button
+              class="btn btn-sm btn-outline-primary"
+              (click)="nextPage()"
+              [disabled]="currentPage >= totalPages - 1"
+            >
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

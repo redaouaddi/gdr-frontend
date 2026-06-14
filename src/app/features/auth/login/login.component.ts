@@ -78,7 +78,7 @@ export class LoginComponent implements OnInit {
 
         this.isLoading = false;
 
-        const roles = response.roles || [];
+        const roles = this.authService.getNormalizedRoles(response);
         if (roles.includes('ADMIN')) {
           this.router.navigateByUrl('/dashboard/admin');
         } else if (roles.includes('SERVICE_MANAGER')) {
@@ -232,14 +232,14 @@ export class LoginComponent implements OnInit {
       this.faceLoginMessage = this.translate.instant('login.face_messages.login_success');
       this.closeFaceLoginModal();
 
-      const roles = response.roles || [];
-      if (roles.includes('ROLE_ADMIN')) {
+      const roles = this.authService.getNormalizedRoles(response);
+      if (roles.includes('ADMIN')) {
         await this.router.navigateByUrl('/dashboard/admin');
-      } else if (roles.includes('ROLE_SERVICE_MANAGER')) {
+      } else if (roles.includes('SERVICE_MANAGER')) {
         await this.router.navigateByUrl('/dashboard/service-manager');
-      } else if (roles.includes('ROLE_CHEF_EQUIPE') || roles.includes('ROLE_AGENT')) {
+      } else if (roles.includes('CHEF_EQUIPE') || roles.includes('AGENT')) {
         await this.router.navigateByUrl('/service-manager/my-team');
-      } else if (roles.includes('ROLE_CLIENT') || roles.includes('ROLE_USER')) {
+      } else if (roles.includes('CLIENT') || roles.includes('USER')) {
         await this.router.navigateByUrl('/dashboard/client');
       } else {
         await this.router.navigateByUrl('/dashboard/client');

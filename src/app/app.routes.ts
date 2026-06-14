@@ -20,6 +20,8 @@ import { AllReclamationsComponent } from './features/admin/all-reclamations/all-
 import { AgentMissionsComponent } from './features/reclamations/agent-missions/agent-missions';
 import { InternalMessagesComponent } from './features/internal-messages/internal-messages.component';
 import { SlaSettingsComponent } from './features/admin/sla-settings/sla-settings.component';
+import { ReportingCenterComponent } from './features/admin/reporting-center/reporting-center';
+import { AuditLogComponent } from './features/admin/audit-log/audit-log.component';
 
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -68,12 +70,12 @@ export const routes: Routes = [
     data: { roles: ['ADMIN'] }
   },
 
-  {
-    path: 'admin/reclamations',
-    component: AllReclamationsComponent,
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['ADMIN'] }
-  },
+{
+  path: 'admin/reclamations',
+  component: AllReclamationsComponent,
+  canActivate: [authGuard, roleGuard],
+  data: { roles: ['ADMIN', 'CONSULTER_RAPPORTS'] }
+},
 
   {
     path: 'admin/settings',
@@ -138,17 +140,29 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
 
-  {
-    path: 'mes-reclamations/nouvelle',
-    component: ReclamationCreateComponent,
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['CLIENT', 'USER', 'ROLE_CLIENT'] }
-  },
+{
+  path: 'mes-reclamations/nouvelle',
+  component: ReclamationCreateComponent,
+  canActivate: [authGuard, roleGuard],
+  data: { roles: ['CLIENT', 'USER'] }
+},
 
   {
   path: 'admin/sla-settings',
   component: SlaSettingsComponent,
   canActivate: [authGuard, roleGuard],
   data: { roles: ['ADMIN'] }
+},
+{
+  path: 'admin/reporting',
+  component: ReportingCenterComponent,
+  canActivate: [authGuard, roleGuard],
+  data: { roles: ['ADMIN'] }
+},
+{
+  path: 'admin/audit',
+  component: AuditLogComponent,
+  canActivate: [authGuard, roleGuard],
+  data: { roles: ['ADMIN', 'CONSULTER_RAPPORTS'] }
 }
 ];

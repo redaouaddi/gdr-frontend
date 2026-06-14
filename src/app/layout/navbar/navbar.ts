@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { AuthService } from '../../core/services/auth.service';
 import { ReclamationService } from '../../core/services/reclamation.service';
 
 export interface AppNotification {
@@ -34,6 +35,7 @@ export class Navbar implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
+    private authService: AuthService,
     private reclamationService: ReclamationService
   ) {}
 
@@ -49,16 +51,12 @@ export class Navbar implements OnInit, OnDestroy {
 
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 
   ngOnInit(): void {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      this.user = JSON.parse(userData);
-    }
+    this.user = this.authService.getUser();
     this.detectChefEquipe();
     this.detectUserRole();
 
@@ -79,33 +77,33 @@ export class Navbar implements OnInit, OnDestroy {
 
   detectChefEquipe(): void {
     if (!this.user) return;
-    const role = this.user.role || this.user.roles?.[0] || '';
+    const roles = this.authService.getNormalizedRoles(this.user);
     this.isChefEquipe =
-      role === 'CHEF_EQUIPE' ||
-      role === 'ROLE_CHEF_EQUIPE' ||
-      role === 'SERVICE_MANAGER' ||
-      role === 'ROLE_SERVICE_MANAGER';
+      roles.includes('CHEF_EQUIPE') ||
+      roles.includes('SERVICE_MANAGER');
   }
 
   userRole = '';
   detectUserRole(): void {
     if (!this.user) return;
-    const role = this.user.role || this.user.roles?.[0] || '';
-    this.userRole = role.toUpperCase();
+    this.userRole = this.authService.getPrimaryRole(this.user);
   }
 
   loadNotifications(): void {
-    if (!this.user || !this.userRole) return;
+    if (!this.user) return;
+
+    const roles = this.authService.getNormalizedRoles(this.user);
+    if (!roles.length) return;
 
     const readKeys: string[] = JSON.parse(localStorage.getItem('readNotificationKeys') || '[]');
     const now = new Date();
 
     // 1. Lire d'abord les notifications SLA locales pour les rôles concernés
     const slaData = JSON.parse(localStorage.getItem('slaNotifications') || '[]');
-    const isSlaRelevant = 
-      this.userRole.includes('AGENT') || 
-      this.userRole.includes('CHEF_EQUIPE') || 
-      this.userRole.includes('ADMIN');
+    const isSlaRelevant =
+      roles.includes('AGENT') ||
+      roles.includes('CHEF_EQUIPE') ||
+      roles.includes('ADMIN');
 
     const localSlaNotifs: AppNotification[] = isSlaRelevant
       ? slaData.map((n: any) => {
@@ -117,13 +115,13 @@ export class Navbar implements OnInit, OnDestroy {
             type: n.type === 'danger' ? 'danger' : (n.type === 'warning' ? 'warning' : 'info'),
             date: new Date(n.date),
             unread: !readKeys.includes(key),
-            link: this.userRole.includes('ADMIN') ? '/admin/reclamations' : '/dashboard/agent-missions'
+            link: roles.includes('ADMIN') ? '/admin/reclamations' : '/dashboard/agent-missions'
           };
         })
       : [];
 
     // 2. Charger les notifications selon le rôle spécifique de l'utilisateur
-    if (this.userRole.includes('CLIENT')) {
+    if (roles.includes('CLIENT')) {
       // --- CONTEXTE CLIENT ---
       this.reclamationService.getMyReclamations(0, 50).subscribe({
         next: (response) => {
@@ -169,7 +167,7 @@ export class Navbar implements OnInit, OnDestroy {
         error: (err) => console.error('Erreur notifications client', err)
       });
 
-    } else if (this.userRole.includes('AGENT') && !this.userRole.includes('CHEF')) {
+    } else if (roles.includes('AGENT') && !roles.includes('CHEF_EQUIPE')) {
       // --- CONTEXTE AGENT SIMPLE ---
       this.reclamationService.getMesMissions(0, 50).subscribe({
         next: (response) => {
@@ -203,7 +201,7 @@ export class Navbar implements OnInit, OnDestroy {
         error: (err) => console.error('Erreur notifications agent', err)
       });
 
-    } else if (this.userRole.includes('CHEF_EQUIPE')) {
+    } else if (roles.includes('CHEF_EQUIPE')) {
       // --- CONTEXTE CHEF D'EQUIPE ---
       this.reclamationService.getMesMissions(0, 50).subscribe({
         next: (response) => {
@@ -237,7 +235,7 @@ export class Navbar implements OnInit, OnDestroy {
         error: (err) => console.error('Erreur notifications chef equipe', err)
       });
 
-    } else if (this.userRole.includes('SERVICE_MANAGER')) {
+    } else if (roles.includes('SERVICE_MANAGER')) {
       // --- CONTEXTE SERVICE MANAGER ---
       this.reclamationService.getAllReclamations(0, 50).subscribe({
         next: (response) => {
@@ -267,7 +265,7 @@ export class Navbar implements OnInit, OnDestroy {
         error: (err) => console.error('Erreur notifications service manager', err)
       });
 
-    } else if (this.userRole.includes('ADMIN')) {
+    } else if (roles.includes('ADMIN') || roles.includes('CONSULTER_RAPPORTS')) {
       // --- CONTEXTE ADMIN ---
       this.reclamationService.getAllReclamations(0, 50).subscribe({
         next: (response) => {

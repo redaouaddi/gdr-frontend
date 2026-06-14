@@ -21,9 +21,44 @@
       </div>
 
       <div class="glass-card p-4">
-        <div class="search-wrapper mb-4">
-          <i class="bi bi-search"></i>
-          <input type="text" class="search-input" [placeholder]="'user_list.search_placeholder' | translate">
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <div class="search-wrapper">
+              <i class="bi bi-search"></i>
+              <input 
+                type="text" 
+                class="search-input" 
+                [(ngModel)]="searchTerm" 
+                (input)="currentPage = 0; applyFilters()"
+                [placeholder]="'user_list.search_placeholder' | translate"
+              >
+            </div>
+          </div>
+          
+          <div class="col-md-3">
+            <select 
+              class="form-select custom-input h-100" 
+              [(ngModel)]="selectedRole" 
+              (change)="currentPage = 0; applyFilters()"
+              style="padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;"
+            >
+              <option value="">{{ 'user_list.filter_role_all' | translate }}</option>
+              <option *ngFor="let role of roles" [value]="role.name">{{ role.name }}</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <select 
+              class="form-select custom-input h-100" 
+              [(ngModel)]="selectedStatus" 
+              (change)="currentPage = 0; applyFilters()"
+              style="padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;"
+            >
+              <option value="">{{ 'user_list.filter_status_all' | translate }}</option>
+              <option value="ACTIVE">{{ 'user_list.status.active' | translate }}</option>
+              <option value="DELETED">{{ 'user_list.status.deleted' | translate }}</option>
+            </select>
+          </div>
         </div>
 
         <div *ngIf="errorMessage" class="alert alert-danger">
@@ -82,7 +117,7 @@
         <div class="d-flex justify-content-between align-items-center mt-4 text-muted footer-table" *ngIf="totalElements > 0">
           <div class="d-flex align-items-center gap-2">
             <span>{{ 'user_list.show' | translate }}</span>
-            <select class="form-select form-select-sm lines-select" [(ngModel)]="pageSize" (change)="currentPage = 0; loadUsers()">
+            <select class="form-select form-select-sm lines-select" [(ngModel)]="pageSize" (change)="currentPage = 0; applyFilters()">
               <option [value]="10">10</option>
               <option [value]="20">20</option>
               <option [value]="50">50</option>

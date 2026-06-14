@@ -74,7 +74,7 @@ export class InternalMessagesComponent implements OnInit {
 
   private loadReclamationsByRole(): void {
     const user = this.authService.getUser();
-    const roles = user?.roles || [];
+    const roles = this.authService.getNormalizedRoles(user);
     this.loadingReclamations = true;
 
     const source$ = roles.includes('ADMIN') || roles.includes('SERVICE_MANAGER')
